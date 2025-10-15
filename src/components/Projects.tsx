@@ -11,7 +11,7 @@ const Projects = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
+        staggerChildren: 0.15
       }
     }
   };
@@ -22,7 +22,7 @@ const Projects = () => {
   };
 
   return (
-    <section id="projects" className="section-padding bg-primary-light">
+    <section id="projects" className="section-padding dark:bg-primary-light light:bg-lightMode-surfaceAlt">
       <div className="container-custom">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -31,10 +31,10 @@ const Projects = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-poppins font-bold gradient-text mb-4">
+          <h2 className="text-5xl md:text-6xl font-poppins font-bold gradient-text mb-6">
             {t.projects.title}
           </h2>
-          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+          <p className="dark:text-text-secondary light:text-lightMode-text-secondary text-lg max-w-2xl mx-auto leading-relaxed">
             {t.projects.subtitle}
           </p>
         </motion.div>
@@ -44,20 +44,24 @@ const Projects = () => {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10"
         >
           {projects.map((project) => (
             <motion.div
               key={project.id}
               variants={item}
-              whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              className="bg-primary-bg rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-accent-cyan/20 transition-all duration-300 border border-primary-lighter"
+              className="group rounded-xl overflow-hidden border transition-all duration-300 dark:bg-primary-bg dark:border-primary-lighter light:bg-lightMode-surface light:border-lightMode-border light:shadow-md"
+              whileHover={{
+                y: -8,
+                scale: 1.02,
+                transition: { duration: 0.3, ease: 'easeOut' }
+              }}
             >
-              <div className="relative h-64 overflow-hidden bg-primary-lighter">
+              <div className="relative h-64 overflow-hidden dark:bg-primary-lighter light:bg-lightMode-surfaceAlt">
                 <img
                   src={project.image}
                   alt={language === 'es' ? project.titleEs : project.title}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   loading="lazy"
                   onError={(e) => {
                     e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%231d3557" width="400" height="300"/%3E%3Ctext fill="%2364ffda" font-family="Arial" font-size="20" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3EProject Screenshot%3C/text%3E%3C/svg%3E';
@@ -66,29 +70,31 @@ const Projects = () => {
               </div>
 
               <div className="p-6">
-                <h3 className="text-2xl font-poppins font-bold text-text-highlight mb-3">
+                <h3 className="text-2xl font-poppins font-bold dark:text-text-highlight light:text-lightMode-text-primary mb-3">
                   {language === 'es' ? project.titleEs : project.title}
                 </h3>
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tech.map((tech) => (
-                    <span
+                    <motion.span
                       key={tech}
-                      className="px-3 py-1 text-xs font-medium bg-accent-cyan/10 text-accent-cyan rounded-full border border-accent-cyan/20"
+                      className="px-3 py-1 text-xs font-medium bg-accent-cyan/10 text-accent-cyan rounded-full border border-accent-cyan/20 cursor-default"
+                      whileHover={{ scale: 1.05, backgroundColor: 'rgba(100, 255, 218, 0.15)' }}
+                      transition={{ duration: 0.2 }}
                     >
                       {tech}
-                    </span>
+                    </motion.span>
                   ))}
                 </div>
 
-                <p className="text-text-secondary mb-4 leading-relaxed">
+                <p className="dark:text-text-secondary light:text-lightMode-text-secondary mb-4 leading-relaxed">
                   {language === 'es' ? project.descriptionEs : project.description}
                 </p>
 
                 <div className="mb-6">
                   <ul className="space-y-2">
                     {(language === 'es' ? project.highlightsEs : project.highlights).map((highlight, idx) => (
-                      <li key={idx} className="flex items-start text-sm text-text-secondary">
+                      <li key={idx} className="flex items-start text-sm dark:text-text-secondary light:text-lightMode-text-secondary">
                         <span className="text-accent-cyan mr-2">▹</span>
                         {highlight}
                       </li>
@@ -98,70 +104,82 @@ const Projects = () => {
 
                 <div className="flex flex-wrap gap-3">
                    {project.demoUrl && (
-    <a
+    <motion.a
       href={project.demoUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 px-4 py-2 border border-accent-cyan text-accent-cyan font-medium rounded-lg hover:bg-accent-cyan hover:text-primary-bg transition-colors text-sm"
+      className="flex items-center gap-2 px-4 py-2 border border-accent-cyan text-accent-cyan font-medium rounded-lg hover:bg-accent-cyan dark:hover:text-primary-bg light:hover:text-lightMode-text-primary transition-colors text-sm"
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.98 }}
     >
       <ExternalLink size={16} />
       {project.id === 1 ? "Video Demo" : t.projects.liveDemo}
-    </a>
+    </motion.a>
   )}
                   {project.dashboardUrl && (
-                    <a
+                    <motion.a
                       href={project.dashboardUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-accent-blue text-white font-medium rounded-lg hover:bg-accent-blue/80 transition-colors text-sm"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <ExternalLink size={16} />
                       {t.projects.dashboard}
-                    </a>
+                    </motion.a>
                   )}
                   {project.analysisUrl && (
-                    <a
+                    <motion.a
                       href={project.analysisUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 border border-accent-cyan text-accent-cyan font-medium rounded-lg hover:bg-accent-cyan hover:text-primary-bg transition-colors text-sm"
+                      className="flex items-center gap-2 px-4 py-2 border border-accent-cyan text-accent-cyan font-medium rounded-lg hover:bg-accent-cyan dark:hover:text-primary-bg light:hover:text-lightMode-text-primary transition-colors text-sm"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <FileText size={16} />
                       {t.projects.analysis}
-                    </a>
+                    </motion.a>
                   )}
                   {project.reportUrl && (
-                    <a
+                    <motion.a
                       href={project.reportUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 border border-accent-cyan text-accent-cyan font-medium rounded-lg hover:bg-accent-cyan hover:text-primary-bg transition-colors text-sm"
+                      className="flex items-center gap-2 px-4 py-2 border border-accent-cyan text-accent-cyan font-medium rounded-lg hover:bg-accent-cyan dark:hover:text-primary-bg light:hover:text-lightMode-text-primary transition-colors text-sm"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <FileText size={16} />
                       {t.projects.report}
-                    </a>
+                    </motion.a>
                   )}
                   {project.certificateUrl && (
-                    <a
+                    <motion.a
                       href={project.certificateUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/50 text-yellow-500 font-medium rounded-lg hover:bg-yellow-500/20 transition-colors text-sm"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <Award size={16} />
                       {t.projects.certificate}
-                    </a>
+                    </motion.a>
                   )}
                   {project.repoUrl && (
-                    <a
+                    <motion.a
                       href={project.repoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 border border-text-secondary text-text-secondary font-medium rounded-lg hover:border-accent-cyan hover:text-accent-cyan transition-colors text-sm"
+                      className="flex items-center gap-2 px-4 py-2 border dark:border-text-secondary dark:text-text-secondary light:border-lightMode-border light:text-lightMode-text-secondary font-medium rounded-lg hover:border-accent-cyan hover:text-accent-cyan transition-colors text-sm"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <Github size={16} />
                       {t.projects.github}
-                    </a>
+                    </motion.a>
                   )}
                 </div>
               </div>

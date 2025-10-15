@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSelector from './LanguageSelector';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,9 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      scrolled ? 'bg-primary-bg/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+      scrolled
+        ? 'dark:bg-primary-bg/95 light:bg-lightMode-surface/95 backdrop-blur-md shadow-lg'
+        : 'bg-transparent'
     }`}>
       <div className="container-custom">
         <div className="flex justify-between items-center h-20">
@@ -78,7 +81,7 @@ const Navbar = () => {
                 className={`text-sm font-medium transition-colors relative group ${
                   activeSection === link.href.slice(1)
                     ? 'text-accent-cyan'
-                    : 'text-text-secondary hover:text-accent-cyan'
+                    : 'dark:text-text-secondary light:text-lightMode-text-secondary hover:text-accent-cyan'
                 }`}
               >
                 {link.name}
@@ -87,10 +90,12 @@ const Navbar = () => {
                 }`} />
               </a>
             ))}
+            <ThemeToggle />
             <LanguageSelector />
           </div>
 
           <div className="md:hidden flex items-center gap-4">
+            <ThemeToggle />
             <LanguageSelector />
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -109,7 +114,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-primary-light"
+            className="md:hidden dark:bg-primary-light light:bg-lightMode-surfaceAlt"
           >
             <div className="container-custom py-4">
               {navLinks.map((link) => (
@@ -120,7 +125,7 @@ const Navbar = () => {
                   className={`block py-3 text-base font-medium transition-colors ${
                     activeSection === link.href.slice(1)
                       ? 'text-accent-cyan'
-                      : 'text-text-secondary hover:text-accent-cyan'
+                      : 'dark:text-text-secondary light:text-lightMode-text-secondary hover:text-accent-cyan'
                   }`}
                 >
                   {link.name}

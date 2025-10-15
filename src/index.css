@@ -7,6 +7,9 @@
 @layer base {
   * {
     @apply box-border;
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
   }
 
   html {
@@ -14,8 +17,16 @@
   }
 
   body {
-    @apply bg-primary-bg text-text-primary font-inter;
+    @apply font-inter;
     overflow-x: hidden;
+  }
+
+  .dark body {
+    @apply bg-primary-bg text-text-primary;
+  }
+
+  .light body {
+    @apply bg-lightMode-bg text-lightMode-text-primary;
   }
 }
 
@@ -29,10 +40,38 @@
   }
 
   .section-padding {
-    @apply py-20 px-6 md:px-12 lg:px-24;
+    @apply py-24 md:py-28 px-6 md:px-12 lg:px-24;
   }
 
   .container-custom {
     @apply max-w-7xl mx-auto;
+  }
+
+  .card-base {
+    @apply rounded-xl border transition-all duration-300;
+  }
+
+  .dark .card-base {
+    @apply bg-primary-bg border-primary-lighter;
+  }
+
+  .light .card-base {
+    @apply bg-lightMode-surface border-lightMode-border shadow-sm;
+  }
+
+  .hover-lift {
+    @apply transform transition-all duration-300;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-2 shadow-xl;
+  }
+
+  .dark .hover-lift:hover {
+    @apply shadow-accent-cyan/20;
+  }
+
+  .light .hover-lift:hover {
+    @apply shadow-lg;
   }
 }

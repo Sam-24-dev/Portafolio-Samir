@@ -18,9 +18,9 @@ function App() {
       <Skills />
       <Contact />
 
-      <footer className="bg-primary-light py-8 border-t border-primary-lighter">
+      <footer className="dark:bg-primary-light light:bg-lightMode-surfaceAlt py-8 border-t dark:border-primary-lighter light:border-lightMode-border">
         <div className="container-custom text-center">
-          <p className="text-text-secondary">
+          <p className="dark:text-text-secondary light:text-lightMode-text-secondary">
             © 2025 Samir Caizapasto. {t.footer}
           </p>
         </div>

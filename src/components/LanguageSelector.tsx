@@ -1,22 +1,38 @@
+import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
-import { Globe } from 'lucide-react';
 
 const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex items-center gap-2">
-      <Globe size={18} className="text-accent-cyan" />
-      <select
-        value={language}
-        onChange={(e) => setLanguage(e.target.value as 'en' | 'es')}
-        className="bg-primary-light text-text-primary border border-primary-lighter rounded-lg px-3 py-1.5 text-sm focus:border-accent-cyan focus:outline-none cursor-pointer transition-colors hover:border-accent-cyan/70"
+    <div className="flex items-center gap-2 p-1 rounded-lg bg-accent-cyan/10 border border-accent-cyan/20">
+      <motion.button
+        onClick={() => setLanguage('en')}
+        className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+          language === 'en'
+            ? 'bg-accent-cyan text-primary-bg dark:text-primary-bg'
+            : 'text-accent-cyan hover:bg-accent-cyan/20'
+        }`}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        <option value="en">EN</option>
-        <option value="es">ES</option>
-      </select>
+        EN
+      </motion.button>
+      <motion.button
+        onClick={() => setLanguage('es')}
+        className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+          language === 'es'
+            ? 'bg-accent-cyan text-primary-bg dark:text-primary-bg'
+            : 'text-accent-cyan hover:bg-accent-cyan/20'
+        }`}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        ES
+      </motion.button>
     </div>
   );
 };
 
 export default LanguageSelector;
+

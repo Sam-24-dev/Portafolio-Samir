@@ -60,7 +60,7 @@ const Skills = () => {
   };
 
   return (
-    <section id="skills" className="section-padding bg-primary-light">
+    <section id="skills" className="section-padding dark:bg-primary-bg light:bg-lightMode-bg">
       <div className="container-custom">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -69,10 +69,10 @@ const Skills = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-poppins font-bold gradient-text mb-4">
+          <h2 className="text-5xl md:text-6xl font-poppins font-bold gradient-text mb-6">
             {t.skills.title}
           </h2>
-          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+          <p className="dark:text-text-secondary light:text-lightMode-text-secondary text-lg max-w-2xl mx-auto leading-relaxed">
             {t.skills.subtitle}
           </p>
         </motion.div>
@@ -82,31 +82,40 @@ const Skills = () => {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {skillCategories.map((category, idx) => (
             <motion.div
               key={idx}
               variants={item}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="bg-primary-bg p-6 rounded-xl border border-primary-lighter hover:border-accent-cyan/50 transition-all"
+              className="p-6 rounded-xl border transition-all dark:bg-primary-light dark:border-primary-lighter light:bg-lightMode-surface light:border-lightMode-border light:shadow-sm"
+              whileHover={{
+                y: -8,
+                borderColor: 'rgba(100, 255, 218, 0.5)',
+                transition: { duration: 0.3 }
+              }}
             >
               <div className={`inline-block p-3 bg-${category.color}/10 rounded-lg mb-4`}>
                 <div className={`text-${category.color}`}>
                   {category.icon}
                 </div>
               </div>
-              <h3 className="text-xl font-poppins font-semibold text-text-highlight mb-4">
+              <h3 className="text-xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary mb-4">
                 {category.title}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {category.skills.map((skill, skillIdx) => (
-                  <span
+                  <motion.span
                     key={skillIdx}
-                    className={`px-3 py-1.5 text-sm bg-${category.color}/10 text-${category.color} rounded-lg border border-${category.color}/20 transition-all hover:bg-${category.color}/20`}
+                    className={`px-3 py-1.5 text-sm bg-${category.color}/10 text-${category.color} rounded-lg border border-${category.color}/20 cursor-default`}
+                    whileHover={{
+                      scale: 1.08,
+                      backgroundColor: `rgba(${category.color === 'accent-cyan' ? '100, 255, 218' : '0, 212, 255'}, 0.2)`,
+                      transition: { duration: 0.2 }
+                    }}
                   >
                     {skill}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </motion.div>
@@ -120,11 +129,14 @@ const Skills = () => {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="mt-16 grid md:grid-cols-2 gap-8"
         >
-          <div className="bg-primary-bg p-8 rounded-xl border border-primary-lighter">
+          <motion.div
+            className="p-8 rounded-xl border dark:bg-primary-light dark:border-primary-lighter light:bg-lightMode-surface light:border-lightMode-border light:shadow-sm"
+            whileHover={{ y: -5, transition: { duration: 0.3 } }}
+          >
             <h3 className="text-2xl font-poppins font-semibold gradient-text mb-6">
               {t.skills.keyStrengths}
             </h3>
-            <ul className="space-y-3 text-text-secondary">
+            <ul className="space-y-3 dark:text-text-secondary light:text-lightMode-text-secondary">
               <li className="flex items-start">
                 <span className="text-accent-cyan mr-3 mt-1">▹</span>
                 <span>{t.skills.strength1}</span>
@@ -146,13 +158,16 @@ const Skills = () => {
                 <span>{t.skills.strength5}</span>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
-          <div className="bg-primary-bg p-8 rounded-xl border border-primary-lighter">
+          <motion.div
+            className="p-8 rounded-xl border dark:bg-primary-light dark:border-primary-lighter light:bg-lightMode-surface light:border-lightMode-border light:shadow-sm"
+            whileHover={{ y: -5, transition: { duration: 0.3 } }}
+          >
             <h3 className="text-2xl font-poppins font-semibold gradient-text mb-6">
               {t.skills.softSkills}
             </h3>
-            <ul className="space-y-3 text-text-secondary">
+            <ul className="space-y-3 dark:text-text-secondary light:text-lightMode-text-secondary">
               <li className="flex items-start">
                 <span className="text-accent-blue mr-3 mt-1">▹</span>
                 <span>{t.skills.soft1}</span>
@@ -174,7 +189,7 @@ const Skills = () => {
                 <span>{t.skills.soft5}</span>
               </li>
             </ul>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
