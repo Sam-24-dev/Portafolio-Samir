@@ -97,17 +97,17 @@ const Projects = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                  {project.demoUrl && (
-                    <a
-                      href={project.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-accent-cyan text-primary-bg font-medium rounded-lg hover:bg-accent-light transition-colors text-sm"
-                    >
-                      <ExternalLink size={16} />
-                      {t.projects.liveDemo}
-                    </a>
-                  )}
+                   {project.demoUrl && (
+    <a
+      href={project.demoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 px-4 py-2 border border-accent-cyan text-accent-cyan font-medium rounded-lg hover:bg-accent-cyan hover:text-primary-bg transition-colors text-sm"
+    >
+      <ExternalLink size={16} />
+      {project.id === 1 ? "Video Demo" : t.projects.liveDemo}
+    </a>
+  )}
                   {project.dashboardUrl && (
                     <a
                       href={project.dashboardUrl}

@@ -19,7 +19,7 @@ export const projects = [
       "5 condiciones extremas rastreadas",
       "Cobertura global con mapas interactivos"
     ],
-    demoUrl: "https://javaguti25.pythonanywhere.com/",
+    demoUrl: "https://www.youtube.com/watch?v=519T9N7JkZU&feature=youtu.be",
     certificateUrl: "/certificates/nasa-space-apps-2025.pdf",
     repoUrl: "https://github.com/JairPalaguachi/Probability"
   },
