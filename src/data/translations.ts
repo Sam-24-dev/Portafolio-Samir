@@ -4,7 +4,7 @@ export const translations = {
       home: "Home",
       about: "About",
       projects: "Projects",
-      skills: "Skills",
+      skills: "Key Strengths",
       contact: "Contact"
     },
     hero: {
@@ -26,6 +26,8 @@ export const translations = {
       paragraph3: "Seeking Junior Data Analyst position to apply analytical skills in a collaborative environment where I can contribute to data-driven decision making and continue growing as a professional.",
       education: "Education",
       degree: "Computer Engineering",
+      knowMeBetter: "Know Me Better",
+      skillsAndTools: "My Skills and Tools",
       university: "Escuela Superior Politécnica del Litoral (ESPOL)",
       semester: "7th Semester | 2023 - 2028",
       certifications: "Certifications",
@@ -68,7 +70,9 @@ export const translations = {
       soft2: "Effective communication of technical insights",
       soft3: "Team collaboration and project coordination",
       soft4: "Attention to detail and quality assurance",
-      soft5: "Continuous learning and adaptability"
+      soft5: "Continuous learning and adaptability",
+      strengthsTitle: "Key Strengths",
+      strengthsSubtitle: "A look at my most outstanding technical and soft skills."
     },
     contact: {
       title: "Get In Touch",
@@ -88,14 +92,14 @@ export const translations = {
       emailPlaceholder: "your.email@example.com",
       messagePlaceholder: "Your message..."
     },
-    footer: "Built with React, TypeScript & Tailwind CSS"
+    footer: "Made with ♡ and lots of ☕️"
   },
   es: {
     nav: {
       home: "Inicio",
       about: "Acerca de",
       projects: "Proyectos",
-      skills: "Habilidades",
+      skills: "Fortalezas Clave",
       contact: "Contacto"
     },
     hero: {
@@ -117,6 +121,8 @@ export const translations = {
       paragraph3: "Buscando posición de Analista de Datos Junior para aplicar habilidades analíticas en un entorno colaborativo donde pueda contribuir a la toma de decisiones basada en datos y continuar creciendo como profesional.",
       education: "Educación",
       degree: "Ingeniería en Computación",
+      knowMeBetter: "Conóceme Mejor",
+      skillsAndTools: "Habilidades y Herramientas",
       university: "Escuela Superior Politécnica del Litoral (ESPOL)",
       semester: "7mo Semestre | 2023 - 2028",
       certifications: "Certificaciones",
@@ -159,7 +165,9 @@ export const translations = {
       soft2: "Comunicación efectiva de insights técnicos",
       soft3: "Colaboración en equipo y coordinación de proyectos",
       soft4: "Atención al detalle y aseguramiento de calidad",
-      soft5: "Aprendizaje continuo y adaptabilidad"
+      soft5: "Aprendizaje continuo y adaptabilidad",
+      strengthsTitle: "Fortalezas Clave",
+      strengthsSubtitle: "Un vistazo a mis habilidades técnicas y blandas más destacadas."
     },
     contact: {
       title: "Ponte en Contacto",
@@ -179,6 +187,6 @@ export const translations = {
       emailPlaceholder: "tu.correo@ejemplo.com",
       messagePlaceholder: "Tu mensaje..."
     },
-    footer: "Construido con React, TypeScript y Tailwind CSS"
+    footer: "Hecho con ♡ y mucho ☕️"
   }
 };

@@ -15,7 +15,8 @@ const Navbar = () => {
     { name: t.nav.home, href: '#home' },
     { name: t.nav.about, href: '#about' },
     { name: t.nav.projects, href: '#projects' },
-    { name: t.nav.skills, href: '#skills' },
+    // --- CAMBIO #1: El destino del enlace ---
+    { name: t.nav.skills, href: '#strengths' }, 
     { name: t.nav.contact, href: '#contact' },
   ];
 
@@ -23,7 +24,8 @@ const Navbar = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
-      const sections = ['home', 'about', 'projects', 'skills', 'contact'];
+      // --- CAMBIO #2: La lista para el detector de scroll ---
+      const sections = ['home', 'about', 'projects', 'strengths', 'contact'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -57,7 +59,7 @@ const Navbar = () => {
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${
       scrolled
-        ? 'dark:bg-primary-bg/95 light:bg-lightMode-surface/95 backdrop-blur-md shadow-lg'
+        ? 'dark:bg-primary-bg/80 light:bg-lightMode-surface/80 backdrop-blur-md shadow-lg border-b dark:border-primary-lighter light:border-lightMode-border'
         : 'bg-transparent'
     }`}>
       <div className="container-custom">
@@ -81,7 +83,7 @@ const Navbar = () => {
                 className={`text-sm font-medium transition-colors relative group ${
                   activeSection === link.href.slice(1)
                     ? 'text-accent-cyan'
-                    : 'dark:text-text-secondary light:text-lightMode-text-secondary hover:text-accent-cyan'
+                    : 'dark:text-text-secondary light:text-lightMode-text-secondary dark:hover:text-accent-cyan light:hover:text-accent-blue'
                 }`}
               >
                 {link.name}
@@ -114,7 +116,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden dark:bg-primary-light light:bg-lightMode-surfaceAlt"
+            className="md:hidden dark:bg-primary-light/95 light:bg-lightMode-surfaceAlt/95 backdrop-blur-sm"
           >
             <div className="container-custom py-4">
               {navLinks.map((link) => (

@@ -36,6 +36,13 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
       },
+      backgroundImage: {
+        'gradient-project-1': 'linear-gradient(to right, #64ffda, #00d4ff)',
+        'gradient-project-2': 'linear-gradient(to right, #43e97b, #38f9d7)',
+        'gradient-project-3': 'linear-gradient(to right, #f857a6, #ff5858)',
+        'gradient-project-4': 'linear-gradient(to right, #9795f0, #fbc8d4)',
+        'gradient-project-5': 'linear-gradient(to right, #84fab0, #8fd3f4)',
+      },
       animation: {
         'gradient': 'gradient 3s ease infinite',
         'float': 'float 3s ease-in-out infinite',

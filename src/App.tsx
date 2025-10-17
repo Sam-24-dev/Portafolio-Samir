@@ -2,8 +2,10 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Projects from './components/Projects';
-import Skills from './components/Skills';
+import Strengths from './components/Strengths';
 import Contact from './components/Contact';
+import CustomCursor from './components/CustomCursor';
+import ScrollToTopButton from './components/ScrollToTopButton';
 import { useLanguage } from './context/LanguageContext';
 
 function App() {
@@ -11,11 +13,13 @@ function App() {
 
   return (
     <div className="min-h-screen">
+      <CustomCursor />
+      <ScrollToTopButton />
       <Navbar />
       <Hero />
       <About />
       <Projects />
-      <Skills />
+      <Strengths />
       <Contact />
 
       <footer className="dark:bg-primary-light light:bg-lightMode-surfaceAlt py-8 border-t dark:border-primary-lighter light:border-lightMode-border">

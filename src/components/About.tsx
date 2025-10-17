@@ -1,24 +1,10 @@
 import { motion } from 'framer-motion';
-import { GraduationCap, Award, Target } from 'lucide-react';
+import { User, BrainCircuit, GraduationCap, Award } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import SkillsGrid from './SkillsGrid';
 
 const About = () => {
   const { t } = useLanguage();
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  };
-
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
-  };
 
   const certifications = [
     t.about.cert1,
@@ -29,8 +15,9 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="section-padding dark:bg-primary-bg light:bg-lightMode-bg transition-colors">
+    <section id="about" className="section-padding dark:bg-primary-light light:bg-lightMode-surfaceAlt">
       <div className="container-custom">
+        {/* Título de la sección */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
@@ -38,7 +25,7 @@ const About = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl md:text-6xl font-poppins font-bold gradient-text mb-6">
+          <h2 className="text-5xl md:text-6xl font-poppins font-bold gradient-text mb-4">
             {t.about.title}
           </h2>
           <p className="dark:text-text-secondary light:text-lightMode-text-secondary text-lg max-w-3xl mx-auto leading-relaxed">
@@ -46,31 +33,55 @@ const About = () => {
           </p>
         </motion.div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-10 mb-16"
-        >
-          {/* Párrafos personales (izquierda) */}
-          <motion.div variants={item} className="space-y-6">
-            <p className="dark:text-text-primary light:text-lightMode-text-primary leading-relaxed text-base">
-              {t.about.paragraph1}
-            </p>
-            <p className="dark:text-text-primary light:text-lightMode-text-primary leading-relaxed text-base">
-              {t.about.paragraph2}
-            </p>
-            <p className="dark:text-text-primary light:text-lightMode-text-primary leading-relaxed text-base">
-              {t.about.paragraph3}
-            </p>
+        {/* Contenedor principal: Bio y Skills */}
+        <div className="grid lg:grid-cols-5 gap-12 items-start mb-16">
+          <motion.div 
+            className="lg:col-span-3"
+            initial={{ x: -30, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <User size={28} className="text-accent-cyan" />
+              <h3 className="text-2xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
+                {t.about.knowMeBetter}
+              </h3>
+            </div>
+            <div className="space-y-4 dark:text-text-secondary light:text-lightMode-text-secondary leading-relaxed">
+              <p>{t.about.paragraph1}</p>
+              <p>{t.about.paragraph2}</p>
+              <p>{t.about.paragraph3}</p>
+            </div>
           </motion.div>
 
-          {/* Tarjetas: Educación / Certificaciones / Ubicación (derecha) */}
-          <motion.div variants={item} className="space-y-6">
+          <motion.div 
+            className="lg:col-span-2"
+            initial={{ x: 30, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <BrainCircuit size={28} className="text-accent-cyan" />
+              <h3 className="text-2xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
+                {t.about.skillsAndTools}
+              </h3>
+            </div>
+            <SkillsGrid />
+          </motion.div>
+        </div>
+
+        {/* SECCIÓN DE EDUCACIÓN Y CERTIFICACIONES */}
+        <div className="grid md:grid-cols-1 gap-8">
             {/* Educación */}
             <motion.div
-              className="p-6 rounded-xl border dark:bg-primary-light dark:border-primary-lighter light:bg-lightMode-surface light:border-lightMode-border light:shadow-sm"
+              className="p-6 rounded-xl border dark:bg-primary-bg light:bg-lightMode-surface dark:border-primary-lighter light:border-lightMode-border"
+              initial={{ y: 30, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              // --- AQUÍ ESTÁ EL CAMBIO ---
               whileHover={{ y: -5, transition: { duration: 0.3 } }}
             >
               <div className="flex items-center gap-3 mb-4">
@@ -91,66 +102,40 @@ const About = () => {
                 {t.about.semester}
               </p>
             </motion.div>
-
-            {/* Ubicación usando Target (tu ícono original) */}
+            
+            {/* Certificaciones */}
             <motion.div
-              className="p-6 rounded-xl border dark:bg-primary-light dark:border-primary-lighter light:bg-lightMode-surface light:border-lightMode-border light:shadow-sm"
+              className="p-6 rounded-xl border dark:bg-primary-bg light:bg-lightMode-surface dark:border-primary-lighter light:border-lightMode-border"
+              initial={{ y: 30, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              // --- Y AQUÍ TAMBIÉN ---
               whileHover={{ y: -5, transition: { duration: 0.3 } }}
             >
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-accent-cyan/10 rounded-lg">
-                  <Target size={24} className="text-accent-cyan" />
+                  <Award size={28} className="text-accent-cyan" />
                 </div>
                 <h3 className="text-xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
-                  {t.about.location}
+                  {t.about.certifications}
                 </h3>
               </div>
-              <p className="font-semibold dark:text-text-primary light:text-lightMode-text-primary mb-1">
-                {t.about.locationValue}
-              </p>
-              <p className="text-accent-cyan text-sm font-medium">
-                {t.about.locationNote}
-              </p>
+              <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                {certifications.map((cert, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <span className="text-accent-cyan mt-1">▹</span>
+                    <span className="dark:text-text-secondary light:text-lightMode-text-secondary text-sm">
+                      {cert}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </motion.div>
-          </motion.div>
-        </motion.div>
-
-        {/* Certificaciones (tarjeta grande abajo) */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="p-8 rounded-xl border dark:bg-primary-light dark:border-primary-lighter light:bg-lightMode-surface light:border-lightMode-border light:shadow-sm"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-accent-cyan/10 rounded-lg">
-              <Award size={28} className="text-accent-cyan" />
-            </div>
-            <h3 className="text-2xl font-poppins font-semibold gradient-text">
-              {t.about.certifications}
-            </h3>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {certifications.map((cert, idx) => (
-              <motion.div
-                key={idx}
-                className="flex items-start gap-3 p-4 rounded-lg dark:bg-primary-bg/50 light:bg-lightMode-surfaceAlt border dark:border-primary-lighter/50 light:border-lightMode-border"
-                whileHover={{ x: 5, transition: { duration: 0.2 } }}
-              >
-                <span className="text-accent-cyan mt-1">▹</span>
-                <span className="dark:text-text-primary light:text-lightMode-text-primary">
-                  {cert}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 };
 
 export default About;
-
