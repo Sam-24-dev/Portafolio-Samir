@@ -8,6 +8,7 @@ export const translations = {
       contact: "Contact"
     },
     hero: {
+      greeting: "Hey, I'm Samir",
       titles: [
         "Data Analysis Specialist",
         "Computer Engineering Student",
@@ -103,6 +104,7 @@ export const translations = {
       contact: "Contacto"
     },
     hero: {
+      greeting: "Hola, soy Samir",
       titles: [
         "Especialista en Análisis de Datos",
         "Estudiante de Ingeniería en Computación",

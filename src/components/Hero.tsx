@@ -77,7 +77,7 @@ const Hero = () => {
             className="flex-1 text-center lg:text-left max-w-2xl"
           >
             <h1 className="text-5xl md:text-7xl font-poppins font-bold dark:text-text-highlight light:text-lightMode-text-primary leading-tight">
-              Hey, I'm Samir
+              {t.hero.greeting}
             </h1>
 
             <div className="h-20 md:h-24 flex items-center justify-center lg:justify-start">
