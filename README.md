@@ -28,7 +28,7 @@ This project is open source and available for personal use.
 
 Samir Leonardo Caizapasto Hernández
 - Email: samir.leonardo.caizapasto04@gmail.com
-- LinkedIn: [samircaizapasto](https://www.linkedin.com/in/samircaizapasto/)
+- LinkedIn: [samircaizapasto](https://www.linkedin.com/in/samir-caizapasto/)
 - GitHub: [Sam-24-dev](https://github.com/Sam-24-dev)
 
 ---
