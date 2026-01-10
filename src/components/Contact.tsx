@@ -40,8 +40,8 @@ const Contact = () => {
     {
       icon: <Linkedin size={20} />,
       label: t.contact.linkedin,
-      value: 'linkedin.com/in/samircaizapasto',
-      href: 'https://www.linkedin.com/in/samircaizapasto/'
+      value: 'linkedin.com/in/samir-caizapasto',
+      href: 'https://www.linkedin.com/in/samir-caizapasto/'
     },
     {
       icon: <Github size={20} />,
