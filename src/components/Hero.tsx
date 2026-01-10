@@ -60,7 +60,7 @@ const Hero = () => {
 
   const contactLinks = [
     { href: "https://github.com/Sam-24-dev", icon: "/images/socials/github.svg", label: "GitHub" },
-    { href: "https://www.linkedin.com/in/samircaizapasto/", icon: "/images/socials/linkedin.svg", label: "LinkedIn" },
+    { href: "https://www.linkedin.com/in/samir-caizapasto/", icon: "/images/socials/linkedin.svg", label: "LinkedIn" },
     { href: "mailto:samir.leonardo.caizapasto04@gmail.com", icon: "/images/socials/mail.svg", label: "Email" },
   ];
 
