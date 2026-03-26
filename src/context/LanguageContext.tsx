@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState, ReactNode } from 'react';
 import { translations } from '../data/translations.ts';
 
 type Language = 'en' | 'es';
+const LANGUAGE_STORAGE_KEY = 'portfolio-language';
 
 interface LanguageContextType {
   language: Language;
@@ -11,10 +12,30 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('en');
+const getInitialLanguage = (): Language => {
+  if (typeof window === 'undefined') {
+    return 'en';
+  }
 
-  const t = translations[language];
+  const savedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  if (savedLanguage === 'en' || savedLanguage === 'es') {
+    return savedLanguage;
+  }
+
+  return window.navigator.language.toLowerCase().startsWith('es') ? 'es' : 'en';
+};
+
+export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    }
+  };
+
+  const t = useMemo(() => translations[language], [language]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>

@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import ProofStrip from './components/ProofStrip';
 import About from './components/About';
 import Projects from './components/Projects';
 import Strengths from './components/Strengths';
@@ -10,6 +11,7 @@ import { useLanguage } from './context/LanguageContext';
 
 function App() {
   const { t } = useLanguage();
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="min-h-screen">
@@ -17,15 +19,16 @@ function App() {
       <ScrollToTopButton />
       <Navbar />
       <Hero />
+      <ProofStrip />
       <About />
       <Projects />
       <Strengths />
       <Contact />
 
-      <footer className="dark:bg-primary-light light:bg-lightMode-surfaceAlt py-8 border-t dark:border-primary-lighter light:border-lightMode-border">
+      <footer className="border-t py-8 dark:border-primary-lighter dark:bg-primary-light light:border-lightMode-border light:bg-lightMode-surfaceAlt">
         <div className="container-custom text-center">
           <p className="dark:text-text-secondary light:text-lightMode-text-secondary">
-            © 2025 Samir Caizapasto. {t.footer}
+            &copy; {currentYear} Samir Caizapasto. {t.footer}
           </p>
         </div>
       </footer>
