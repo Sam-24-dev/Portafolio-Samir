@@ -1,0 +1,40 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#091A30" />
+      <stop offset="1" stop-color="#102D52" />
+    </linearGradient>
+    <linearGradient id="accent" x1="96" y1="84" x2="1110" y2="570" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#64FFDA" />
+      <stop offset="1" stop-color="#00D4FF" />
+    </linearGradient>
+    <clipPath id="portraitClip">
+      <circle cx="980" cy="315" r="140" />
+    </clipPath>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect x="42" y="42" width="1116" height="546" rx="28" stroke="url(#accent)" stroke-opacity="0.4" stroke-width="2" />
+
+  <circle cx="980" cy="315" r="154" stroke="url(#accent)" stroke-width="4" />
+  <g clip-path="url(#portraitClip)">
+    <image href="/images/perfil.jpg" x="840" y="175" width="280" height="280" preserveAspectRatio="xMidYMid slice" />
+  </g>
+
+  <text x="96" y="170" fill="#64FFDA" font-family="Poppins, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">
+    DATA ANALYST PORTFOLIO
+  </text>
+  <text x="96" y="250" fill="#E6F1FF" font-family="Poppins, Arial, sans-serif" font-size="66" font-weight="700">
+    Samir Caizapasto
+  </text>
+  <text x="96" y="308" fill="#B8D1EA" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="500">
+    Turning data into measurable business decisions
+  </text>
+
+  <text x="96" y="398" fill="#E6F1FF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600">
+    SQL    Python    Power BI    Statistical Modeling
+  </text>
+  <text x="96" y="456" fill="#9BC1E4" font-family="Inter, Arial, sans-serif" font-size="24">
+    Bilingual delivery | Recruiter-friendly communication | Analyst-first positioning
+  </text>
+</svg>

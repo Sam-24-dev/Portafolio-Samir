@@ -101,3 +101,15 @@
     transform: translate(-50%, -50%);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-bounce,
+  .animate-pulse,
+  .animate-gradient {
+    animation: none !important;
+  }
+}
