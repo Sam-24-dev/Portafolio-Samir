@@ -28,7 +28,7 @@ const Projects = () => {
     language === 'es'
       ? {
           subtitle:
-            'Una seleccion de proyectos donde convierto datos en dashboards claros, hallazgos utiles y decisiones mejor informadas.',
+            'Una selección de proyectos donde convierto datos en dashboards claros, hallazgos útiles y decisiones mejor informadas.',
           featuredSubtitle: 'Los proyectos que mejor representan mi trabajo actual como Data Analyst.',
         }
       : {

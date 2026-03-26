@@ -39,7 +39,32 @@ const parseBody = (body: RequestLike['body']): ContactPayload => {
   return body;
 };
 
-const normalize = (value?: string) => value?.trim() ?? '';
+const normalize = (value: unknown) => (typeof value === 'string' ? value.trim() : '');
+
+const stripControlChars = (value: string, preserveNewline: boolean) =>
+  Array.from(value)
+    .filter((char) => {
+      const code = char.charCodeAt(0);
+
+      if (code === 127) {
+        return false;
+      }
+
+      if (code < 32) {
+        return preserveNewline && code === 10;
+      }
+
+      return true;
+    })
+    .join('');
+
+const sanitizeHeaderValue = (value: string) =>
+  stripControlChars(value.replaceAll('\r', ' ').replaceAll('\n', ' '), false)
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const sanitizeTextValue = (value: string) =>
+  stripControlChars(value.replace(/\r\n?/g, '\n'), true).trim();
 
 const escapeHtml = (value: string) =>
   value
@@ -66,13 +91,17 @@ const isValidPayload = (payload: ContactPayload) => {
 };
 
 const buildEmailContent = (payload: Required<Pick<ContactPayload, 'name' | 'email' | 'message'>>) => {
-  const safeName = escapeHtml(payload.name);
-  const safeEmail = escapeHtml(payload.email);
-  const safeMessage = escapeHtml(payload.message).replaceAll('\n', '<br />');
+  const subjectName = sanitizeHeaderValue(payload.name);
+  const senderName = sanitizeHeaderValue(payload.name);
+  const senderEmail = sanitizeHeaderValue(payload.email);
+  const plainMessage = sanitizeTextValue(payload.message);
+  const safeName = escapeHtml(senderName);
+  const safeEmail = escapeHtml(senderEmail);
+  const safeMessage = escapeHtml(plainMessage).replaceAll('\n', '<br />');
 
   return {
-    subject: `Portfolio contact from ${payload.name}`,
-    text: `New portfolio message from ${payload.name} <${payload.email}>.\n\n${payload.message}`,
+    subject: `Portfolio contact from ${subjectName}`,
+    text: `New portfolio message from ${senderName} <${senderEmail}>.\n\n${plainMessage}`,
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a;">
         <h2 style="margin-bottom: 12px;">New portfolio contact</h2>
