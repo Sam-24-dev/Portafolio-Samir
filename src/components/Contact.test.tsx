@@ -25,7 +25,8 @@ describe('Contact form', () => {
   it('shows an error when the contact API fails', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
-      json: vi.fn().mockResolvedValue({ message: 'Email service unavailable.' }),
+      status: 500,
+      json: vi.fn().mockResolvedValue({ message: 'Contact service is not configured.' }),
     });
     vi.stubGlobal('fetch', fetchMock);
 
@@ -36,7 +37,9 @@ describe('Contact form', () => {
     fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Hello there' } });
     fireEvent.click(screen.getByRole('button', { name: 'Send Message' }));
 
-    expect(await screen.findByText('Something went wrong. Please try again or email me directly.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Contact form is not configured yet. Add the contact service environment variables to enable it.')
+    ).toBeInTheDocument();
   });
 
   it('submits successfully through the contact API and resets the form', async () => {

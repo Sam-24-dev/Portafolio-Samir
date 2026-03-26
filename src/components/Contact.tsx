@@ -4,6 +4,7 @@ import { Mail, Linkedin, Github, MapPin, Send } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 type SubmissionState = 'idle' | 'sending' | 'success' | 'error';
+type ContactApiResponse = { message?: string };
 
 const Contact = () => {
   const { t } = useLanguage();
@@ -19,16 +20,26 @@ const Contact = () => {
   const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
   const [statusMessage, setStatusMessage] = useState('');
 
+  const readApiMessage = async (response: Response): Promise<string | null> => {
+    try {
+      const payload = (await response.json()) as ContactApiResponse;
+      return typeof payload.message === 'string' ? payload.message : null;
+    } catch {
+      return null;
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (submissionState !== 'idle') {
       setSubmissionState('idle');
       setStatusMessage('');
     }
 
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +58,11 @@ const Contact = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Contact submission failed');
+        const apiMessage = await readApiMessage(response);
+        const isConfigIssue = response.status === 500 || response.status === 502;
+        setSubmissionState('error');
+        setStatusMessage(isConfigIssue ? t.contact.configError : (apiMessage ?? t.contact.errorMessage));
+        return;
       }
 
       setFormData({

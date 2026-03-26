@@ -32,7 +32,7 @@ export const projects: Project[] = [
     description:
       'Reproducible customer analytics workflow that transforms raw marketing data into a clean analytical dataset and a polished Power BI dashboard for executive decision making.',
     descriptionEs:
-      'Flujo reproducible de customer analytics que transforma datos crudos de marketing en un dataset analitico limpio y un dashboard de Power BI orientado a decisiones ejecutivas.',
+      'Flujo reproducible de customer analytics que transforma datos crudos de marketing en un dataset analítico limpio y un dashboard de Power BI orientado a decisiones ejecutivas.',
     highlights: [
       '2,021 customers analyzed',
       '25.0% high-value customer segment',
@@ -42,8 +42,8 @@ export const projects: Project[] = [
     highlightsEs: [
       '2,021 clientes analizados',
       '25.0% del segmento de alto valor',
-      '16.1% de participacion en gasto premium',
-      '4 paginas ejecutivas mas layouts moviles',
+      '16.1% de participación en gasto premium',
+      '4 páginas ejecutivas más layouts móviles',
     ],
     dashboardUrl:
       'https://app.powerbi.com/view?r=eyJrIjoiNzE3YmU3ZDktN2M3Yi00ODY5LTk2OTktOGI0NmE3YmU1ZDdiIiwidCI6ImI3YWY4Y2FmLTgzZDgtNDY0NC04NWFlLTMxN2M1NDUyMjNjMSIsImMiOjR9&pageName=b29252d974b9cb52bd7f',
@@ -53,13 +53,13 @@ export const projects: Project[] = [
     id: 2,
     tier: 'featured',
     title: 'eSports Analytics Dashboard LATAM',
-    titleEs: 'Dashboard de Analitica eSports LATAM',
+    titleEs: 'Dashboard de Analítica eSports LATAM',
     image: '/images/projects/esports-dashboard.png',
     tech: ['MySQL', 'Python', 'Chart.js', 'Machine Learning', 'GitHub Actions'],
     description:
       'Analytical product that unifies relational data, ETL, validation, and dashboard delivery to explore team performance, competitions, and player projections across the LATAM eSports ecosystem.',
     descriptionEs:
-      'Producto analitico que unifica datos relacionales, ETL, validacion y entrega de dashboard para explorar rendimiento de equipos, competiciones y proyecciones de jugadores en el ecosistema eSports LATAM.',
+      'Producto analítico que unifica datos relacionales, ETL, validación y entrega de dashboard para explorar rendimiento de equipos, competiciones y proyecciones de jugadores en el ecosistema eSports LATAM.',
     highlights: [
       '40% faster query performance',
       '15 teams across 8 countries',
@@ -67,8 +67,8 @@ export const projects: Project[] = [
       '126 automated tests in the suite',
     ],
     highlightsEs: [
-      '40% mas rapido en consultas',
-      '15 equipos en 8 paises',
+      '40% más rápido en consultas',
+      '15 equipos en 8 países',
       '33 proyecciones de jugadores para 2026',
       '126 pruebas automatizadas en la suite',
     ],
@@ -87,16 +87,16 @@ export const projects: Project[] = [
     description:
       'Executive sales dashboard focused on performance gaps, top sellers, and geographic insights to support faster commercial decisions.',
     descriptionEs:
-      'Dashboard ejecutivo de ventas enfocado en brechas de desempeno, mejores vendedores e insights geograficos para apoyar decisiones comerciales mas rapidas.',
+      'Dashboard ejecutivo de ventas enfocado en brechas de desempeño, mejores vendedores e insights geográficos para apoyar decisiones comerciales más rápidas.',
     highlights: [
       '$16.66K performance gap identified',
       '23 salespeople analyzed',
       'Top category and market opportunities surfaced',
     ],
     highlightsEs: [
-      '$16.66K de brecha de desempeno identificada',
+      '$16.66K de brecha de desempeño identificada',
       '23 vendedores analizados',
-      'Oportunidades top por categoria y mercado detectadas',
+      'Oportunidades top por categoría y mercado detectadas',
     ],
     dashboardUrl:
       'https://app.powerbi.com/view?r=eyJrIjoiOTk5YTE0MjItZTNiOC00ZmI0LWI1NDUtZDY2ZThjZTYxYmQ0IiwidCI6ImI3YWY4Y2FmLTgzZDgtNDY0NC04NWFlLTMxN2M1NDUyMjNjMSIsImMiOjR9',
@@ -105,13 +105,13 @@ export const projects: Project[] = [
     id: 4,
     tier: 'supporting',
     title: 'Rice Crop Analytics Platform',
-    titleEs: 'Plataforma Analitica para Cultivo de Arroz',
+    titleEs: 'Plataforma Analítica para Cultivo de Arroz',
     image: '/images/projects/rice-system.png',
     tech: ['MySQL', 'Python', 'ETL', 'Chart.js', 'Bootstrap'],
     description:
       'Agricultural analytics project with a Python ETL pipeline, operational KPIs, and a strategic ROI recovery plan backed by dashboard delivery.',
     descriptionEs:
-      'Proyecto de analitica agricola con pipeline ETL en Python, KPIs operativos y un plan estrategico de recuperacion de ROI respaldado por dashboards.',
+      'Proyecto de analítica agrícola con pipeline ETL en Python, KPIs operativos y un plan estratégico de recuperación de ROI respaldado por dashboards.',
     highlights: [
       'ROI roadmap from -5.58% to +15%',
       '+20.6 point improvement projection',
@@ -119,8 +119,8 @@ export const projects: Project[] = [
     ],
     highlightsEs: [
       'Hoja de ruta de ROI desde -5.58% hasta +15%',
-      'Proyeccion de mejora de +20.6 puntos',
-      '5 paginas de dashboard respaldadas por ETL',
+      'Proyección de mejora de +20.6 puntos',
+      '5 páginas de dashboard respaldadas por ETL',
     ],
     demoUrl: 'https://sam-24-dev.github.io/Analisis-Cultivo-Arroz/',
     demoLabel: 'Live Platform',
@@ -131,13 +131,13 @@ export const projects: Project[] = [
     id: 5,
     tier: 'supporting',
     title: 'Statistical Analysis: Ping Pong Precision Model',
-    titleEs: 'Analisis Estadistico: Modelo de Precision en Ping Pong',
+    titleEs: 'Análisis Estadístico: Modelo de Precisión en Ping Pong',
     image: '/images/projects/pingpong-analysis.png',
     tech: ['R', 'Statistical Modeling', 'RMarkdown', 'Hypothesis Testing'],
     description:
       'Controlled experimental study that evaluates precision under different conditions and validates model fit through statistical testing.',
     descriptionEs:
-      'Estudio experimental controlado que evalua la precision bajo distintas condiciones y valida el ajuste del modelo mediante pruebas estadisticas.',
+      'Estudio experimental controlado que evalúa la precisión bajo distintas condiciones y valida el ajuste del modelo mediante pruebas estadísticas.',
     highlights: [
       '309 observations collected',
       'Validated model fit with p = 0.660',
@@ -146,7 +146,7 @@ export const projects: Project[] = [
     highlightsEs: [
       '309 observaciones recolectadas',
       'Ajuste del modelo validado con p = 0.660',
-      'Insight de correlacion de r = 0.65',
+      'Insight de correlación de r = 0.65',
     ],
     demoUrl: 'https://sam-24-dev.github.io/Analisis-Ping-Pong/',
     demoLabel: 'Live Platform',
@@ -163,7 +163,7 @@ export const projects: Project[] = [
     description:
       'Hackathon MVP that analyzes historical weather signals to estimate extreme conditions and support outdoor planning with interactive maps.',
     descriptionEs:
-      'MVP de hackathon que analiza senales climaticas historicas para estimar condiciones extremas y apoyar la planificacion de actividades con mapas interactivos.',
+      'MVP de hackathon que analiza señales climáticas históricas para estimar condiciones extremas y apoyar la planificación de actividades con mapas interactivos.',
     highlights: [
       '48-hour hackathon build',
       '10 years of historical weather analysis',
@@ -172,7 +172,7 @@ export const projects: Project[] = [
     ],
     highlightsEs: [
       'Proyecto desarrollado en 48 horas',
-      '10 anos de analisis climaticos historicos',
+      '10 años de análisis climáticos históricos',
       '5 condiciones extremas rastreadas',
       'Experiencia global con mapas interactivos',
     ],
