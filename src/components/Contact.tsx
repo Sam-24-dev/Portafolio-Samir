@@ -59,7 +59,8 @@ const Contact = () => {
 
       if (!response.ok) {
         const apiMessage = await readApiMessage(response);
-        const isConfigIssue = response.status === 500 || response.status === 502;
+        const isConfigIssue =
+          response.status === 500 || (apiMessage?.toLowerCase().includes('not configured') ?? false);
         setSubmissionState('error');
         setStatusMessage(isConfigIssue ? t.contact.configError : (apiMessage ?? t.contact.errorMessage));
         return;

@@ -8,13 +8,10 @@ export default tseslint.config(
   { ignores: ['dist', 'Proyectos-refactoring/**'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['src/**/*.{ts,tsx}', 'api/**/*.ts', '*.ts'],
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-      },
+      globals: globals.browser,
     },
     plugins: {
       'react-hooks': reactHooks,
@@ -26,6 +23,14 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['api/**/*.ts', '*.ts'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
     },
   }
 );

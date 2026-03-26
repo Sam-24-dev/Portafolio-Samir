@@ -95,9 +95,9 @@ const buildEmailContent = (payload: Required<Pick<ContactPayload, 'name' | 'emai
   const senderName = sanitizeHeaderValue(payload.name);
   const senderEmail = sanitizeHeaderValue(payload.email);
   const plainMessage = sanitizeTextValue(payload.message);
-  const safeName = escapeHtml(payload.name);
-  const safeEmail = escapeHtml(payload.email);
-  const safeMessage = escapeHtml(payload.message).replaceAll('\n', '<br />');
+  const safeName = escapeHtml(senderName);
+  const safeEmail = escapeHtml(senderEmail);
+  const safeMessage = escapeHtml(plainMessage).replaceAll('\n', '<br />');
 
   return {
     subject: `Portfolio contact from ${subjectName}`,
