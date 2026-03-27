@@ -1,10 +1,11 @@
 import { motion, useReducedMotion, Variants } from 'framer-motion';
 import { Award, ExternalLink, FileText, Github } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import CaseStudyModal from './CaseStudyModal';
 import { getCaseStudyByProjectId } from '../data/caseStudies';
 import { projects } from '../data/projects';
 import { useLanguage } from '../context/LanguageContext';
+import { trackPortfolioEvent } from '../lib/analytics';
 
 const gradients = [
   'from-cyan-400/70 to-blue-500/70',
@@ -29,6 +30,7 @@ const Projects = () => {
   const shouldReduceMotion = useReducedMotion();
   const [activeCaseStudyProjectId, setActiveCaseStudyProjectId] = useState<number | null>(null);
   const [isCaseStudyModalOpen, setIsCaseStudyModalOpen] = useState(false);
+  const lastCaseStudyTriggerRef = useRef<HTMLElement | null>(null);
 
   const featuredProjects = projects.filter((project) => project.tier === 'featured');
   const supportingProjects = projects.filter((project) => project.tier === 'supporting');
@@ -61,7 +63,45 @@ const Projects = () => {
   const hoverLift = shouldReduceMotion ? undefined : { scale: 1.04, y: -2 };
   const tapPress = shouldReduceMotion ? undefined : { scale: 0.98 };
   const actionClass =
-    'flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors sm:w-auto';
+    'focus-ring flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors sm:w-auto';
+
+  const handleCaseStudyOpen = (projectId: number, triggerElement: HTMLElement | null) => {
+    lastCaseStudyTriggerRef.current = triggerElement;
+    trackPortfolioEvent('case_study_open', {
+      location: 'featured_card',
+      language,
+      projectId,
+    });
+    setActiveCaseStudyProjectId(projectId);
+    setIsCaseStudyModalOpen(true);
+  };
+
+  const handleProjectDashboardClick = (projectId: number, location: 'featured_card' | 'supporting_card') => {
+    trackPortfolioEvent('project_dashboard_click', {
+      location,
+      language,
+      projectId,
+      target: 'dashboard',
+    });
+  };
+
+  const handleProjectDemoClick = (projectId: number, location: 'featured_card' | 'supporting_card') => {
+    trackPortfolioEvent('project_demo_click', {
+      location,
+      language,
+      projectId,
+      target: 'live_demo',
+    });
+  };
+
+  const handleProjectRepoClick = (projectId: number, location: 'featured_card' | 'supporting_card') => {
+    trackPortfolioEvent('external_profile_click', {
+      location,
+      language,
+      projectId,
+      target: 'github_repo',
+    });
+  };
 
   return (
     <section id="projects" className="section-padding overflow-x-clip dark:bg-primary-bg light:bg-lightMode-bg">
@@ -119,11 +159,11 @@ const Projects = () => {
 
                   <div className="lg:col-span-5">
                     <div className="mb-3 flex flex-wrap items-center gap-3">
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent-cyan">
+                      <p className="text-sm font-semibold uppercase tracking-[0.2em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                         {t.projects.featuredEyebrow}
                       </p>
                       {projectHasCaseStudy && (
-                        <span className="rounded-full border border-accent-cyan/30 bg-accent-cyan/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                        <span className="rounded-full border border-accent-cyan/30 bg-accent-cyan/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                           {t.projects.caseStudyBadge}
                         </span>
                       )}
@@ -138,7 +178,7 @@ const Projects = () => {
                     </p>
 
                     <div className="mb-6">
-                      <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-accent-cyan">
+                      <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                         {t.projects.highlights}
                       </p>
                       <ul className="space-y-2">
@@ -147,7 +187,7 @@ const Projects = () => {
                             key={highlight}
                             className="flex items-start gap-3 text-sm dark:text-text-secondary light:text-lightMode-text-secondary"
                           >
-                            <span className="mt-1 text-accent-cyan">&gt;</span>
+                            <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&gt;</span>
                             <span>{highlight}</span>
                           </li>
                         ))}
@@ -158,7 +198,7 @@ const Projects = () => {
                       {project.tech.map((tech) => (
                         <span
                           key={tech}
-                          className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium text-accent-cyan"
+                          className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium dark:text-accent-cyan light:text-lightMode-accent-primary"
                         >
                           {tech}
                         </span>
@@ -169,11 +209,8 @@ const Projects = () => {
                       {projectHasCaseStudy && (
                         <motion.button
                           type="button"
-                          onClick={() => {
-                            setActiveCaseStudyProjectId(project.id);
-                            setIsCaseStudyModalOpen(true);
-                          }}
-                          className={`${actionClass} border border-accent-cyan/40 bg-accent-cyan/10 text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
+                          onClick={(event) => handleCaseStudyOpen(project.id, event.currentTarget)}
+                          className={`${actionClass} border border-accent-cyan/40 bg-accent-cyan/10 dark:text-accent-cyan dark:hover:bg-accent-cyan dark:hover:text-primary-bg light:text-lightMode-accent-primary light:hover:border-lightMode-accent-primary light:hover:bg-lightMode-accent-primary light:hover:text-white`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -186,6 +223,7 @@ const Projects = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`${actionClass} bg-accent-cyan text-primary-bg`}
+                          onClick={() => handleProjectDemoClick(project.id, 'featured_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -198,6 +236,7 @@ const Projects = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`${actionClass} bg-accent-blue text-white hover:bg-accent-blue/80`}
+                          onClick={() => handleProjectDashboardClick(project.id, 'featured_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -245,7 +284,8 @@ const Projects = () => {
                           href={project.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-accent-cyan light:hover:text-accent-cyan`}
+                          className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary light:hover:text-lightMode-accent-primary`}
+                          onClick={() => handleProjectRepoClick(project.id, 'featured_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -271,7 +311,7 @@ const Projects = () => {
           </div>
 
           <div className="mb-8 rounded-[24px] border border-dashed px-5 py-4 dark:border-primary-lighter dark:bg-primary-light/20 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:px-6">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
               {t.projects.supportingContextLabel}
             </p>
             <p className="max-w-3xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
@@ -301,7 +341,7 @@ const Projects = () => {
 
                 <div className="p-5 sm:p-6">
                   {getSupportingLabel(project) && (
-                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                       {getSupportingLabel(project)}
                     </p>
                   )}
@@ -312,7 +352,7 @@ const Projects = () => {
 
                   {getSupportingValue(project) && (
                     <div className="mb-4 rounded-2xl border px-4 py-3 dark:border-primary-lighter dark:bg-primary-bg/65 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent-cyan">
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                         {t.projects.supportingContributionTitle}
                       </p>
                       <p className="text-sm leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
@@ -331,7 +371,7 @@ const Projects = () => {
                         key={highlight}
                         className="flex items-start gap-3 text-sm dark:text-text-secondary light:text-lightMode-text-secondary"
                       >
-                        <span className="mt-1 text-accent-cyan">&gt;</span>
+                        <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&gt;</span>
                         <span>{highlight}</span>
                       </li>
                     ))}
@@ -341,7 +381,7 @@ const Projects = () => {
                     {project.tech.slice(0, 3).map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium text-accent-cyan"
+                        className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium dark:text-accent-cyan light:text-lightMode-accent-primary"
                       >
                         {tech}
                       </span>
@@ -355,6 +395,7 @@ const Projects = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`${actionClass} bg-accent-cyan text-primary-bg`}
+                        onClick={() => handleProjectDemoClick(project.id, 'supporting_card')}
                         whileHover={hoverLift}
                         whileTap={tapPress}
                       >
@@ -402,7 +443,8 @@ const Projects = () => {
                         href={project.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-accent-cyan light:hover:text-accent-cyan`}
+                        className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary light:hover:text-lightMode-accent-primary`}
+                        onClick={() => handleProjectRepoClick(project.id, 'supporting_card')}
                         whileHover={hoverLift}
                         whileTap={tapPress}
                       >
@@ -422,6 +464,7 @@ const Projects = () => {
         onClose={() => setIsCaseStudyModalOpen(false)}
         onExited={() => setActiveCaseStudyProjectId(null)}
         project={activeProject}
+        triggerElement={lastCaseStudyTriggerRef.current}
       />
     </section>
   );

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSelector from './LanguageSelector';
 import ThemeToggle from './ThemeToggle';
@@ -10,13 +10,13 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { t } = useLanguage();
+  const shouldReduceMotion = useReducedMotion();
 
   const navLinks = [
     { name: t.nav.home, href: '#home' },
     { name: t.nav.about, href: '#about' },
     { name: t.nav.projects, href: '#projects' },
-    // --- CAMBIO #1: El destino del enlace ---
-    { name: t.nav.skills, href: '#strengths' }, 
+    { name: t.nav.skills, href: '#strengths' },
     { name: t.nav.contact, href: '#contact' },
   ];
 
@@ -24,17 +24,21 @@ const Navbar = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
-      // --- CAMBIO #2: La lista para el detector de scroll ---
       const sections = ['home', 'about', 'projects', 'strengths', 'contact'];
-      const current = sections.find(section => {
+      const current = sections.find((section) => {
         const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
+
+        if (!element) {
+          return false;
         }
-        return false;
+
+        const rect = element.getBoundingClientRect();
+        return rect.top <= 100 && rect.bottom >= 100;
       });
-      if (current) setActiveSection(current);
+
+      if (current) {
+        setActiveSection(current);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -43,6 +47,7 @@ const Navbar = () => {
 
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
+
     if (element) {
       const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
@@ -50,59 +55,86 @@ const Navbar = () => {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: shouldReduceMotion ? 'auto' : 'smooth',
       });
     }
+
     setIsOpen(false);
   };
 
+  const brandMotionProps = shouldReduceMotion
+    ? {}
+    : {
+        whileHover: { scale: 1.05 },
+        whileTap: { scale: 0.95 },
+      };
+  const mobileMenuTransition = shouldReduceMotion ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' };
+
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      scrolled
-        ? 'dark:bg-primary-bg/80 light:bg-lightMode-surface/80 backdrop-blur-md shadow-lg border-b dark:border-primary-lighter light:border-lightMode-border'
-        : 'bg-transparent'
-    }`}>
+    <nav
+      aria-label={t.accessibility.primaryNavigation}
+      className={`fixed z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? 'border-b shadow-lg backdrop-blur-md dark:border-primary-lighter dark:bg-primary-bg/80 light:border-lightMode-border light:bg-lightMode-surface/80'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="container-custom">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex h-20 items-center justify-between">
           <motion.a
             href="#home"
-            onClick={(e) => { e.preventDefault(); scrollToSection('#home'); }}
-            className="text-2xl font-poppins font-bold gradient-text cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            onClick={(event) => {
+              event.preventDefault();
+              scrollToSection('#home');
+            }}
+            className="focus-ring cursor-pointer text-2xl font-poppins font-bold gradient-text"
+            {...brandMotionProps}
           >
             SC
           </motion.a>
 
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => { e.preventDefault(); scrollToSection(link.href); }}
-                className={`text-sm font-medium transition-colors relative group ${
-                  activeSection === link.href.slice(1)
-                    ? 'text-accent-cyan'
-                    : 'dark:text-text-secondary light:text-lightMode-text-secondary dark:hover:text-accent-cyan light:hover:text-accent-blue'
-                }`}
-              >
-                {link.name}
-                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-cyan transition-all group-hover:w-full ${
-                  activeSection === link.href.slice(1) ? 'w-full' : ''
-                }`} />
-              </a>
-            ))}
+          <div className="hidden items-center space-x-8 md:flex">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.slice(1);
+
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    scrollToSection(link.href);
+                  }}
+                  aria-current={isActive ? 'location' : undefined}
+                  className={`focus-ring relative text-sm font-medium transition-colors group ${
+                    isActive
+                      ? 'dark:text-accent-cyan light:text-lightMode-accent-primary'
+                      : 'dark:text-text-secondary dark:hover:text-accent-cyan light:text-lightMode-text-secondary light:hover:text-lightMode-accent-primary'
+                  }`}
+                >
+                  {link.name}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 w-0 transition-all group-hover:w-full dark:bg-accent-cyan light:bg-lightMode-accent-primary ${
+                      isActive ? 'w-full' : ''
+                    }`}
+                  />
+                </a>
+              );
+            })}
             <ThemeToggle />
             <LanguageSelector />
           </div>
 
-          <div className="md:hidden flex items-center gap-4">
+          <div className="flex items-center gap-4 md:hidden">
             <ThemeToggle />
             <LanguageSelector />
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-accent-cyan"
-              aria-label="Toggle menu"
+              type="button"
+              onClick={() => setIsOpen((current) => !current)}
+              aria-controls="mobile-navigation"
+              aria-expanded={isOpen}
+              aria-label={isOpen ? t.accessibility.closeMenu : t.accessibility.openMenu}
+              className="focus-ring rounded-lg p-2 dark:text-accent-cyan light:text-lightMode-accent-primary"
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -113,26 +145,36 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-navigation"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden dark:bg-primary-light/95 light:bg-lightMode-surfaceAlt/95 backdrop-blur-sm"
+            transition={mobileMenuTransition}
+            className="backdrop-blur-sm dark:bg-primary-light/95 light:bg-lightMode-surfaceAlt/95 md:hidden"
           >
             <div className="container-custom py-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => { e.preventDefault(); scrollToSection(link.href); }}
-                  className={`block py-3 text-base font-medium transition-colors ${
-                    activeSection === link.href.slice(1)
-                      ? 'text-accent-cyan'
-                      : 'dark:text-text-secondary light:text-lightMode-text-secondary hover:text-accent-cyan'
-                  }`}
-                >
-                  {link.name}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.href.slice(1);
+
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      scrollToSection(link.href);
+                    }}
+                    aria-current={isActive ? 'location' : undefined}
+                    className={`focus-ring block rounded-lg py-3 text-base font-medium transition-colors ${
+                      isActive
+                        ? 'dark:text-accent-cyan light:text-lightMode-accent-primary'
+                        : 'dark:text-text-secondary dark:hover:text-accent-cyan light:text-lightMode-text-secondary light:hover:text-lightMode-accent-primary'
+                    }`}
+                  >
+                    {link.name}
+                  </a>
+                );
+              })}
             </div>
           </motion.div>
         )}

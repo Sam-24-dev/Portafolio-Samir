@@ -14,16 +14,21 @@ function App() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen">
+    <div id="app-shell" className="min-h-screen">
+      <a href="#main-content" className="skip-link">
+        {t.accessibility.skipToContent}
+      </a>
       <CustomCursor />
       <ScrollToTopButton />
       <Navbar />
-      <Hero />
-      <ProofStrip />
-      <About />
-      <Projects />
-      <Strengths />
-      <Contact />
+      <main id="main-content" tabIndex={-1}>
+        <Hero />
+        <ProofStrip />
+        <About />
+        <Projects />
+        <Strengths />
+        <Contact />
+      </main>
 
       <footer className="border-t py-8 dark:border-primary-lighter dark:bg-primary-light light:border-lightMode-border light:bg-lightMode-surfaceAlt">
         <div className="container-custom text-center">

@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Mail, Linkedin, Github, MapPin, Send } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { trackPortfolioEvent } from '../lib/analytics';
 
 type SubmissionState = 'idle' | 'sending' | 'success' | 'error';
 type ContactApiResponse = { message?: string };
 
 const Contact = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
 
   const [formData, setFormData] = useState({
@@ -29,21 +30,21 @@ const Contact = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (submissionState !== 'idle') {
       setSubmissionState('idle');
       setStatusMessage('');
     }
 
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     try {
       setSubmissionState('sending');
@@ -61,8 +62,13 @@ const Contact = () => {
         const apiMessage = await readApiMessage(response);
         const isConfigIssue =
           response.status === 500 || (apiMessage?.toLowerCase().includes('not configured') ?? false);
+
         setSubmissionState('error');
         setStatusMessage(isConfigIssue ? t.contact.configError : (apiMessage ?? t.contact.errorMessage));
+        trackPortfolioEvent('contact_submit_error', {
+          location: 'contact',
+          language,
+        });
         return;
       }
 
@@ -74,9 +80,17 @@ const Contact = () => {
       });
       setSubmissionState('success');
       setStatusMessage(t.contact.successMessage);
+      trackPortfolioEvent('contact_submit_success', {
+        location: 'contact',
+        language,
+      });
     } catch {
       setSubmissionState('error');
       setStatusMessage(t.contact.errorMessage);
+      trackPortfolioEvent('contact_submit_error', {
+        location: 'contact',
+        language,
+      });
     }
   };
 
@@ -90,82 +104,85 @@ const Contact = () => {
       return 'border-rose-500/30 bg-rose-500/10 text-rose-400';
     }
 
-    return 'border-accent-cyan/20 bg-accent-cyan/10 text-accent-cyan';
+    return 'border-accent-cyan/20 bg-accent-cyan/10 dark:text-accent-cyan light:text-lightMode-accent-primary';
   }, [submissionState]);
 
+  const statusRole = submissionState === 'error' ? 'alert' : 'status';
   const contactInfo = [
     {
       icon: <Mail size={20} />,
       label: t.contact.email,
       value: 'samir.leonardo.caizapasto04@gmail.com',
-      href: 'mailto:samir.leonardo.caizapasto04@gmail.com'
+      href: 'mailto:samir.leonardo.caizapasto04@gmail.com',
+      target: 'email' as const,
     },
     {
       icon: <Linkedin size={20} />,
       label: t.contact.linkedin,
       value: 'linkedin.com/in/samir-caizapasto',
-      href: 'https://www.linkedin.com/in/samir-caizapasto/'
+      href: 'https://www.linkedin.com/in/samir-caizapasto/',
+      target: 'linkedin_profile' as const,
     },
     {
       icon: <Github size={20} />,
       label: t.contact.github,
       value: 'github.com/Sam-24-dev',
-      href: 'https://github.com/Sam-24-dev'
+      href: 'https://github.com/Sam-24-dev',
+      target: 'github_profile' as const,
     },
     {
       icon: <MapPin size={20} />,
       label: t.contact.location,
       value: 'Guayaquil, Ecuador',
-      href: null
-    }
+      href: null,
+    },
   ];
 
   return (
     <section
       id="contact"
-      className="section-padding overflow-x-clip dark:bg-primary-light light:bg-lightMode-surfaceAlt transition-colors"
+      className="section-padding overflow-x-clip transition-colors dark:bg-primary-light light:bg-lightMode-surfaceAlt"
     >
       <div className="container-custom">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.5 }}
           className="mb-14 text-center md:mb-16"
         >
           <h2 className="mb-6 text-4xl font-poppins font-bold gradient-text sm:text-5xl md:text-6xl">
             {t.contact.title}
           </h2>
-          <p className="dark:text-text-secondary light:text-lightMode-text-secondary text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="mx-auto max-w-2xl text-lg leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
             {t.contact.subtitle}
           </p>
         </motion.div>
 
         <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-2 md:gap-10">
-          {/* Columna izquierda: info */}
           <motion.div
             initial={{ x: -20, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.5 }}
             className="space-y-8"
           >
             <div>
-              <h3 className="text-2xl font-poppins font-semibold gradient-text mb-6">
+              <h3 className="mb-6 text-2xl font-poppins font-semibold gradient-text">
                 {t.contact.info}
               </h3>
               <div className="space-y-4">
-                {contactInfo.map((info, idx) => (
+                {contactInfo.map((info, index) => (
                   <motion.div
-                    key={idx}
+                    key={index}
                     className="flex items-start gap-4 rounded-lg border p-4 dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface"
                     whileHover={shouldReduceMotion ? undefined : { x: 5, transition: { duration: 0.2 } }}
                   >
-                    <div className="p-2 bg-accent-cyan/10 rounded-lg text-accent-cyan">
+                    <div className="rounded-lg bg-accent-cyan/10 p-2 dark:text-accent-cyan light:text-lightMode-accent-primary">
                       {info.icon}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm dark:text-text-secondary light:text-lightMode-text-secondary mb-1">
+                    <div className="min-w-0 flex-1">
+                      <p className="mb-1 text-sm dark:text-text-secondary light:text-lightMode-text-secondary">
                         {info.label}
                       </p>
                       {info.href ? (
@@ -173,7 +190,14 @@ const Contact = () => {
                           href={info.href}
                           target={info.href.startsWith('http') ? '_blank' : undefined}
                           rel={info.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                          className="break-all font-medium dark:text-text-primary dark:hover:text-accent-cyan light:text-lightMode-text-primary light:hover:text-accent-cyan transition-colors"
+                          className="focus-ring break-all font-medium transition-colors dark:text-text-primary dark:hover:text-accent-cyan light:text-lightMode-text-primary light:hover:text-lightMode-accent-primary"
+                          onClick={() =>
+                            trackPortfolioEvent('external_profile_click', {
+                              location: 'contact',
+                              language,
+                              target: info.target,
+                            })
+                          }
                         >
                           {info.value}
                         </a>
@@ -192,21 +216,20 @@ const Contact = () => {
               className="rounded-xl border p-6 dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface"
               whileHover={shouldReduceMotion ? undefined : { y: -5, transition: { duration: 0.3 } }}
             >
-              <h3 className="text-xl font-poppins font-semibold gradient-text mb-4">
+              <h3 className="mb-4 text-xl font-poppins font-semibold gradient-text">
                 {t.contact.letsConnect}
               </h3>
-              <p className="dark:text-text-secondary light:text-lightMode-text-secondary leading-relaxed">
+              <p className="leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                 {t.contact.connectText}
               </p>
             </motion.div>
           </motion.div>
 
-          {/* Columna derecha: formulario */}
           <motion.div
             initial={{ x: 20, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.5 }}
           >
             <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
               <div className="hidden" aria-hidden="true">
@@ -225,7 +248,7 @@ const Contact = () => {
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium dark:text-text-primary light:text-lightMode-text-primary mb-2"
+                  className="mb-2 block text-sm font-medium dark:text-text-primary light:text-lightMode-text-primary"
                 >
                   {t.contact.name}
                 </label>
@@ -238,10 +261,11 @@ const Contact = () => {
                   onFocus={() => setFocusedField('name')}
                   onBlur={() => setFocusedField(null)}
                   placeholder={t.contact.namePlaceholder}
+                  autoComplete="name"
                   required
-                  className={`w-full rounded-lg border px-4 py-3.5 transition-all dark:bg-primary-bg dark:text-text-primary light:bg-lightMode-surface light:text-lightMode-text-primary focus:outline-none focus:ring-2 focus:ring-accent-cyan/50 ${
+                  className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'name'
-                      ? 'border-accent-cyan dark:bg-primary-light light:bg-lightMode-surfaceAlt'
+                      ? 'border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
                   }`}
                 />
@@ -250,7 +274,7 @@ const Contact = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium dark:text-text-primary light:text-lightMode-text-primary mb-2"
+                  className="mb-2 block text-sm font-medium dark:text-text-primary light:text-lightMode-text-primary"
                 >
                   {t.contact.emailLabel}
                 </label>
@@ -263,10 +287,14 @@ const Contact = () => {
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
                   placeholder={t.contact.emailPlaceholder}
+                  autoComplete="email"
+                  spellCheck={false}
+                  autoCapitalize="off"
+                  autoCorrect="off"
                   required
-                  className={`w-full rounded-lg border px-4 py-3.5 transition-all dark:bg-primary-bg dark:text-text-primary light:bg-lightMode-surface light:text-lightMode-text-primary focus:outline-none focus:ring-2 focus:ring-accent-cyan/50 ${
+                  className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'email'
-                      ? 'border-accent-cyan dark:bg-primary-light light:bg-lightMode-surfaceAlt'
+                      ? 'border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
                   }`}
                 />
@@ -275,7 +303,7 @@ const Contact = () => {
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-sm font-medium dark:text-text-primary light:text-lightMode-text-primary mb-2"
+                  className="mb-2 block text-sm font-medium dark:text-text-primary light:text-lightMode-text-primary"
                 >
                   {t.contact.message}
                 </label>
@@ -287,11 +315,12 @@ const Contact = () => {
                   onFocus={() => setFocusedField('message')}
                   onBlur={() => setFocusedField(null)}
                   placeholder={t.contact.messagePlaceholder}
+                  autoComplete="off"
                   required
                   rows={6}
-                  className={`w-full resize-none rounded-lg border px-4 py-3.5 transition-all dark:bg-primary-bg dark:text-text-primary light:bg-lightMode-surface light:text-lightMode-text-primary focus:outline-none focus:ring-2 focus:ring-accent-cyan/50 ${
+                  className={`focus-ring w-full resize-none rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'message'
-                      ? 'border-accent-cyan dark:bg-primary-light light:bg-lightMode-surfaceAlt'
+                      ? 'border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
                   }`}
                 />
@@ -301,7 +330,7 @@ const Contact = () => {
                 type="submit"
                 disabled={submissionState === 'sending'}
                 aria-busy={submissionState === 'sending'}
-                className="flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent-cyan px-8 py-3 font-semibold text-primary-bg transition-all hover:bg-accent-light disabled:cursor-not-allowed disabled:opacity-80"
+                className="focus-ring flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent-cyan px-8 py-3 font-semibold text-primary-bg transition-all hover:bg-accent-light disabled:cursor-not-allowed disabled:opacity-80"
                 whileHover={shouldReduceMotion ? undefined : { scale: 1.02, y: -2 }}
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               >
@@ -311,7 +340,8 @@ const Contact = () => {
 
               {submissionState !== 'idle' && (
                 <div
-                  aria-live="polite"
+                  role={statusRole}
+                  aria-live={submissionState === 'error' ? 'assertive' : 'polite'}
                   className={`rounded-lg border px-4 py-3 text-sm font-medium ${statusClasses}`}
                 >
                   {statusMessage}

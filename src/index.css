@@ -47,6 +47,14 @@
     @apply max-w-7xl mx-auto;
   }
 
+  .focus-ring {
+    @apply focus-visible:outline-none;
+  }
+
+  .skip-link {
+    @apply absolute left-4 top-4 z-[100] -translate-y-20 rounded-lg px-4 py-2 text-sm font-medium transition-transform focus:translate-y-0 focus:outline-none;
+  }
+
   .card-base {
     @apply rounded-xl border transition-all duration-300;
   }
@@ -112,4 +120,30 @@
   .animate-gradient {
     animation: none !important;
   }
+}
+
+.focus-ring:focus-visible,
+.skip-link:focus-visible {
+  outline: 2px solid #64ffda;
+  outline-offset: 2px;
+}
+
+.skip-link {
+  background-color: #ffffff;
+  color: #1a202c;
+}
+
+.dark .focus-ring:focus-visible,
+.dark .skip-link:focus-visible {
+  outline-color: #64ffda;
+}
+
+.dark .skip-link {
+  background-color: #112240;
+  color: #e6f1ff;
+}
+
+.light .focus-ring:focus-visible,
+.light .skip-link:focus-visible {
+  outline-color: #0f766e;
 }
