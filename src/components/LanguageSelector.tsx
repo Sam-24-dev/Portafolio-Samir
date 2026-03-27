@@ -1,32 +1,47 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 
 const LanguageSelector = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
+  const shouldReduceMotion = useReducedMotion();
+  const motionProps = shouldReduceMotion
+    ? {}
+    : {
+        whileHover: { scale: 1.05 },
+        whileTap: { scale: 0.95 },
+      };
 
   return (
-    <div className="flex items-center gap-2 p-1 rounded-lg bg-accent-cyan/10 border border-accent-cyan/20">
+    <div
+      role="group"
+      aria-label={t.accessibility.languageSelector}
+      className="flex items-center gap-2 rounded-lg border border-accent-cyan/20 bg-accent-cyan/10 p-1"
+    >
       <motion.button
+        type="button"
         onClick={() => setLanguage('en')}
-        className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+        aria-pressed={language === 'en'}
+        aria-label={`EN - ${t.accessibility.switchToEnglish}`}
+        className={`focus-ring rounded-md px-3 py-1 text-sm font-medium transition-all ${
           language === 'en'
             ? 'bg-accent-cyan text-primary-bg dark:text-primary-bg'
-            : 'text-accent-cyan hover:bg-accent-cyan/20'
+            : 'dark:text-accent-cyan dark:hover:bg-accent-cyan/20 light:text-lightMode-accent-primary light:hover:bg-accent-cyan/20'
         }`}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        {...motionProps}
       >
         EN
       </motion.button>
       <motion.button
+        type="button"
         onClick={() => setLanguage('es')}
-        className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+        aria-pressed={language === 'es'}
+        aria-label={`ES - ${t.accessibility.switchToSpanish}`}
+        className={`focus-ring rounded-md px-3 py-1 text-sm font-medium transition-all ${
           language === 'es'
             ? 'bg-accent-cyan text-primary-bg dark:text-primary-bg'
-            : 'text-accent-cyan hover:bg-accent-cyan/20'
+            : 'dark:text-accent-cyan dark:hover:bg-accent-cyan/20 light:text-lightMode-accent-primary light:hover:bg-accent-cyan/20'
         }`}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        {...motionProps}
       >
         ES
       </motion.button>
@@ -35,4 +50,3 @@ const LanguageSelector = () => {
 };
 
 export default LanguageSelector;
-

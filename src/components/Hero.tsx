@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, Download } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { trackPortfolioEvent } from '../lib/analytics';
 
 const Hero = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
@@ -55,7 +56,7 @@ const Hero = () => {
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.pageYOffset - offset;
 
-    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    window.scrollTo({ top: offsetPosition, behavior: shouldReduceMotion ? 'auto' : 'smooth' });
   };
 
   const techIcons = [
@@ -70,9 +71,23 @@ const Hero = () => {
   ];
 
   const contactLinks = [
-    { href: 'https://github.com/Sam-24-dev', icon: '/images/socials/github.svg', label: 'GitHub' },
-    { href: 'https://www.linkedin.com/in/samir-caizapasto/', icon: '/images/socials/linkedin.svg', label: 'LinkedIn' },
+    {
+      href: 'https://github.com/Sam-24-dev',
+      icon: '/images/socials/github.svg',
+      label: 'GitHub',
+      target: 'github_profile' as const,
+    },
+    {
+      href: 'https://www.linkedin.com/in/samir-caizapasto/',
+      icon: '/images/socials/linkedin.svg',
+      label: 'LinkedIn',
+      target: 'linkedin_profile' as const,
+    },
   ];
+
+  const liftMotion = shouldReduceMotion ? undefined : { y: -3, scale: 1.03 };
+  const buttonHoverMotion = shouldReduceMotion ? undefined : { scale: 1.03 };
+  const buttonTapMotion = shouldReduceMotion ? undefined : { scale: 0.98 };
 
   return (
     <section
@@ -84,10 +99,10 @@ const Hero = () => {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8 }}
             className="flex-1 text-center lg:max-w-2xl lg:text-left"
           >
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-accent-cyan">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] dark:text-accent-cyan light:text-lightMode-accent-primary">
               {t.hero.eyebrow}
             </p>
 
@@ -113,10 +128,17 @@ const Hero = () => {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={shouldReduceMotion ? undefined : { y: -3, scale: 1.03 }}
-                  className="flex min-h-11 items-center gap-2.5 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors dark:border-white/10 dark:bg-primary-light/60 dark:text-text-primary dark:hover:bg-primary-lighter light:border-black/10 light:bg-lightMode-surface/80 light:text-lightMode-text-primary light:hover:bg-lightMode-surfaceAlt"
+                  whileHover={liftMotion}
+                  className="focus-ring flex min-h-11 items-center gap-2.5 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors dark:border-white/10 dark:bg-primary-light/60 dark:text-text-primary dark:hover:bg-primary-lighter light:border-black/10 light:bg-lightMode-surface/80 light:text-lightMode-text-primary light:hover:bg-lightMode-surfaceAlt"
+                  onClick={() =>
+                    trackPortfolioEvent('external_profile_click', {
+                      location: 'hero',
+                      language,
+                      target: link.target,
+                    })
+                  }
                 >
-                  <img src={link.icon} alt={`${link.label} icon`} className="h-5 w-5" />
+                  <img src={link.icon} alt="" aria-hidden="true" className="h-5 w-5" />
                   <span>{link.label}</span>
                 </motion.a>
               ))}
@@ -124,19 +146,27 @@ const Hero = () => {
 
             <div className="flex flex-col justify-center gap-3 sm:gap-4 md:flex-row lg:justify-start">
               <motion.button
+                type="button"
                 onClick={() => scrollToSection('projects')}
-                className="min-h-12 rounded-lg bg-accent-cyan px-8 py-3 font-semibold text-primary-bg transition-all hover:bg-accent-light"
-                whileHover={shouldReduceMotion ? undefined : { scale: 1.03 }}
-                whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                className="focus-ring min-h-12 rounded-lg bg-accent-cyan px-8 py-3 font-semibold text-primary-bg transition-all hover:bg-accent-light"
+                whileHover={buttonHoverMotion}
+                whileTap={buttonTapMotion}
               >
                 {t.hero.viewProjects}
               </motion.button>
               <motion.a
                 href="/cv/SamirCaizapastoCV.pdf"
                 download
-                className="flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-accent-cyan px-8 py-3 font-semibold text-accent-cyan transition-all hover:bg-accent-cyan dark:hover:text-primary-bg light:hover:text-lightMode-text-primary"
-                whileHover={shouldReduceMotion ? undefined : { scale: 1.03 }}
-                whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                className="focus-ring flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 px-8 py-3 font-semibold transition-all dark:border-accent-cyan dark:text-accent-cyan dark:hover:bg-accent-cyan dark:hover:text-primary-bg light:border-lightMode-accent-primary light:text-lightMode-accent-primary light:hover:border-lightMode-accent-primary light:hover:bg-lightMode-accent-primary light:hover:text-white"
+                whileHover={buttonHoverMotion}
+                whileTap={buttonTapMotion}
+                onClick={() =>
+                  trackPortfolioEvent('cv_download', {
+                    location: 'hero',
+                    language,
+                    target: 'cv',
+                  })
+                }
               >
                 <Download size={20} />
                 {t.hero.downloadCV}
@@ -147,7 +177,7 @@ const Hero = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
             className="relative h-56 w-56 flex-shrink-0 sm:h-72 sm:w-72 md:h-96 md:w-96"
           >
             <motion.div
@@ -171,7 +201,7 @@ const Hero = () => {
                     animate={shouldReduceMotion ? undefined : { rotate: -360 }}
                     transition={shouldReduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: 'linear' }}
                   >
-                    <img src={icon.src} alt={icon.alt} className="h-full w-full object-contain" />
+                    <img src={icon.src} alt="" aria-hidden="true" className="h-full w-full object-contain" />
                   </motion.div>
                 );
               })}
@@ -180,7 +210,7 @@ const Hero = () => {
             <div className="relative h-full w-full rounded-full p-1 gradient-border">
               <img
                 src="/images/perfil.jpg"
-                alt="Samir Caizapasto portrait"
+                alt="Portrait of Samir Caizapasto"
                 className="h-full w-full rounded-full object-cover"
               />
             </div>
@@ -192,10 +222,10 @@ const Hero = () => {
         type="button"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 text-accent-cyan sm:bottom-8"
+        transition={shouldReduceMotion ? { duration: 0 } : { delay: 1, duration: 0.5 }}
+        className="focus-ring absolute bottom-6 left-1/2 z-20 -translate-x-1/2 dark:text-accent-cyan light:text-lightMode-accent-primary sm:bottom-8"
         onClick={() => scrollToSection('about')}
-        aria-label="Scroll to about section"
+        aria-label={t.accessibility.scrollToAbout}
       >
         <ChevronDown size={32} className={shouldReduceMotion ? '' : 'animate-bounce'} />
       </motion.button>

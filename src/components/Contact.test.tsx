@@ -4,6 +4,12 @@ import Contact from './Contact';
 import { ThemeProvider } from '../context/ThemeContext';
 import { LanguageProvider } from '../context/LanguageContext';
 
+const portfolioEvents: CustomEvent[] = [];
+
+const capturePortfolioEvent = (event: Event) => {
+  portfolioEvents.push(event as CustomEvent);
+};
+
 const renderContact = () =>
   render(
     <ThemeProvider>
@@ -16,13 +22,16 @@ const renderContact = () =>
 describe('Contact form', () => {
   beforeEach(() => {
     localStorage.setItem('portfolio-language', 'en');
+    portfolioEvents.length = 0;
+    window.addEventListener('portfolio:analytics', capturePortfolioEvent as EventListener);
   });
 
   afterEach(() => {
+    window.removeEventListener('portfolio:analytics', capturePortfolioEvent as EventListener);
     vi.restoreAllMocks();
   });
 
-  it('shows an error when the contact API fails', async () => {
+  it('shows an error when the contact API fails and tracks the failure without PII', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
@@ -40,9 +49,17 @@ describe('Contact form', () => {
     expect(
       await screen.findByText('Contact form is not configured yet. Add the contact service environment variables to enable it.')
     ).toBeInTheDocument();
+    expect(portfolioEvents.at(-1)?.detail).toEqual({
+      name: 'contact_submit_error',
+      location: 'contact',
+      language: 'en',
+    });
+    expect(portfolioEvents.at(-1)?.detail).not.toHaveProperty('email');
+    expect(portfolioEvents.at(-1)?.detail).not.toHaveProperty('message');
+    expect(portfolioEvents.at(-1)?.detail).not.toHaveProperty('company');
   });
 
-  it('submits successfully through the contact API and resets the form', async () => {
+  it('submits successfully through the contact API, resets the form, and tracks success', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ ok: true, message: 'Message sent successfully.' }),
@@ -74,5 +91,30 @@ describe('Contact form', () => {
     expect(screen.getByLabelText('Name')).toHaveValue('');
     expect(screen.getByLabelText('Email')).toHaveValue('');
     expect(screen.getByLabelText('Message')).toHaveValue('');
+    expect(portfolioEvents.at(-1)?.detail).toEqual({
+      name: 'contact_submit_success',
+      location: 'contact',
+      language: 'en',
+    });
+  });
+
+  it('adds form autocomplete hygiene and tracks external contact links', () => {
+    renderContact();
+
+    expect(screen.getByLabelText('Name')).toHaveAttribute('autocomplete', 'name');
+    expect(screen.getByLabelText('Email')).toHaveAttribute('autocomplete', 'email');
+    expect(screen.getByLabelText('Email')).toHaveAttribute('spellcheck', 'false');
+    expect(screen.getByLabelText('Email')).toHaveAttribute('autocapitalize', 'off');
+    expect(screen.getByLabelText('Email')).toHaveAttribute('autocorrect', 'off');
+    expect(screen.getByLabelText('Message')).toHaveAttribute('autocomplete', 'off');
+
+    fireEvent.click(screen.getByRole('link', { name: 'linkedin.com/in/samir-caizapasto' }));
+
+    expect(portfolioEvents[0].detail).toEqual({
+      name: 'external_profile_click',
+      location: 'contact',
+      language: 'en',
+      target: 'linkedin_profile',
+    });
   });
 });

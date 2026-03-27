@@ -1,10 +1,11 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, FileText, X } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { CaseStudy } from '../data/caseStudies';
 import { Project } from '../data/projects';
+import { trackPortfolioEvent } from '../lib/analytics';
 
 interface CaseStudyModalProps {
   caseStudy: CaseStudy | null;
@@ -12,12 +13,27 @@ interface CaseStudyModalProps {
   onClose: () => void;
   onExited: () => void;
   project: Project | null;
+  triggerElement: HTMLElement | null;
 }
 
-const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseStudyModalProps) => {
+const getFocusableElements = (container: HTMLElement | null) => {
+  if (!container) {
+    return [];
+  }
+
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((element) => !element.hasAttribute('disabled') && !element.getAttribute('aria-hidden'));
+};
+
+const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, triggerElement }: CaseStudyModalProps) => {
   const { t, language } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const titleId = useId();
 
   useEffect(() => {
     if (!isOpen) {
@@ -27,11 +43,20 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
     const previousOverflow = document.body.style.overflow;
     const previousPaddingRight = document.body.style.paddingRight;
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const restoreTarget = triggerElement ?? previouslyFocused;
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const appShell = document.getElementById('app-shell');
+    const previousAriaHidden = appShell?.getAttribute('aria-hidden') ?? null;
+    const shellWasInert = appShell?.hasAttribute('inert') ?? false;
 
     document.body.style.overflow = 'hidden';
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    if (appShell) {
+      appShell.setAttribute('aria-hidden', 'true');
+      appShell.setAttribute('inert', '');
     }
 
     closeButtonRef.current?.focus();
@@ -48,9 +73,24 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
       document.body.style.overflow = previousOverflow;
       document.body.style.paddingRight = previousPaddingRight;
       window.removeEventListener('keydown', handleEscape);
-      previouslyFocused?.focus();
+
+      if (appShell) {
+        if (previousAriaHidden === null) {
+          appShell.removeAttribute('aria-hidden');
+        } else {
+          appShell.setAttribute('aria-hidden', previousAriaHidden);
+        }
+
+        if (shellWasInert) {
+          appShell.setAttribute('inert', '');
+        } else {
+          appShell.removeAttribute('inert');
+        }
+      }
+
+      restoreTarget?.focus();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, triggerElement]);
 
   if (!caseStudy || !project) {
     return null;
@@ -60,11 +100,9 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
   const summary = language === 'es' ? caseStudy.summaryEs : caseStudy.summary;
   const roleSummary = language === 'es' ? caseStudy.roleSummaryEs : caseStudy.roleSummary;
   const businessProblem = language === 'es' ? caseStudy.businessProblemEs : caseStudy.businessProblem;
-  const datasetAndWorkflow =
-    language === 'es' ? caseStudy.datasetAndWorkflowEs : caseStudy.datasetAndWorkflow;
+  const datasetAndWorkflow = language === 'es' ? caseStudy.datasetAndWorkflowEs : caseStudy.datasetAndWorkflow;
   const toolsUsed = language === 'es' ? caseStudy.toolsUsedEs : caseStudy.toolsUsed;
-  const metricsAndResult =
-    language === 'es' ? caseStudy.metricsAndResultEs : caseStudy.metricsAndResult;
+  const metricsAndResult = language === 'es' ? caseStudy.metricsAndResultEs : caseStudy.metricsAndResult;
   const whyItMatters = language === 'es' ? caseStudy.whyItMattersEs : caseStudy.whyItMatters;
   const primaryActionLabel =
     project.dashboardUrl
@@ -78,6 +116,54 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
   const overlayTransition = shouldReduceMotion ? { duration: 0 } : { duration: 0.18, ease: 'easeOut' };
   const panelTransition = shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' };
   const panelInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 28, scale: 0.98 };
+
+  const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Tab') {
+      return;
+    }
+
+    const focusableElements = getFocusableElements(dialogRef.current);
+
+    if (focusableElements.length === 0) {
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    const activeElement = document.activeElement as HTMLElement | null;
+
+    if (event.shiftKey) {
+      if (!activeElement || activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+      return;
+    }
+
+    if (!activeElement || activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  };
+
+  const handlePrimaryActionClick = () => {
+    if (project.dashboardUrl) {
+      trackPortfolioEvent('project_dashboard_click', {
+        location: 'case_study_modal',
+        language,
+        projectId: project.id,
+        target: 'dashboard',
+      });
+      return;
+    }
+
+    trackPortfolioEvent('project_demo_click', {
+      location: 'case_study_modal',
+      language,
+      projectId: project.id,
+      target: 'live_demo',
+    });
+  };
 
   return createPortal(
     <AnimatePresence onExitComplete={onExited}>
@@ -93,23 +179,28 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
         >
           <div className="flex min-h-full items-end justify-center sm:items-center sm:p-6">
             <motion.div
+              ref={dialogRef}
               role="dialog"
               aria-modal="true"
-              aria-label={`${title} ${t.projects.caseStudyDialogLabel}`}
+              aria-labelledby={titleId}
               initial={panelInitial}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={panelInitial}
               transition={panelTransition}
               onClick={(event) => event.stopPropagation()}
+              onKeyDown={handleDialogKeyDown}
               className="flex max-h-[88vh] w-full flex-col overflow-hidden rounded-t-[32px] border dark:border-primary-lighter dark:bg-primary-light light:border-lightMode-border light:bg-lightMode-surface sm:max-h-[90vh] sm:max-w-5xl sm:rounded-[32px]"
             >
               <div className="sticky top-0 z-20 border-b px-5 py-4 backdrop-blur-sm dark:border-primary-lighter dark:bg-primary-light/95 light:border-lightMode-border light:bg-lightMode-surface/95 sm:px-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent-cyan">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                       {t.projects.caseStudyBadge}
                     </p>
-                    <h3 className="text-2xl font-poppins font-bold dark:text-text-highlight light:text-lightMode-text-primary sm:text-3xl">
+                    <h3
+                      id={titleId}
+                      className="text-2xl font-poppins font-bold dark:text-text-highlight light:text-lightMode-text-primary sm:text-3xl"
+                    >
                       {title}
                     </h3>
                   </div>
@@ -119,7 +210,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
                     type="button"
                     onClick={onClose}
                     aria-label={t.projects.closeCaseStudy}
-                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border transition-colors dark:border-primary-lighter dark:bg-primary-bg/80 dark:text-text-primary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:bg-lightMode-surfaceAlt light:text-lightMode-text-primary light:hover:border-accent-cyan light:hover:text-accent-cyan"
+                    className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border transition-colors dark:border-primary-lighter dark:bg-primary-bg/80 dark:text-text-primary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:bg-lightMode-surfaceAlt light:text-lightMode-text-primary light:hover:border-lightMode-accent-primary light:hover:text-lightMode-accent-primary"
                   >
                     <X size={18} />
                   </button>
@@ -141,7 +232,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
 
                   <div className="space-y-4">
                     <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:p-6">
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                         {t.projects.executiveSummary}
                       </p>
                       <p className="text-base leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
@@ -150,7 +241,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
                     </section>
 
                     <section className="rounded-[24px] border border-accent-cyan/25 bg-accent-cyan/10 p-5 sm:p-6">
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
                         {t.projects.roleInCaseTitle}
                       </p>
                       <p className="text-sm leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
@@ -190,7 +281,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
                             key={item}
                             className="flex items-start gap-3 text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary"
                           >
-                            <span className="mt-1 text-accent-cyan">&bull;</span>
+                            <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&bull;</span>
                             <span>{item}</span>
                           </li>
                         ))}
@@ -200,7 +291,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
 
                   <div className="space-y-4">
                     <section className="rounded-[24px] border border-accent-cyan/25 bg-accent-cyan/10 p-5 sm:p-6">
-                      <h4 className="mb-3 text-lg font-poppins font-semibold text-accent-cyan">
+                      <h4 className="mb-3 text-lg font-poppins font-semibold dark:text-accent-cyan light:text-lightMode-accent-primary">
                         {t.projects.whyItMattersTitle}
                       </h4>
                       <p className="text-sm leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
@@ -218,7 +309,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
                             key={item}
                             className="flex items-start gap-3 text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary"
                           >
-                            <span className="mt-1 text-accent-cyan">&bull;</span>
+                            <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&bull;</span>
                             <span>{item}</span>
                           </li>
                         ))}
@@ -229,7 +320,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
                           {toolsUsed.map((tool) => (
                             <span
                               key={tool}
-                              className="rounded-full border border-accent-blue/25 bg-accent-blue/10 px-3 py-1 text-xs font-medium text-accent-blue"
+                              className="rounded-full border border-accent-blue/25 bg-accent-blue/10 px-3 py-1 text-xs font-medium dark:text-accent-blue light:text-lightMode-accent-secondary"
                             >
                               {tool}
                             </span>
@@ -245,7 +336,8 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
                     href={caseStudy.links.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-cyan px-4 py-2.5 text-sm font-medium text-primary-bg transition-colors hover:bg-accent-light"
+                    className="focus-ring flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-cyan px-4 py-2.5 text-sm font-medium text-primary-bg transition-colors hover:bg-accent-light"
+                    onClick={handlePrimaryActionClick}
                   >
                     <ExternalLink size={16} />
                     <span>{primaryActionLabel}</span>
@@ -255,7 +347,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project }: CaseS
                     href={caseStudy.links.caseStudyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex min-h-11 items-center justify-center gap-2 rounded-lg border border-accent-cyan/40 bg-accent-cyan/10 px-4 py-2.5 text-sm font-medium text-accent-cyan transition-colors hover:bg-accent-cyan hover:text-primary-bg"
+                    className="focus-ring flex min-h-11 items-center justify-center gap-2 rounded-lg border border-accent-cyan/40 bg-accent-cyan/10 px-4 py-2.5 text-sm font-medium dark:text-accent-cyan dark:hover:bg-accent-cyan dark:hover:text-primary-bg light:text-lightMode-accent-primary light:hover:border-lightMode-accent-primary light:hover:bg-lightMode-accent-primary light:hover:text-white"
                   >
                     <FileText size={16} />
                     <span>{t.projects.repositoryNotes}</span>

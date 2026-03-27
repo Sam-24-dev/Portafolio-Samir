@@ -25,6 +25,10 @@ export default {
           surface: '#ffffff',
           surfaceAlt: '#f0f2f5',
           border: '#e1e4e8',
+          accent: {
+            primary: '#0f766e',
+            secondary: '#0369a1',
+          },
           text: {
             primary: '#1a202c',
             secondary: '#4a5568',

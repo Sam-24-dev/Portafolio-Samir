@@ -1,10 +1,18 @@
+import { afterEach, describe, expect, it } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { afterEach } from 'vitest';
 import { LanguageProvider } from '../context/LanguageContext';
 import Projects from './Projects';
 
+const portfolioEvents: CustomEvent[] = [];
+
+const capturePortfolioEvent = (event: Event) => {
+  portfolioEvents.push(event as CustomEvent);
+};
+
 afterEach(() => {
   window.localStorage.clear();
+  portfolioEvents.length = 0;
+  window.removeEventListener('portfolio:analytics', capturePortfolioEvent as EventListener);
 });
 
 describe('phase 2 analyst depth batch 1', () => {
@@ -30,21 +38,28 @@ describe('phase 2 analyst depth batch 1', () => {
     expect(within(groceryCard as HTMLElement).queryByRole('button', { name: 'View Case Study' })).not.toBeInTheDocument();
   });
 
-  it('opens the simplified case study modal with focus and closes it with Escape', async () => {
+  it('opens the simplified case study modal with focus, inert background state, and closes it with Escape', async () => {
     render(
-      <LanguageProvider>
-        <Projects />
-      </LanguageProvider>
+      <div id="app-shell">
+        <LanguageProvider>
+          <Projects />
+        </LanguageProvider>
+      </div>
     );
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'View Case Study' })[0]);
+    const triggerButton = screen.getAllByRole('button', { name: 'View Case Study' })[0];
+    fireEvent.click(triggerButton);
 
-    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' });
+    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' });
     const closeButton = within(dialog).getByRole('button', { name: 'Close case study' });
+    const appShell = document.getElementById('app-shell');
 
     expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveAttribute('aria-labelledby');
     expect(closeButton).toHaveFocus();
     expect(document.body.style.overflow).toBe('hidden');
+    expect(appShell).toHaveAttribute('inert', '');
+    expect(appShell).toHaveAttribute('aria-hidden', 'true');
     expect(within(dialog).getByText('Case Outcome')).toBeInTheDocument();
     expect(within(dialog).getByText("Samir's Role")).toBeInTheDocument();
     expect(within(dialog).getByText('Key results')).toBeInTheDocument();
@@ -61,9 +76,13 @@ describe('phase 2 analyst depth batch 1', () => {
     fireEvent.keyDown(window, { key: 'Escape' });
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog', { name: 'Customer Profile Analytics Dashboard' })).not.toBeInTheDocument();
     });
+
     expect(document.body.style.overflow).toBe('');
+    expect(appShell).not.toHaveAttribute('inert');
+    expect(appShell).not.toHaveAttribute('aria-hidden');
+    expect(triggerButton).toHaveFocus();
   });
 
   it('keeps the case study modal mounted long enough for exit animation before cleanup', async () => {
@@ -75,15 +94,15 @@ describe('phase 2 analyst depth batch 1', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: 'View Case Study' })[0]);
 
-    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' });
+    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' });
     const closeButton = within(dialog).getByRole('button', { name: 'Close case study' });
 
     fireEvent.click(closeButton);
 
-    expect(screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' })).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog', { name: 'Customer Profile Analytics Dashboard' })).not.toBeInTheDocument();
     });
   });
 
@@ -111,7 +130,7 @@ describe('phase 2 analyst depth batch 1', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Ver Caso de Estudio' })[0]);
 
-    const dialog = screen.getByRole('dialog', { name: 'Dashboard de Customer Profile Analytics caso de estudio' });
+    const dialog = screen.getByRole('dialog', { name: 'Dashboard de Customer Profile Analytics' });
 
     expect(within(dialog).getByText('Resultado del caso')).toBeInTheDocument();
     expect(within(dialog).getByText('Rol de Samir')).toBeInTheDocument();
@@ -124,5 +143,50 @@ describe('phase 2 analyst depth batch 1', () => {
     expect(within(dialog).queryByText('Prueba rápida')).not.toBeInTheDocument();
     expect(within(dialog).queryByText('Qué lideró Samir')).not.toBeInTheDocument();
     expect(within(dialog).queryByText('Herramientas y entrega')).not.toBeInTheDocument();
+  });
+
+  it('tracks featured and supporting project conversion events', () => {
+    window.addEventListener('portfolio:analytics', capturePortfolioEvent as EventListener);
+
+    render(
+      <LanguageProvider>
+        <Projects />
+      </LanguageProvider>
+    );
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'View Case Study' })[0]);
+    fireEvent.click(screen.getAllByRole('link', { name: 'Dashboard' })[0]);
+    fireEvent.click(screen.getAllByRole('link', { name: 'GitHub' })[0]);
+    fireEvent.click(screen.getAllByRole('link', { name: 'Live Platform' })[0]);
+
+    expect(portfolioEvents.map((event) => event.detail)).toEqual([
+      {
+        name: 'case_study_open',
+        location: 'featured_card',
+        language: 'en',
+        projectId: 1,
+      },
+      {
+        name: 'project_dashboard_click',
+        location: 'featured_card',
+        language: 'en',
+        projectId: 1,
+        target: 'dashboard',
+      },
+      {
+        name: 'external_profile_click',
+        location: 'featured_card',
+        language: 'en',
+        projectId: 1,
+        target: 'github_repo',
+      },
+      {
+        name: 'project_demo_click',
+        location: 'supporting_card',
+        language: 'en',
+        projectId: 4,
+        target: 'live_demo',
+      },
+    ]);
   });
 });
