@@ -11,6 +11,10 @@ export interface Project {
   descriptionEs: string;
   highlights: string[];
   highlightsEs: string[];
+  supportingLabel?: string;
+  supportingLabelEs?: string;
+  supportingValue?: string;
+  supportingValueEs?: string;
   demoUrl?: string;
   demoLabel?: string;
   demoLabelEs?: string;
@@ -30,20 +34,20 @@ export const projects: Project[] = [
     image: '/images/projects/customer-profile-analytics.png',
     tech: ['Python', 'Jupyter', 'Power BI', 'pandas', 'Business Storytelling'],
     description:
-      'Reproducible customer analytics workflow that transforms raw marketing data into a clean analytical dataset and a polished Power BI dashboard for executive decision making.',
+      'Customer analytics case that turns marketing records into reliable segments and an executive Power BI view for decision-making.',
     descriptionEs:
-      'Flujo reproducible de customer analytics que transforma datos crudos de marketing en un dataset analítico limpio y un dashboard de Power BI orientado a decisiones ejecutivas.',
+      'Caso de analítica de clientes que convierte registros de marketing en segmentos confiables y una vista ejecutiva en Power BI para apoyar decisiones.',
     highlights: [
-      '2,021 customers analyzed',
-      '25.0% high-value customer segment',
-      '16.1% premium spend share',
-      '4 executive pages plus mobile layouts',
+      '2,021 customer records prepared for analysis',
+      'Reliable high-value segmentation for business reading',
+      'Reproducible cleaning and validation workflow in Python',
+      'Executive Power BI report with mobile layouts',
     ],
     highlightsEs: [
-      '2,021 clientes analizados',
-      '25.0% del segmento de alto valor',
-      '16.1% de participación en gasto premium',
-      '4 páginas ejecutivas más layouts móviles',
+      '2,021 registros de clientes preparados para análisis',
+      'Segmentación de alto valor confiable para lectura de negocio',
+      'Flujo reproducible de limpieza y validación en Python',
+      'Reporte ejecutivo en Power BI con layouts móviles',
     ],
     dashboardUrl:
       'https://app.powerbi.com/view?r=eyJrIjoiNzE3YmU3ZDktN2M3Yi00ODY5LTk2OTktOGI0NmE3YmU1ZDdiIiwidCI6ImI3YWY4Y2FmLTgzZDgtNDY0NC04NWFlLTMxN2M1NDUyMjNjMSIsImMiOjR9&pageName=b29252d974b9cb52bd7f',
@@ -57,20 +61,20 @@ export const projects: Project[] = [
     image: '/images/projects/esports-dashboard.png',
     tech: ['MySQL', 'Python', 'Chart.js', 'Machine Learning', 'GitHub Actions'],
     description:
-      'Analytical product that unifies relational data, ETL, validation, and dashboard delivery to explore team performance, competitions, and player projections across the LATAM eSports ecosystem.',
+      'Analytical product that combines competitive data, performance context, and player projections for eSports LATAM decision-making.',
     descriptionEs:
-      'Producto analítico que unifica datos relacionales, ETL, validación y entrega de dashboard para explorar rendimiento de equipos, competiciones y proyecciones de jugadores en el ecosistema eSports LATAM.',
+      'Producto analítico que combina datos competitivos, contexto de rendimiento y proyecciones de jugadores para apoyar decisiones en eSports LATAM.',
     highlights: [
-      '40% faster query performance',
-      '15 teams across 8 countries',
-      '33 player projections for 2026',
-      '126 automated tests in the suite',
+      'Unified view of teams, players, and competitions',
+      'Player projections built for 2026 planning',
+      'Validated data flow with automated tests',
+      'Published dashboard for operational tracking',
     ],
     highlightsEs: [
-      '40% más rápido en consultas',
-      '15 equipos en 8 países',
-      '33 proyecciones de jugadores para 2026',
-      '126 pruebas automatizadas en la suite',
+      'Vista unificada de equipos, jugadores y competiciones',
+      'Proyecciones de jugadores para planificación 2026',
+      'Flujo de datos validado con pruebas automatizadas',
+      'Dashboard publicado para seguimiento operativo',
     ],
     demoUrl: 'https://sam-24-dev.github.io/eSports-Analytics-Dashboard/',
     demoLabel: 'Live Dashboard',
@@ -85,18 +89,20 @@ export const projects: Project[] = [
     image: '/images/projects/powerbi-dashboard.png',
     tech: ['Power BI', 'DAX', 'Excel', 'Business Intelligence'],
     description:
-      'Executive sales dashboard focused on performance gaps, top sellers, and geographic insights to support faster commercial decisions.',
+      'Commercial Power BI dashboard designed to surface performance gaps, leading categories, and market opportunities with an executive readout.',
     descriptionEs:
-      'Dashboard ejecutivo de ventas enfocado en brechas de desempeño, mejores vendedores e insights geográficos para apoyar decisiones comerciales más rápidas.',
+      'Dashboard comercial en Power BI diseñado para mostrar brechas de desempeño, categorías líderes y oportunidades de mercado con lectura ejecutiva inmediata.',
     highlights: [
       '$16.66K performance gap identified',
-      '23 salespeople analyzed',
-      'Top category and market opportunities surfaced',
+      '23 active sellers analyzed',
+      '$80.05K top revenue category identified',
+      'Tulsa surfaced as the strongest market',
     ],
     highlightsEs: [
       '$16.66K de brecha de desempeño identificada',
-      '23 vendedores analizados',
-      'Oportunidades top por categoría y mercado detectadas',
+      '23 vendedores activos analizados',
+      '$80.05K en la categoría con mayor ingreso identificada',
+      'Tulsa apareció como el mercado más fuerte',
     ],
     dashboardUrl:
       'https://app.powerbi.com/view?r=eyJrIjoiOTk5YTE0MjItZTNiOC00ZmI0LWI1NDUtZDY2ZThjZTYxYmQ0IiwidCI6ImI3YWY4Y2FmLTgzZDgtNDY0NC04NWFlLTMxN2M1NDUyMjNjMSIsImMiOjR9',
@@ -109,9 +115,9 @@ export const projects: Project[] = [
     image: '/images/projects/rice-system.png',
     tech: ['MySQL', 'Python', 'ETL', 'Chart.js', 'Bootstrap'],
     description:
-      'Agricultural analytics project with a Python ETL pipeline, operational KPIs, and a strategic ROI recovery plan backed by dashboard delivery.',
+      'Operational analytics project that connects ETL, KPI tracking, and ROI recovery in a dashboard-backed agricultural workflow.',
     descriptionEs:
-      'Proyecto de analítica agrícola con pipeline ETL en Python, KPIs operativos y un plan estratégico de recuperación de ROI respaldado por dashboards.',
+      'Proyecto de analítica operativa que conecta ETL, seguimiento de KPIs y recuperación de rentabilidad en un flujo agrícola respaldado por dashboards.',
     highlights: [
       'ROI roadmap from -5.58% to +15%',
       '+20.6 point improvement projection',
@@ -122,6 +128,10 @@ export const projects: Project[] = [
       'Proyección de mejora de +20.6 puntos',
       '5 páginas de dashboard respaldadas por ETL',
     ],
+    supportingLabel: 'ETL and KPI delivery',
+    supportingLabelEs: 'Entrega ETL y KPIs',
+    supportingValue: 'Reinforces operational ETL execution, KPI design, and profitability recovery framing.',
+    supportingValueEs: 'Refuerza ejecución ETL operativa, diseño de KPIs y una narrativa clara de recuperación de rentabilidad.',
     demoUrl: 'https://sam-24-dev.github.io/Analisis-Cultivo-Arroz/',
     demoLabel: 'Live Platform',
     demoLabelEs: 'Plataforma en Vivo',
@@ -135,9 +145,9 @@ export const projects: Project[] = [
     image: '/images/projects/pingpong-analysis.png',
     tech: ['R', 'Statistical Modeling', 'RMarkdown', 'Hypothesis Testing'],
     description:
-      'Controlled experimental study that evaluates precision under different conditions and validates model fit through statistical testing.',
+      'Applied statistical study that models ping pong serve precision and validates the result with reproducible methodology.',
     descriptionEs:
-      'Estudio experimental controlado que evalúa la precisión bajo distintas condiciones y valida el ajuste del modelo mediante pruebas estadísticas.',
+      'Estudio estadístico aplicado que modela la precisión del saque en ping pong y valida el resultado con una metodología reproducible.',
     highlights: [
       '309 observations collected',
       'Validated model fit with p = 0.660',
@@ -148,6 +158,10 @@ export const projects: Project[] = [
       'Ajuste del modelo validado con p = 0.660',
       'Insight de correlación de r = 0.65',
     ],
+    supportingLabel: 'Statistical validation',
+    supportingLabelEs: 'Validación estadística',
+    supportingValue: 'Reinforces experimental design, model validation, and reproducible communication of findings.',
+    supportingValueEs: 'Refuerza diseño experimental, validación de modelos y comunicación reproducible de hallazgos.',
     demoUrl: 'https://sam-24-dev.github.io/Analisis-Ping-Pong/',
     demoLabel: 'Live Platform',
     demoLabelEs: 'Plataforma en Vivo',
@@ -161,9 +175,9 @@ export const projects: Project[] = [
     image: '/images/projects/nasa-space-apps.png',
     tech: ['Python', 'Flask', 'React', 'TypeScript', 'Leaflet', 'Recharts'],
     description:
-      'Hackathon MVP that analyzes historical weather signals to estimate extreme conditions and support outdoor planning with interactive maps.',
+      'Hackathon MVP that turns historical weather signals into an interactive planning experience for outdoor decision support.',
     descriptionEs:
-      'MVP de hackathon que analiza señales climáticas históricas para estimar condiciones extremas y apoyar la planificación de actividades con mapas interactivos.',
+      'MVP de hackathon que convierte señales climáticas históricas en una experiencia interactiva para apoyar decisiones de planificación.',
     highlights: [
       '48-hour hackathon build',
       '10 years of historical weather analysis',
@@ -176,6 +190,10 @@ export const projects: Project[] = [
       '5 condiciones extremas rastreadas',
       'Experiencia global con mapas interactivos',
     ],
+    supportingLabel: 'Rapid product execution',
+    supportingLabelEs: 'Ejecución rápida de producto',
+    supportingValue: 'Reinforces rapid prototyping, cross-functional collaboration, and functional delivery under time pressure.',
+    supportingValueEs: 'Refuerza prototipado rápido, colaboración multidisciplinaria y entrega funcional bajo presión de tiempo.',
     demoUrl: 'https://www.youtube.com/watch?v=519T9N7JkZU&feature=youtu.be',
     demoLabel: 'Video Demo',
     demoLabelEs: 'Video Demo',

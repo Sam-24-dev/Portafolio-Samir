@@ -6,6 +6,33 @@ import SkillsGrid from './SkillsGrid';
 const About = () => {
   const { t } = useLanguage();
   const certifications = t.about.certificationsList;
+  type CertificationKind = (typeof certifications)[number]['kind'];
+
+  const getCertificationTag = (kind: CertificationKind) => {
+    switch (kind) {
+      case 'verified':
+        return t.about.credentialTag;
+      case 'program':
+        return t.about.programTag;
+      default:
+        return t.about.awardTag;
+    }
+  };
+
+  const getCertificationTagClasses = (kind: CertificationKind) => {
+    switch (kind) {
+      case 'verified':
+        return 'border-accent-cyan/25 bg-accent-cyan/10 text-accent-cyan';
+      case 'program':
+        return 'border-accent-blue/25 bg-accent-blue/10 text-accent-blue';
+      default:
+        return 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400';
+    }
+  };
+
+  const verifiedCredentials = certifications.filter((cert) => cert.kind === 'verified');
+  const programCredentials = certifications.filter((cert) => cert.kind === 'program');
+  const awardCredentials = certifications.filter((cert) => cert.kind === 'award');
 
   return (
     <section id="about" className="section-padding dark:bg-primary-light light:bg-lightMode-surfaceAlt">
@@ -139,31 +166,135 @@ const About = () => {
               </h3>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {certifications.map((cert) => (
-                <article
-                  key={`${cert.title}-${cert.issuer}`}
-                  className="flex h-full flex-col justify-between rounded-2xl border p-4 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt"
-                >
+            <p className="mb-6 max-w-3xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+              {t.about.certificationsIntro}
+            </p>
+
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+              <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
+                <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="mb-1 font-semibold dark:text-text-primary light:text-lightMode-text-primary">{cert.title}</p>
-                    <p className="mb-2 text-sm text-accent-cyan">{cert.issuer}</p>
-                    <p className="text-sm dark:text-text-secondary light:text-lightMode-text-secondary">{cert.meta}</p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                      {t.about.verifiedCredentials}
+                    </p>
+                    <p className="max-w-2xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                      {t.about.verifiedCredentialsNote}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  {verifiedCredentials.map((cert) => (
+                    <article
+                      key={`${cert.title}-${cert.issuer}`}
+                      className="flex h-full flex-col justify-between rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
+                    >
+                      <div>
+                        <span
+                          className={`mb-4 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}
+                        >
+                          {getCertificationTag(cert.kind)}
+                        </span>
+                        <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
+                          {cert.title}
+                        </p>
+                        <p className="mb-2 text-sm text-accent-cyan">{cert.issuer}</p>
+                        <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                          {cert.meta}
+                        </p>
+                      </div>
+
+                      {cert.href && cert.hrefLabel && (
+                        <a
+                          href={cert.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-accent-cyan/35 bg-accent-cyan/10 px-4 py-2.5 text-sm font-medium text-accent-cyan transition-colors hover:bg-accent-cyan hover:text-primary-bg"
+                        >
+                          <span>{cert.hrefLabel}</span>
+                          <ExternalLink size={16} />
+                        </a>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <div className="grid gap-5">
+                <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
+                  <div className="mb-5">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-blue">
+                      {t.about.programCompletion}
+                    </p>
+                    <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                      {t.about.programCompletionNote}
+                    </p>
                   </div>
 
-                  {cert.href && cert.hrefLabel && (
-                    <a
-                      href={cert.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-accent-cyan transition-colors hover:text-accent-light"
+                  {programCredentials.map((cert) => (
+                    <article
+                      key={`${cert.title}-${cert.issuer}`}
+                      className="rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
                     >
-                      <span>{cert.hrefLabel}</span>
-                      <ExternalLink size={16} />
-                    </a>
-                  )}
-                </article>
-              ))}
+                      <span
+                        className={`mb-4 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}
+                      >
+                        {getCertificationTag(cert.kind)}
+                      </span>
+                      <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
+                        {cert.title}
+                      </p>
+                      <p className="mb-2 text-sm text-accent-cyan">{cert.issuer}</p>
+                      <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                        {cert.meta}
+                      </p>
+                    </article>
+                  ))}
+                </section>
+
+                <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
+                  <div className="mb-5">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-yellow-400">
+                      {t.about.awardsRecognition}
+                    </p>
+                    <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                      {t.about.awardsRecognitionNote}
+                    </p>
+                  </div>
+
+                  {awardCredentials.map((cert) => (
+                    <article
+                      key={`${cert.title}-${cert.issuer}`}
+                      className="rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
+                    >
+                      <span
+                        className={`mb-4 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}
+                      >
+                        {getCertificationTag(cert.kind)}
+                      </span>
+                      <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
+                        {cert.title}
+                      </p>
+                      <p className="mb-2 text-sm text-accent-cyan">{cert.issuer}</p>
+                      <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                        {cert.meta}
+                      </p>
+
+                      {cert.href && cert.hrefLabel && (
+                        <a
+                          href={cert.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-yellow-500/35 bg-yellow-500/10 px-4 py-2.5 text-sm font-medium text-yellow-400 transition-colors hover:bg-yellow-500/20"
+                        >
+                          <span>{cert.hrefLabel}</span>
+                          <ExternalLink size={16} />
+                        </a>
+                      )}
+                    </article>
+                  ))}
+                </section>
+              </div>
             </div>
           </motion.div>
         </div>

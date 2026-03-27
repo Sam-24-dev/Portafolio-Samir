@@ -23,7 +23,7 @@ export const translations = {
     },
     proofStrip: {
       title: 'Key Results',
-      subtitle: 'Results that highlight the analytical and business impact of my work.',
+      subtitle: 'Selected results that show the analytical and business impact of my work.',
       items: [
         {
           value: '2,021',
@@ -74,18 +74,39 @@ export const translations = {
       bootcampFinal:
         'Specialized training in Business Intelligence, analytics, SQL, Python, Power BI, and GenAI for Data Analytics.',
       certifications: 'Certifications',
+      certificationsIntro:
+        'Certifications and recognitions that reinforce my technical and analytical readiness.',
+      verifiedCredentials: 'Verified Credentials',
+      verifiedCredentialsNote: 'Verified analyst signals with public validation links.',
+      programCompletion: 'Program Completion',
+      programCompletionNote: 'Structured training that adds analytical depth and delivery context.',
+      awardsRecognition: 'Recognition & Awards',
+      awardsRecognitionNote: 'External recognition that reinforces credibility without overshadowing core proof.',
+      credentialTag: 'Verified credential',
+      programTag: 'Program completion',
+      awardTag: 'Recognition',
       certificationsList: [
         {
           title: 'Data Analyst Associate',
           issuer: 'DataCamp',
           meta: 'Issued Mar 2026',
+          kind: 'verified',
           href: 'https://www.datacamp.com/certificate/DAA0019896448643',
+          hrefLabel: 'View credential',
+        },
+        {
+          title: 'ETL and ELT in Python',
+          issuer: 'DataCamp',
+          meta: 'Issued Mar 2026',
+          kind: 'verified',
+          href: 'https://www.datacamp.com/statement-of-accomplishment/course/cf1b953a1835bd22e0acf97bf28d289ffc151ed2?raw=1',
           hrefLabel: 'View credential',
         },
         {
           title: 'Microsoft Office Specialist: Excel Associate',
           issuer: 'Microsoft',
           meta: 'Issued Mar 2026',
+          kind: 'verified',
           href: 'https://www.credly.com/badges/7ba4ed36-3918-4cc3-9661-8fa869b022ed',
           hrefLabel: 'View credential',
         },
@@ -93,18 +114,13 @@ export const translations = {
           title: 'Data-Driven Decision Specialist',
           issuer: 'ESPOL & MINTEL',
           meta: 'Bootcamp completion',
-        },
-        {
-          title: 'ETL and ELT in Python',
-          issuer: 'DataCamp',
-          meta: 'Issued Mar 2026',
-          href: 'https://www.datacamp.com/statement-of-accomplishment/course/cf1b953a1835bd22e0acf97bf28d289ffc151ed2?raw=1',
-          hrefLabel: 'View credential',
+          kind: 'program',
         },
         {
           title: 'NASA Space Apps Challenge 2025',
           issuer: 'Galactic Problem Solver',
           meta: 'Oct 2025',
+          kind: 'award',
           href: 'https://portafolio-samir-tau.vercel.app/certificates/nasa-space-apps-2025.pdf',
           hrefLabel: 'View certificate',
         },
@@ -115,12 +131,32 @@ export const translations = {
     projects: {
       title: 'Projects',
       subtitle:
-        'A curated mix of dashboards, customer analytics, statistical analysis, and supporting end-to-end work.',
+        'A curated selection of projects that shows how I turn data into decisions, business context, and executive-ready deliverables.',
       featuredTitle: 'Featured Projects',
       featuredEyebrow: 'Featured',
-      featuredSubtitle: 'The strongest analyst projects in this portfolio.',
-      supportingTitle: 'Additional Projects',
-      supportingSubtitle: 'Additional work that reinforces analytical breadth and end-to-end execution.',
+      featuredSubtitle: 'The projects that best reflect how I work today as a Data Analyst.',
+      caseStudyBadge: 'Analytical Case',
+      caseStudyTeaser: 'Case Overview',
+      caseStudy: 'View Case Study',
+      caseStudyDialogLabel: 'case study',
+      closeCaseStudy: 'Close case study',
+      executiveSummary: 'Case Outcome',
+      quickProofTitle: 'Quick Proof',
+      roleInCaseTitle: "Samir's Role",
+      businessProblemTitle: 'Business context',
+      datasetWorkflowTitle: 'Workflow and tools',
+      toolsUsedTitle: 'Tools and delivery',
+      metricsResultsTitle: 'Key results',
+      ownershipTitle: 'What Samir led',
+      whyItMattersTitle: 'Why it matters',
+      repositoryNotes: 'Full README',
+      supportingTitle: 'Additional Relevant Projects',
+      supportingSubtitle:
+        'Complementary projects that reinforce my portfolio with evidence of ETL delivery, statistical reasoning, and execution in demanding contexts.',
+      supportingContextLabel: 'Why they add value',
+      supportingArchiveIntro:
+        'They add secondary proof of technical delivery, analytical rigor, and execution beyond the flagship case studies.',
+      supportingContributionTitle: 'What it reinforces',
       highlights: 'Key Points',
       liveDemo: 'Live Demo',
       dashboard: 'Dashboard',
@@ -189,7 +225,7 @@ export const translations = {
       contact: 'Contacto',
     },
     hero: {
-      eyebrow: 'Data Analyst',
+      eyebrow: 'Analista de Datos',
       greeting: 'Hola, soy Samir',
       titles: [
         'Constructor de dashboards en Power BI',
@@ -204,7 +240,7 @@ export const translations = {
     },
     proofStrip: {
       title: 'Resultados Clave',
-      subtitle: 'Resultados que muestran el impacto analítico y de negocio de mi trabajo.',
+      subtitle: 'Resultados seleccionados que respaldan el impacto analítico y de negocio de mi trabajo.',
       items: [
         {
           value: '2,021',
@@ -231,9 +267,9 @@ export const translations = {
     about: {
       title: 'Acerca de Mí',
       subtitle:
-        'Perfil de Data Analyst con una base sólida en limpieza de datos, dashboarding, flujos con SQL y storytelling para negocio.',
+        'Perfil de Analista de Datos con una base sólida en limpieza de datos, dashboards, flujos con SQL y storytelling de negocio.',
       paragraph1:
-        'Soy estudiante de 7mo semestre de Ingeniería en Computación en ESPOL y estoy construyendo mi carrera como Data Analyst. Disfruto llevar datasets desde entradas crudas e inconsistentes hasta modelos limpios que responden preguntas concretas de negocio.',
+        'Soy estudiante de 7mo semestre de Ingeniería en Computación en ESPOL y estoy construyendo mi carrera como Analista de Datos. Disfruto transformar datasets crudos e inconsistentes en modelos limpios que responden preguntas concretas de negocio.',
       paragraph2:
         'Mi trabajo reciente cubre customer analytics, dashboards comerciales de BI, análisis de rendimiento en eSports y modelado estadístico. En todos esos proyectos priorizo flujos reproducibles, KPIs claros y visuales que permitan actuar más rápido a stakeholders no técnicos.',
       paragraph3:
@@ -255,18 +291,39 @@ export const translations = {
       bootcampFinal:
         'Especialización en Business Intelligence, analítica, SQL, Python, Power BI y GenAI for Data Analytics.',
       certifications: 'Certificaciones',
+      certificationsIntro:
+        'Certificaciones y reconocimientos que validan mi preparación técnica y analítica.',
+      verifiedCredentials: 'Credenciales Verificables',
+      verifiedCredentialsNote: 'Credenciales analíticas verificables con enlaces públicos de validación.',
+      programCompletion: 'Formación Completada',
+      programCompletionNote: 'Formación estructurada que amplía mi profundidad analítica y contexto de entrega.',
+      awardsRecognition: 'Reconocimientos',
+      awardsRecognitionNote: 'Reconocimientos externos que refuerzan credibilidad sin competir con la prueba principal.',
+      credentialTag: 'Credencial verificable',
+      programTag: 'Formación completada',
+      awardTag: 'Reconocimiento',
       certificationsList: [
         {
           title: 'Data Analyst Associate',
           issuer: 'DataCamp',
           meta: 'Emitido en mar. 2026',
+          kind: 'verified',
           href: 'https://www.datacamp.com/certificate/DAA0019896448643',
+          hrefLabel: 'Ver credencial',
+        },
+        {
+          title: 'ETL y ELT en Python',
+          issuer: 'DataCamp',
+          meta: 'Emitido en mar. 2026',
+          kind: 'verified',
+          href: 'https://www.datacamp.com/statement-of-accomplishment/course/cf1b953a1835bd22e0acf97bf28d289ffc151ed2?raw=1',
           hrefLabel: 'Ver credencial',
         },
         {
           title: 'Microsoft Office Specialist: Excel Associate',
           issuer: 'Microsoft',
           meta: 'Emitido en mar. 2026',
+          kind: 'verified',
           href: 'https://www.credly.com/badges/7ba4ed36-3918-4cc3-9661-8fa869b022ed',
           hrefLabel: 'Ver credencial',
         },
@@ -274,18 +331,13 @@ export const translations = {
           title: 'Data-Driven Decision Specialist',
           issuer: 'ESPOL & MINTEL',
           meta: 'Bootcamp completado',
-        },
-        {
-          title: 'ETL y ELT en Python',
-          issuer: 'DataCamp',
-          meta: 'Emitido en mar. 2026',
-          href: 'https://www.datacamp.com/statement-of-accomplishment/course/cf1b953a1835bd22e0acf97bf28d289ffc151ed2?raw=1',
-          hrefLabel: 'Ver credencial',
+          kind: 'program',
         },
         {
           title: 'NASA Space Apps Challenge 2025',
           issuer: 'Galactic Problem Solver',
           meta: 'oct. 2025',
+          kind: 'award',
           href: 'https://portafolio-samir-tau.vercel.app/certificates/nasa-space-apps-2025.pdf',
           hrefLabel: 'Ver certificado',
         },
@@ -296,12 +348,32 @@ export const translations = {
     projects: {
       title: 'Proyectos',
       subtitle:
-        'Una selección curada de dashboards, analítica de clientes, análisis estadístico y trabajo end-to-end complementario.',
+        'Una selección de proyectos que muestra cómo convierto datos en decisiones, contexto de negocio y entregables ejecutivos.',
       featuredTitle: 'Proyectos Destacados',
       featuredEyebrow: 'Destacado',
-      featuredSubtitle: 'Los proyectos más fuertes para mi perfil actual como Data Analyst.',
-      supportingTitle: 'Proyectos Complementarios',
-      supportingSubtitle: 'Trabajo adicional que refuerza amplitud analítica y ejecución end-to-end.',
+      featuredSubtitle: 'Los proyectos que mejor reflejan cómo trabajo hoy como Analista de Datos.',
+      caseStudyBadge: 'Caso analítico',
+      caseStudyTeaser: 'Resumen del caso',
+      caseStudy: 'Ver Caso de Estudio',
+      caseStudyDialogLabel: 'caso de estudio',
+      closeCaseStudy: 'Cerrar caso de estudio',
+      executiveSummary: 'Resultado del caso',
+      quickProofTitle: 'Prueba rápida',
+      roleInCaseTitle: 'Rol de Samir',
+      businessProblemTitle: 'Contexto del problema',
+      datasetWorkflowTitle: 'Flujo y herramientas',
+      toolsUsedTitle: 'Herramientas y entrega',
+      metricsResultsTitle: 'Resultados clave',
+      ownershipTitle: 'Qué lideró Samir',
+      whyItMattersTitle: 'Por qué importa',
+      repositoryNotes: 'README completo',
+      supportingTitle: 'Otros Proyectos Seleccionados',
+      supportingSubtitle:
+        'Proyectos complementarios que refuerzan mi portafolio con evidencia de ETL, criterio analítico y ejecución en contextos exigentes.',
+      supportingContextLabel: 'Por qué aportan valor',
+      supportingArchiveIntro:
+        'Añaden prueba adicional de entrega técnica, rigor analítico y capacidad de ejecución más allá de los casos principales.',
+      supportingContributionTitle: 'Lo que refuerza',
       highlights: 'Puntos Clave',
       liveDemo: 'Demo en Vivo',
       dashboard: 'Dashboard',
@@ -345,7 +417,7 @@ export const translations = {
       location: 'Ubicación',
       letsConnect: 'Conectemos',
       connectText:
-        'Actualmente busco oportunidades como Data Analyst y estoy abierto a equipos remotos, presenciales, nacionales e internacionales.',
+        'Actualmente busco oportunidades como Analista de Datos y estoy abierto a equipos remotos, presenciales, nacionales e internacionales.',
       name: 'Nombre',
       emailLabel: 'Correo Electrónico',
       message: 'Mensaje',

@@ -16,6 +16,7 @@ const LanguageProbe = () => {
 describe('LanguageContext', () => {
   beforeEach(() => {
     localStorage.clear();
+    document.documentElement.lang = 'en';
     Object.defineProperty(window.navigator, 'language', {
       configurable: true,
       value: 'en-US',
@@ -33,6 +34,7 @@ describe('LanguageContext', () => {
 
     expect(screen.getByText('es')).toBeInTheDocument();
     expect(screen.getByText('Inicio')).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('es');
   });
 
   it('falls back to browser language when there is no saved preference', () => {
@@ -49,5 +51,6 @@ describe('LanguageContext', () => {
 
     expect(screen.getByText('es')).toBeInTheDocument();
     expect(screen.getByText('Inicio')).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('es');
   });
 });
