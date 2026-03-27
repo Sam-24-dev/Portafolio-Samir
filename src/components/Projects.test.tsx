@@ -66,6 +66,27 @@ describe('phase 2 analyst depth batch 1', () => {
     expect(document.body.style.overflow).toBe('');
   });
 
+  it('keeps the case study modal mounted long enough for exit animation before cleanup', async () => {
+    render(
+      <LanguageProvider>
+        <Projects />
+      </LanguageProvider>
+    );
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'View Case Study' })[0]);
+
+    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' });
+    const closeButton = within(dialog).getByRole('button', { name: 'Close case study' });
+
+    fireEvent.click(closeButton);
+
+    expect(screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' })).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'Customer Profile Analytics Dashboard case study' })).not.toBeInTheDocument();
+    });
+  });
+
   it('keeps Spanish featured cards aligned with the Grocery-style structure', () => {
     window.localStorage.setItem('portfolio-language', 'es');
 

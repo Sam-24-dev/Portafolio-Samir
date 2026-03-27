@@ -28,6 +28,7 @@ const Projects = () => {
   const { t, language } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
   const [activeCaseStudyProjectId, setActiveCaseStudyProjectId] = useState<number | null>(null);
+  const [isCaseStudyModalOpen, setIsCaseStudyModalOpen] = useState(false);
 
   const featuredProjects = projects.filter((project) => project.tier === 'featured');
   const supportingProjects = projects.filter((project) => project.tier === 'supporting');
@@ -168,7 +169,10 @@ const Projects = () => {
                       {projectHasCaseStudy && (
                         <motion.button
                           type="button"
-                          onClick={() => setActiveCaseStudyProjectId(project.id)}
+                          onClick={() => {
+                            setActiveCaseStudyProjectId(project.id);
+                            setIsCaseStudyModalOpen(true);
+                          }}
                           className={`${actionClass} border border-accent-cyan/40 bg-accent-cyan/10 text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
@@ -414,8 +418,9 @@ const Projects = () => {
       </div>
       <CaseStudyModal
         caseStudy={activeCaseStudy}
-        isOpen={Boolean(activeCaseStudy && activeProject)}
-        onClose={() => setActiveCaseStudyProjectId(null)}
+        isOpen={isCaseStudyModalOpen && Boolean(activeCaseStudy && activeProject)}
+        onClose={() => setIsCaseStudyModalOpen(false)}
+        onExited={() => setActiveCaseStudyProjectId(null)}
         project={activeProject}
       />
     </section>

@@ -143,7 +143,5 @@ export const caseStudies: CaseStudy[] = [
   },
 ];
 
-export const caseStudyProjectIds = new Set(caseStudies.map((caseStudy) => caseStudy.projectId));
-
 export const getCaseStudyByProjectId = (projectId: number) =>
   caseStudies.find((caseStudy) => caseStudy.projectId === projectId);
