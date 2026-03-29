@@ -273,47 +273,49 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
       className={activeTab === 'preview' ? 'mt-6' : 'hidden'}
     >
       <section className="rounded-[28px] border p-5 dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:p-6">
-        {previewStatus === 'error' ? (
-          <div className="flex min-h-[360px] flex-col items-center justify-center rounded-[24px] border border-dashed border-accent-cyan/30 bg-accent-cyan/5 px-6 py-10 text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
-              {t.projects.previewUnavailableTitle}
-            </p>
-            <p className="mb-6 max-w-xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-              {t.projects.previewUnavailableBody}
-            </p>
-            <a
-              href={caseStudy.links.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-cyan px-4 py-2.5 text-sm font-medium text-primary-bg transition-colors hover:bg-accent-light"
-              onClick={handlePrimaryActionClick}
-            >
-              <ExternalLink size={16} />
-              <span>{t.projects.previewOpenExternal}</span>
-            </a>
-          </div>
-        ) : (
-          <div className="relative overflow-hidden rounded-[24px] border dark:border-primary-lighter light:border-lightMode-border">
-            {shouldRenderPreview && caseStudy.previewUrl ? (
-              <iframe
-                src={caseStudy.previewUrl}
-                title={previewFrameTitle}
-                className="h-[420px] w-full bg-white md:h-[500px]"
-                loading="lazy"
-                allowFullScreen
-                onLoad={() => setPreviewStatus('ready')}
-                onError={() => setPreviewStatus('error')}
-              />
-            ) : null}
+        <div className="relative overflow-hidden rounded-[24px] border dark:border-primary-lighter light:border-lightMode-border">
+          {shouldRenderPreview && caseStudy.previewUrl ? (
+            <iframe
+              src={caseStudy.previewUrl}
+              title={previewFrameTitle}
+              className="h-[420px] w-full bg-white md:h-[500px]"
+              loading="lazy"
+              allowFullScreen
+              onLoad={() => setPreviewStatus('ready')}
+              onError={() => setPreviewStatus('error')}
+            />
+          ) : null}
 
-            {previewStatus === 'loading' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-primary-bg/75 px-6 text-center backdrop-blur-sm">
-                <span className="h-8 w-8 animate-spin rounded-full border-2 border-accent-cyan/30 border-t-accent-cyan" />
-                <p className="text-sm font-medium dark:text-text-primary light:text-white">{t.projects.previewLoading}</p>
+          {previewStatus === 'loading' && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-primary-bg/75 px-6 text-center backdrop-blur-sm">
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-accent-cyan/30 border-t-accent-cyan" />
+              <p className="text-sm font-medium dark:text-text-primary light:text-white">{t.projects.previewLoading}</p>
+            </div>
+          )}
+
+          {previewStatus === 'error' && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary-bg/85 px-6 py-10 text-center backdrop-blur-sm">
+              <div className="w-full max-w-xl rounded-[24px] border border-dashed border-accent-cyan/30 bg-accent-cyan/5 px-6 py-10">
+                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                  {t.projects.previewUnavailableTitle}
+                </p>
+                <p className="mb-6 text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                  {t.projects.previewUnavailableBody}
+                </p>
+                <a
+                  href={caseStudy.links.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-cyan px-4 py-2.5 text-sm font-medium text-primary-bg transition-colors hover:bg-accent-light"
+                  onClick={handlePrimaryActionClick}
+                >
+                  <ExternalLink size={16} />
+                  <span>{t.projects.previewOpenExternal}</span>
+                </a>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </section>
     </div>
   ) : null;

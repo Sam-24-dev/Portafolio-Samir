@@ -218,6 +218,7 @@ describe('phase 2 analyst depth batch 1', () => {
       vi.advanceTimersByTime(6600);
     });
 
+    expect(within(dialog).getByTitle('Customer Profile Analytics Dashboard live preview')).toBeInTheDocument();
     expect(within(dialog).getByText('Preview unavailable here')).toBeInTheDocument();
     expect(
       within(dialog).getByText('This preview could not be embedded in the modal. You can still open it in a new tab.')
