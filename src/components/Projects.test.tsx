@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { LanguageProvider } from '../context/LanguageContext';
 import Projects from './Projects';
 
@@ -12,18 +12,19 @@ const capturePortfolioEvent = (event: Event) => {
 afterEach(() => {
   window.localStorage.clear();
   portfolioEvents.length = 0;
+  vi.useRealTimers();
   window.removeEventListener('portfolio:analytics', capturePortfolioEvent as EventListener);
 });
 
 describe('phase 2 analyst depth batch 1', () => {
-  it('shows case study actions only for the two priority featured projects', () => {
+  it('shows case study actions for all featured projects only', () => {
     render(
       <LanguageProvider>
         <Projects />
       </LanguageProvider>
     );
 
-    expect(screen.getAllByRole('button', { name: 'View Case Study' })).toHaveLength(2);
+    expect(screen.getAllByRole('button', { name: 'View Case Study' })).toHaveLength(3);
 
     const customerCard = screen.getByRole('heading', { name: 'Customer Profile Analytics Dashboard' }).closest('article');
     const esportsCard = screen.getByRole('heading', { name: 'eSports Analytics Dashboard LATAM' }).closest('article');
@@ -35,7 +36,7 @@ describe('phase 2 analyst depth batch 1', () => {
 
     expect(within(customerCard as HTMLElement).getByRole('button', { name: 'View Case Study' })).toBeInTheDocument();
     expect(within(esportsCard as HTMLElement).getByRole('button', { name: 'View Case Study' })).toBeInTheDocument();
-    expect(within(groceryCard as HTMLElement).queryByRole('button', { name: 'View Case Study' })).not.toBeInTheDocument();
+    expect(within(groceryCard as HTMLElement).getByRole('button', { name: 'View Case Study' })).toBeInTheDocument();
   });
 
   it('opens the simplified case study modal with focus, inert background state, and closes it with Escape', async () => {
@@ -132,6 +133,8 @@ describe('phase 2 analyst depth batch 1', () => {
 
     const dialog = screen.getByRole('dialog', { name: 'Dashboard de Customer Profile Analytics' });
 
+    expect(within(dialog).getByRole('tab', { name: 'Resumen' })).toHaveAttribute('aria-selected', 'true');
+    expect(within(dialog).getByRole('tab', { name: 'Vista en Vivo' })).toHaveAttribute('aria-selected', 'false');
     expect(within(dialog).getByText('Resultado del caso')).toBeInTheDocument();
     expect(within(dialog).getByText('Rol de Samir')).toBeInTheDocument();
     expect(within(dialog).getByText('Resultados clave')).toBeInTheDocument();
@@ -143,6 +146,85 @@ describe('phase 2 analyst depth batch 1', () => {
     expect(within(dialog).queryByText('Prueba rápida')).not.toBeInTheDocument();
     expect(within(dialog).queryByText('Qué lideró Samir')).not.toBeInTheDocument();
     expect(within(dialog).queryByText('Herramientas y entrega')).not.toBeInTheDocument();
+  });
+
+  it('shows only supporting filters that have matching projects and keeps featured projects visible', () => {
+    render(
+      <LanguageProvider>
+        <Projects />
+      </LanguageProvider>
+    );
+
+    expect(screen.queryByRole('button', { name: 'Customer Analytics' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'ETL & Data Prep' }));
+
+    expect(screen.getByRole('heading', { name: 'Customer Profile Analytics Dashboard' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'eSports Analytics Dashboard LATAM' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Grocery Sales BI Dashboard' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Rice Crop Analytics Platform' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'NASA Space Apps Challenge 2025' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Statistical Analysis: Ping Pong Precision Model' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('opens Grocery on overview first and lazy-loads the live preview only when selected', () => {
+    render(
+      <LanguageProvider>
+        <Projects />
+      </LanguageProvider>
+    );
+
+    const groceryCard = screen.getByRole('heading', { name: 'Grocery Sales BI Dashboard' }).closest('article');
+
+    expect(groceryCard).not.toBeNull();
+
+    fireEvent.click(within(groceryCard as HTMLElement).getByRole('button', { name: 'View Case Study' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'Grocery Sales BI Dashboard' });
+
+    expect(within(dialog).getByRole('tab', { name: 'Overview' })).toHaveAttribute('aria-selected', 'true');
+    expect(within(dialog).getByRole('tab', { name: 'Live Preview' })).toHaveAttribute('aria-selected', 'false');
+    expect(within(dialog).queryByTitle('Grocery Sales BI Dashboard live preview')).not.toBeInTheDocument();
+
+    fireEvent.click(within(dialog).getByRole('tab', { name: 'Live Preview' }));
+
+    expect(within(dialog).getByRole('tab', { name: 'Live Preview' })).toHaveAttribute('aria-selected', 'true');
+    expect(within(dialog).getByTitle('Grocery Sales BI Dashboard live preview')).toBeInTheDocument();
+    expect(within(dialog).getByText('Loading live preview...')).toBeInTheDocument();
+  });
+
+  it('renders a clean fallback when a live preview cannot be embedded', () => {
+    vi.useFakeTimers();
+
+    render(
+      <LanguageProvider>
+        <Projects />
+      </LanguageProvider>
+    );
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'View Case Study' })[0]);
+
+    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' });
+
+    fireEvent.click(within(dialog).getByRole('tab', { name: 'Live Preview' }));
+
+    const previewFrame = within(dialog).getByTitle('Customer Profile Analytics Dashboard live preview');
+
+    expect(previewFrame).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(6600);
+    });
+
+    expect(within(dialog).getByText('Preview unavailable here')).toBeInTheDocument();
+    expect(
+      within(dialog).getByText('This preview could not be embedded in the modal. You can still open it in a new tab.')
+    ).toBeInTheDocument();
+    expect(within(dialog).getByRole('link', { name: 'Open in new tab' })).toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 
   it('tracks featured and supporting project conversion events', () => {

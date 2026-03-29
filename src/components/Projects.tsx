@@ -3,7 +3,7 @@ import { Award, ExternalLink, FileText, Github } from 'lucide-react';
 import { useRef, useState } from 'react';
 import CaseStudyModal from './CaseStudyModal';
 import { getCaseStudyByProjectId } from '../data/caseStudies';
-import { projects } from '../data/projects';
+import { ProjectCategory, projects } from '../data/projects';
 import { useLanguage } from '../context/LanguageContext';
 import { trackPortfolioEvent } from '../lib/analytics';
 
@@ -25,15 +25,35 @@ const itemVariants: Variants = {
   },
 };
 
+type SupportingFilter = 'all' | ProjectCategory;
+
+const supportingCategoryOrder: ProjectCategory[] = [
+  'bi_dashboards',
+  'customer_analytics',
+  'etl_data_prep',
+  'statistics',
+];
+
 const Projects = () => {
   const { t, language } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
   const [activeCaseStudyProjectId, setActiveCaseStudyProjectId] = useState<number | null>(null);
   const [isCaseStudyModalOpen, setIsCaseStudyModalOpen] = useState(false);
+  const [activeSupportingFilter, setActiveSupportingFilter] = useState<SupportingFilter>('all');
   const lastCaseStudyTriggerRef = useRef<HTMLElement | null>(null);
 
   const featuredProjects = projects.filter((project) => project.tier === 'featured');
   const supportingProjects = projects.filter((project) => project.tier === 'supporting');
+  const availableSupportingFilters: SupportingFilter[] = [
+    'all',
+    ...supportingCategoryOrder.filter((category) =>
+      supportingProjects.some((project) => project.categories?.includes(category))
+    ),
+  ];
+  const filteredSupportingProjects =
+    activeSupportingFilter === 'all'
+      ? supportingProjects
+      : supportingProjects.filter((project) => project.categories?.includes(activeSupportingFilter));
 
   const getHighlights = (project: (typeof projects)[number]) =>
     language === 'es' ? project.highlightsEs : project.highlights;
@@ -45,6 +65,20 @@ const Projects = () => {
     language === 'es' ? project.supportingLabelEs : project.supportingLabel;
   const getSupportingValue = (project: (typeof projects)[number]) =>
     language === 'es' ? project.supportingValueEs : project.supportingValue;
+  const getFilterLabel = (filter: SupportingFilter) => {
+    switch (filter) {
+      case 'bi_dashboards':
+        return t.projects.filters.biDashboards;
+      case 'customer_analytics':
+        return t.projects.filters.customerAnalytics;
+      case 'etl_data_prep':
+        return t.projects.filters.etlDataPrep;
+      case 'statistics':
+        return t.projects.filters.statistics;
+      default:
+        return t.projects.filters.all;
+    }
+  };
   const getDemoLabel = (project: (typeof projects)[number]) => {
     if (language === 'es' && project.demoLabelEs) {
       return project.demoLabelEs;
@@ -319,143 +353,179 @@ const Projects = () => {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:gap-5 xl:grid-cols-3">
-            {supportingProjects.map((project, index) => (
-              <motion.article
-                key={project.id}
-                variants={itemVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                className="overflow-hidden rounded-[24px] border border-dashed shadow-sm dark:border-primary-lighter dark:bg-primary-light/15 light:border-lightMode-border light:bg-lightMode-surface"
-              >
-                <div className="relative">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradients[(index + featuredProjects.length) % gradients.length]}`}></div>
-                  <img
-                    src={project.image}
-                    alt={getTitle(project)}
-                    className="relative z-10 h-44 w-full object-cover object-center opacity-90"
-                    loading="lazy"
-                  />
-                </div>
+          <div className="mb-8 overflow-hidden">
+            <div className="max-w-full overflow-x-auto pb-2">
+              <div className="inline-flex min-w-max gap-3 md:flex-wrap">
+              {availableSupportingFilters.map((filter) => {
+                 const isActive = activeSupportingFilter === filter;
 
-                <div className="p-5 sm:p-6">
-                  {getSupportingLabel(project) && (
-                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
-                      {getSupportingLabel(project)}
-                    </p>
-                  )}
-
-                  <h4 className="mb-3 text-xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
-                    {getTitle(project)}
-                  </h4>
-
-                  {getSupportingValue(project) && (
-                    <div className="mb-4 rounded-2xl border px-4 py-3 dark:border-primary-lighter dark:bg-primary-bg/65 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] dark:text-accent-cyan light:text-lightMode-accent-primary">
-                        {t.projects.supportingContributionTitle}
-                      </p>
-                      <p className="text-sm leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
-                        {getSupportingValue(project)}
-                      </p>
-                    </div>
-                  )}
-
-                  <p className="mb-4 text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                    {getDescription(project)}
-                  </p>
-
-                  <ul className="mb-4 space-y-2">
-                    {getHighlights(project).slice(0, 2).map((highlight) => (
-                      <li
-                        key={highlight}
-                        className="flex items-start gap-3 text-sm dark:text-text-secondary light:text-lightMode-text-secondary"
-                      >
-                        <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&gt;</span>
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mb-5 flex flex-wrap gap-2">
-                    {project.tech.slice(0, 3).map((tech) => (
-                      <span
-                        key={tech}
-                        className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium dark:text-accent-cyan light:text-lightMode-accent-primary"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                    {project.demoUrl && (
-                      <motion.a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${actionClass} bg-accent-cyan text-primary-bg`}
-                        onClick={() => handleProjectDemoClick(project.id, 'supporting_card')}
-                        whileHover={hoverLift}
-                        whileTap={tapPress}
-                      >
-                        <ExternalLink size={16} /> {getDemoLabel(project)}
-                      </motion.a>
-                    )}
-                    {project.analysisUrl && (
-                      <motion.a
-                        href={project.analysisUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
-                        whileHover={hoverLift}
-                        whileTap={tapPress}
-                      >
-                        <FileText size={16} /> {t.projects.analysis}
-                      </motion.a>
-                    )}
-                    {project.reportUrl && (
-                      <motion.a
-                        href={project.reportUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
-                        whileHover={hoverLift}
-                        whileTap={tapPress}
-                      >
-                        <FileText size={16} /> {t.projects.report}
-                      </motion.a>
-                    )}
-                    {project.certificateUrl && (
-                      <motion.a
-                        href={project.certificateUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${actionClass} border border-yellow-500/50 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20`}
-                        whileHover={hoverLift}
-                        whileTap={tapPress}
-                      >
-                        <Award size={16} /> {t.projects.certificate}
-                      </motion.a>
-                    )}
-                    {project.repoUrl && (
-                      <motion.a
-                        href={project.repoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary light:hover:text-lightMode-accent-primary`}
-                        onClick={() => handleProjectRepoClick(project.id, 'supporting_card')}
-                        whileHover={hoverLift}
-                        whileTap={tapPress}
-                      >
-                        <Github size={16} /> {t.projects.github}
-                      </motion.a>
-                    )}
-                  </div>
-                </div>
-              </motion.article>
-            ))}
+                return (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setActiveSupportingFilter(filter)}
+                    className={`focus-ring whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'border-accent-cyan/50 bg-accent-cyan text-primary-bg shadow-lg shadow-accent-cyan/20'
+                        : 'dark:border-primary-lighter dark:bg-primary-light/25 dark:text-text-secondary dark:hover:border-accent-cyan/40 dark:hover:text-text-highlight light:border-lightMode-border light:bg-lightMode-surface light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary/50 light:hover:text-lightMode-text-primary'
+                    }`}
+                    aria-pressed={isActive}
+                  >
+                    {getFilterLabel(filter)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
+          </div>
+
+          {filteredSupportingProjects.length === 0 ? (
+            <div className="rounded-[24px] border border-dashed px-5 py-8 text-center dark:border-primary-lighter dark:bg-primary-light/15 light:border-lightMode-border light:bg-lightMode-surface">
+              <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                {t.projects.filterEmpty}
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:gap-5 xl:grid-cols-3">
+              {filteredSupportingProjects.map((project, index) => (
+                <motion.article
+                  key={project.id}
+                  variants={itemVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.2 }}
+                  className="overflow-hidden rounded-[24px] border border-dashed shadow-sm dark:border-primary-lighter dark:bg-primary-light/15 light:border-lightMode-border light:bg-lightMode-surface"
+                >
+                  <div className="relative">
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${gradients[(index + featuredProjects.length) % gradients.length]}`}
+                    ></div>
+                    <img
+                      src={project.image}
+                      alt={getTitle(project)}
+                      className="relative z-10 h-44 w-full object-cover object-center opacity-90"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  <div className="p-5 sm:p-6">
+                    {getSupportingLabel(project) && (
+                      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                        {getSupportingLabel(project)}
+                      </p>
+                    )}
+
+                    <h4 className="mb-3 text-xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
+                      {getTitle(project)}
+                    </h4>
+
+                    {getSupportingValue(project) && (
+                      <div className="mb-4 rounded-2xl border px-4 py-3 dark:border-primary-lighter dark:bg-primary-bg/65 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
+                        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                          {t.projects.supportingContributionTitle}
+                        </p>
+                        <p className="text-sm leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
+                          {getSupportingValue(project)}
+                        </p>
+                      </div>
+                    )}
+
+                    <p className="mb-4 text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
+                      {getDescription(project)}
+                    </p>
+
+                    <ul className="mb-4 space-y-2">
+                      {getHighlights(project).slice(0, 2).map((highlight) => (
+                        <li
+                          key={highlight}
+                          className="flex items-start gap-3 text-sm dark:text-text-secondary light:text-lightMode-text-secondary"
+                        >
+                          <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&gt;</span>
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mb-5 flex flex-wrap gap-2">
+                      {project.tech.slice(0, 3).map((tech) => (
+                        <span
+                          key={tech}
+                          className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium dark:text-accent-cyan light:text-lightMode-accent-primary"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                      {project.demoUrl && (
+                        <motion.a
+                          href={project.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${actionClass} bg-accent-cyan text-primary-bg`}
+                          onClick={() => handleProjectDemoClick(project.id, 'supporting_card')}
+                          whileHover={hoverLift}
+                          whileTap={tapPress}
+                        >
+                          <ExternalLink size={16} /> {getDemoLabel(project)}
+                        </motion.a>
+                      )}
+                      {project.analysisUrl && (
+                        <motion.a
+                          href={project.analysisUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
+                          whileHover={hoverLift}
+                          whileTap={tapPress}
+                        >
+                          <FileText size={16} /> {t.projects.analysis}
+                        </motion.a>
+                      )}
+                      {project.reportUrl && (
+                        <motion.a
+                          href={project.reportUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
+                          whileHover={hoverLift}
+                          whileTap={tapPress}
+                        >
+                          <FileText size={16} /> {t.projects.report}
+                        </motion.a>
+                      )}
+                      {project.certificateUrl && (
+                        <motion.a
+                          href={project.certificateUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${actionClass} border border-yellow-500/50 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20`}
+                          whileHover={hoverLift}
+                          whileTap={tapPress}
+                        >
+                          <Award size={16} /> {t.projects.certificate}
+                        </motion.a>
+                      )}
+                      {project.repoUrl && (
+                        <motion.a
+                          href={project.repoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary light:hover:text-lightMode-accent-primary`}
+                          onClick={() => handleProjectRepoClick(project.id, 'supporting_card')}
+                          whileHover={hoverLift}
+                          whileTap={tapPress}
+                        >
+                          <Github size={16} /> {t.projects.github}
+                        </motion.a>
+                      )}
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <CaseStudyModal

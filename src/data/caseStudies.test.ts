@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { caseStudies } from './caseStudies';
 
 describe('case studies data', () => {
-  it('defines two analyst depth targets with concise bilingual sections', () => {
-    expect(caseStudies.map((caseStudy) => caseStudy.projectId)).toEqual([1, 2]);
+  it('defines three featured analyst depth targets with preview-ready bilingual sections', () => {
+    expect(caseStudies.map((caseStudy) => caseStudy.projectId)).toEqual([1, 2, 3]);
 
     for (const caseStudy of caseStudies) {
       expect(caseStudy.summary).toBeTruthy();
@@ -20,8 +20,13 @@ describe('case studies data', () => {
       expect(caseStudy.metricsAndResultEs).toHaveLength(3);
       expect(caseStudy.whyItMatters).toBeTruthy();
       expect(caseStudy.whyItMattersEs).toBeTruthy();
-      expect(caseStudy.links.caseStudyUrl).toMatch(/^https:\/\/github\.com\//);
       expect(caseStudy.links.liveUrl).toMatch(/^https?:\/\//);
+      expect(caseStudy.previewType).toMatch(/^(powerbi|iframe)$/);
+      expect(caseStudy.previewUrl).toMatch(/^https?:\/\//);
+
+      if (caseStudy.links.caseStudyUrl) {
+        expect(caseStudy.links.caseStudyUrl).toMatch(/^https?:\/\//);
+      }
     }
   });
 });

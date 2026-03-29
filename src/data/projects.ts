@@ -1,8 +1,10 @@
 export type ProjectTier = 'featured' | 'supporting';
+export type ProjectCategory = 'bi_dashboards' | 'customer_analytics' | 'etl_data_prep' | 'statistics';
 
 export interface Project {
   id: number;
   tier: ProjectTier;
+  categories?: ProjectCategory[];
   title: string;
   titleEs: string;
   image: string;
@@ -110,6 +112,7 @@ export const projects: Project[] = [
   {
     id: 4,
     tier: 'supporting',
+    categories: ['bi_dashboards', 'etl_data_prep'],
     title: 'Rice Crop Analytics Platform',
     titleEs: 'Plataforma Analítica para Cultivo de Arroz',
     image: '/images/projects/rice-system.png',
@@ -140,6 +143,7 @@ export const projects: Project[] = [
   {
     id: 5,
     tier: 'supporting',
+    categories: ['statistics'],
     title: 'Statistical Analysis: Ping Pong Precision Model',
     titleEs: 'Análisis Estadístico: Modelo de Precisión en Ping Pong',
     image: '/images/projects/pingpong-analysis.png',
@@ -170,6 +174,7 @@ export const projects: Project[] = [
   {
     id: 6,
     tier: 'supporting',
+    categories: ['etl_data_prep'],
     title: 'NASA Space Apps Challenge 2025',
     titleEs: 'NASA Space Apps Challenge 2025',
     image: '/images/projects/nasa-space-apps.png',
