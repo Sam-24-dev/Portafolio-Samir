@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ProofStrip from './components/ProofStrip';
@@ -10,8 +11,15 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import { useLanguage } from './context/LanguageContext';
 
 function App() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    document.title =
+      language === 'es'
+        ? 'Samir Caizapasto | Portafolio de Analista de Datos'
+        : 'Samir Caizapasto | Data Analyst Portfolio';
+  }, [language]);
 
   return (
     <div id="app-shell" className="min-h-screen">
