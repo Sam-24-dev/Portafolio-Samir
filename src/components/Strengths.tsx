@@ -50,12 +50,14 @@ const Strengths = () => {
           >
             <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
               <div>
-                <h3 className="text-2xl font-poppins font-semibold gradient-text">{t.skills.keyStrengths}</h3>
+                <h3 className="text-2xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
+                  {t.skills.keyStrengths}
+                </h3>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                   {t.about.focusAreas.join(' • ')}
                 </p>
               </div>
-              <span className="rounded-full border border-accent-cyan/25 bg-accent-cyan/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+              <span className="ui-pill-teal px-3 py-1 text-[11px] uppercase tracking-[0.18em]">
                 {t.skills.analystFirstTag}
               </span>
             </div>
@@ -66,7 +68,7 @@ const Strengths = () => {
                   key={strength}
                   className="flex min-h-28 gap-4 rounded-2xl border p-4 dark:border-primary-lighter/60 dark:bg-primary-light/40 light:border-lightMode-border light:bg-lightMode-surfaceAlt"
                 >
-                  <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-cyan/15 text-sm font-semibold text-accent-cyan">
+                  <span className="ui-marker mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
                     +
                   </span>
                   <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">{strength}</p>
@@ -94,7 +96,7 @@ const Strengths = () => {
                   key={skill}
                   className="flex items-start gap-3 rounded-2xl border px-4 py-3 dark:border-primary-lighter/50 dark:bg-primary-light/30 light:border-lightMode-border light:bg-lightMode-surfaceAlt"
                 >
-                  <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-accent-blue" />
+                  <span className="ui-surface-blue mt-1 h-2.5 w-2.5 shrink-0 rounded-full border" />
                   <span className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">{skill}</span>
                 </li>
               ))}

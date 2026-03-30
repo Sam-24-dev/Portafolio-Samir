@@ -1,26 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, Download } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { trackPortfolioEvent } from '../lib/analytics';
+import HintBubble from './HintBubble';
 
 const Hero = () => {
   const { t, language } = useLanguage();
-  const shouldReduceMotion = useReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
+  const shouldReduceMotion =
+    prefersReducedMotion ||
+    (typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false);
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [activeTechHint, setActiveTechHint] = useState<string | null>(null);
+  const touchHintTimeoutRef = useRef<number | null>(null);
 
   const titles = t.hero.titles;
 
   useEffect(() => {
-    const fallbackTitle = titles[0] ?? '';
-
     if (shouldReduceMotion) {
-      if (displayText !== fallbackTitle) {
-        setDisplayText(fallbackTitle);
+      const nextTitle = titles[titleIndex] ?? '';
+      if (displayText !== nextTitle) {
+        setDisplayText(nextTitle);
+        return;
       }
-      return;
+
+      const timeout = window.setTimeout(() => {
+        setTitleIndex((prev) => (prev + 1) % titles.length);
+      }, 3200);
+
+      return () => window.clearTimeout(timeout);
     }
 
     const currentTitle = titles[titleIndex];
@@ -44,6 +55,14 @@ const Hero = () => {
 
     return () => clearTimeout(timeout);
   }, [displayText, isDeleting, shouldReduceMotion, titleIndex, titles]);
+
+  useEffect(() => {
+    return () => {
+      if (touchHintTimeoutRef.current !== null) {
+        window.clearTimeout(touchHintTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -102,7 +121,7 @@ const Hero = () => {
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8 }}
             className="flex-1 text-center lg:max-w-2xl lg:text-left"
           >
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+            <p className="ui-eyebrow mb-4 text-sm font-semibold uppercase tracking-[0.28em]">
               {t.hero.eyebrow}
             </p>
 
@@ -113,7 +132,7 @@ const Hero = () => {
             <div className="mx-auto flex min-h-[72px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">
               <h2 className="text-2xl font-poppins font-semibold leading-tight gradient-text sm:text-3xl md:text-4xl">
                 {displayText}
-                <span className={shouldReduceMotion ? '' : 'animate-pulse'}>|</span>
+                <span className={shouldReduceMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
               </h2>
             </div>
 
@@ -129,7 +148,7 @@ const Hero = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={liftMotion}
-                  className="focus-ring flex min-h-11 items-center gap-2.5 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors dark:border-white/10 dark:bg-primary-light/60 dark:text-text-primary dark:hover:bg-primary-lighter light:border-black/10 light:bg-lightMode-surface/80 light:text-lightMode-text-primary light:hover:bg-lightMode-surfaceAlt"
+                  className="focus-ring ui-btn-neutral"
                   onClick={() =>
                     trackPortfolioEvent('external_profile_click', {
                       location: 'hero',
@@ -148,7 +167,7 @@ const Hero = () => {
               <motion.button
                 type="button"
                 onClick={() => scrollToSection('projects')}
-                className="focus-ring min-h-12 rounded-lg bg-accent-cyan px-8 py-3 font-semibold text-primary-bg transition-all hover:bg-accent-light"
+                className="focus-ring ui-btn-primary px-8"
                 whileHover={buttonHoverMotion}
                 whileTap={buttonTapMotion}
               >
@@ -156,8 +175,8 @@ const Hero = () => {
               </motion.button>
               <motion.a
                 href="/cv/SamirCaizapastoCV.pdf"
-                download
-                className="focus-ring flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 px-8 py-3 font-semibold transition-all dark:border-accent-cyan dark:text-accent-cyan dark:hover:bg-accent-cyan dark:hover:text-primary-bg light:border-lightMode-accent-primary light:text-lightMode-accent-primary light:hover:border-lightMode-accent-primary light:hover:bg-lightMode-accent-primary light:hover:text-white"
+                download="SamirCaizapastoCV.pdf"
+                className="focus-ring ui-btn-secondary px-8"
                 whileHover={buttonHoverMotion}
                 whileTap={buttonTapMotion}
                 onClick={() =>
@@ -178,36 +197,58 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
-            className="relative h-56 w-56 flex-shrink-0 sm:h-72 sm:w-72 md:h-96 md:w-96"
+            className="relative h-[20rem] w-[20rem] flex-shrink-0 sm:h-[22rem] sm:w-[22rem] md:h-[26rem] md:w-[26rem]"
           >
             <motion.div
-              className="absolute inset-[-24px] sm:inset-[-44px] md:inset-[-72px]"
+              className="absolute inset-0"
               animate={shouldReduceMotion ? undefined : { rotate: 360 }}
               transition={shouldReduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: 'linear' }}
             >
               {techIcons.map((icon, index) => {
                 const angle = (index / techIcons.length) * 2 * Math.PI;
-                const radius = 'calc(50% - 20px)';
-                const x = `calc(50% + ${radius} * ${Math.cos(angle)} - 20px)`;
-                const y = `calc(50% + ${radius} * ${Math.sin(angle)} - 20px)`;
+                const radius = 'calc(50% - 1.5rem)';
+                const x = `calc(50% + ${radius} * ${Math.cos(angle)} - 1.5rem)`;
+                const y = `calc(50% + ${radius} * ${Math.sin(angle)} - 1.5rem)`;
 
                 return (
                   <motion.div
                     key={icon.alt}
-                    className={`absolute h-10 w-10 rounded-2xl border p-2 shadow-xl dark:border-primary-lighter/50 dark:bg-primary-light/70 light:border-lightMode-border light:bg-lightMode-surface/95 sm:h-12 sm:w-12 md:h-14 md:w-14 ${
-                      index > 5 ? 'hidden sm:block' : ''
-                    }`}
+                    className="absolute h-12 w-12 sm:h-12 sm:w-12 md:h-14 md:w-14"
                     style={{ top: y, left: x }}
                     animate={shouldReduceMotion ? undefined : { rotate: -360 }}
                     transition={shouldReduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: 'linear' }}
                   >
-                    <img src={icon.src} alt="" aria-hidden="true" className="h-full w-full object-contain" />
+                    <button
+                      type="button"
+                      aria-label={icon.alt}
+                      className="focus-ring ui-orbit-tile relative flex h-full w-full items-center justify-center rounded-2xl border p-2"
+                      onMouseEnter={() => setActiveTechHint(icon.alt)}
+                      onMouseLeave={() => setActiveTechHint((current) => (current === icon.alt ? null : current))}
+                      onFocus={() => setActiveTechHint(icon.alt)}
+                      onBlur={() => setActiveTechHint((current) => (current === icon.alt ? null : current))}
+                      onClick={() => {
+                        setActiveTechHint(icon.alt);
+                        if (touchHintTimeoutRef.current !== null) {
+                          window.clearTimeout(touchHintTimeoutRef.current);
+                        }
+                        touchHintTimeoutRef.current = window.setTimeout(() => {
+                          setActiveTechHint((current) => (current === icon.alt ? null : current));
+                        }, 1800);
+                      }}
+                    >
+                      <img src={icon.src} alt="" aria-hidden="true" className="h-full w-full object-contain" />
+                      <HintBubble
+                        text={icon.alt}
+                        visible={activeTechHint === icon.alt}
+                        className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"
+                      />
+                    </button>
                   </motion.div>
                 );
               })}
             </motion.div>
 
-            <div className="relative h-full w-full rounded-full p-1 gradient-border">
+            <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full p-1 gradient-border sm:h-64 sm:w-64 md:h-80 md:w-80">
               <img
                 src="/images/perfil.jpg"
                 alt="Portrait of Samir Caizapasto"

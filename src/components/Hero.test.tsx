@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Hero from './Hero';
 import { LanguageProvider } from '../context/LanguageContext';
@@ -16,12 +16,26 @@ const renderHero = () =>
     </LanguageProvider>
   );
 
+const setReducedMotionPreference = (matches: boolean) => {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches: query === '(prefers-reduced-motion: reduce)' ? matches : false,
+    media: query,
+    onchange: null,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    dispatchEvent: () => false,
+  })) as typeof window.matchMedia;
+};
+
 describe('Hero', () => {
   beforeEach(() => {
     portfolioEvents.length = 0;
     window.addEventListener('portfolio:analytics', capturePortfolioEvent as EventListener);
     localStorage.setItem('portfolio-language', 'en');
     vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
+    setReducedMotionPreference(false);
   });
 
   afterEach(() => {
@@ -65,5 +79,38 @@ describe('Hero', () => {
         target: 'linkedin_profile',
       },
     ]);
+  });
+
+  it('keeps rotating full hero titles when reduced motion is enabled', async () => {
+    vi.useFakeTimers();
+    setReducedMotionPreference(true);
+
+    renderHero();
+
+    expect(screen.getByText('Power BI Dashboard Builder')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(4000);
+    });
+
+    expect(screen.getByText('SQL and Python Workflow Builder')).toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
+  it('shows interactive labels for all orbit technologies', () => {
+    renderHero();
+
+    const technologies = ['Python', 'SQL', 'Power BI', 'R', 'Jupyter', 'Pandas', 'Git', 'TypeScript'];
+
+    technologies.forEach((technology) => {
+      expect(screen.getByRole('button', { name: technology })).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText('Python')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Python' }));
+
+    expect(screen.getByText('Python')).toBeInTheDocument();
   });
 });

@@ -16,7 +16,7 @@ const ProofStrip = () => {
         >
           <div className="px-5 py-7 sm:px-6 md:px-8 md:py-8">
             <div className="mb-6 max-w-2xl md:mb-8">
-              <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+              <p className="ui-eyebrow mb-2 text-sm font-semibold uppercase tracking-[0.22em]">
                 {t.proofStrip.title}
               </p>
               <p className="max-w-xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary sm:text-base">
@@ -33,7 +33,7 @@ const ProofStrip = () => {
                   <p className="mb-2 text-3xl font-poppins font-bold dark:text-text-highlight light:text-lightMode-text-primary">
                     {item.value}
                   </p>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] dark:text-accent-cyan light:text-lightMode-accent-primary sm:text-sm">
+                  <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.14em] sm:text-sm">
                     {item.label}
                   </p>
                   <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">

@@ -287,16 +287,16 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
           ) : null}
 
           {previewStatus === 'loading' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-primary-bg/75 px-6 text-center backdrop-blur-sm">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center backdrop-blur-sm dark:bg-primary-bg/75 light:bg-slate-900/45">
               <span className="h-8 w-8 animate-spin rounded-full border-2 border-accent-cyan/30 border-t-accent-cyan" />
               <p className="text-sm font-medium dark:text-text-primary light:text-white">{t.projects.previewLoading}</p>
             </div>
           )}
 
           {previewStatus === 'error' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary-bg/85 px-6 py-10 text-center backdrop-blur-sm">
-              <div className="w-full max-w-xl rounded-[24px] border border-dashed border-accent-cyan/30 bg-accent-cyan/5 px-6 py-10">
-                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 py-10 text-center backdrop-blur-sm dark:bg-primary-bg/85 light:bg-slate-900/50">
+              <div className="ui-surface-neutral w-full max-w-xl rounded-[24px] border border-dashed px-6 py-10">
+                <p className="ui-eyebrow mb-3 text-sm font-semibold uppercase tracking-[0.18em]">
                   {t.projects.previewUnavailableTitle}
                 </p>
                 <p className="mb-6 text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
@@ -306,7 +306,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                   href={caseStudy.links.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-cyan px-4 py-2.5 text-sm font-medium text-primary-bg transition-colors hover:bg-accent-light"
+                  className="focus-ring ui-btn-primary inline-flex"
                   onClick={handlePrimaryActionClick}
                 >
                   <ExternalLink size={16} />
@@ -329,7 +329,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={overlayTransition}
-          className="fixed inset-0 z-[90] bg-primary-bg/80 backdrop-blur-md"
+          className="fixed inset-0 z-[90] backdrop-blur-md dark:bg-primary-bg/80 light:bg-slate-900/40"
           onClick={onClose}
         >
           <div className="flex min-h-full items-end justify-center sm:items-center sm:p-6">
@@ -344,12 +344,12 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
               transition={panelTransition}
               onClick={(event) => event.stopPropagation()}
               onKeyDown={handleDialogKeyDown}
-              className="flex max-h-[88vh] w-full flex-col overflow-hidden rounded-t-[32px] border dark:border-primary-lighter dark:bg-primary-light light:border-lightMode-border light:bg-lightMode-surface sm:max-h-[90vh] sm:max-w-5xl sm:rounded-[32px]"
+            className="flex max-h-[88vh] w-full flex-col overflow-hidden rounded-t-[32px] border shadow-[0_28px_80px_rgba(15,23,42,0.22)] dark:border-primary-lighter dark:bg-primary-light light:border-lightMode-border light:bg-white sm:max-h-[90vh] sm:max-w-5xl sm:rounded-[32px]"
             >
               <div className="sticky top-0 z-20 border-b px-5 py-4 backdrop-blur-sm dark:border-primary-lighter dark:bg-primary-light/95 light:border-lightMode-border light:bg-lightMode-surface/95 sm:px-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                    <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.2em]">
                       {t.projects.caseStudyBadge}
                     </p>
                     <h3
@@ -375,7 +375,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                   <div
                     role="tablist"
                     aria-label={t.projects.caseStudyTabsLabel}
-                    className="inline-flex rounded-full border p-1 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surfaceAlt"
+                    className="ui-control-shell inline-flex rounded-full"
                   >
                     {tabs.map((tab, index) => {
                       const isSelected = activeTab === tab.id;
@@ -395,10 +395,10 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                           disabled={tab.disabled}
                           onClick={() => handleSelectTab(tab.id)}
                           onKeyDown={(event) => handleTabKeyDown(event, index)}
-                          className={`focus-ring rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                          className={`focus-ring ui-control-toggle rounded-full ${
                             isSelected
-                              ? 'bg-accent-cyan text-primary-bg'
-                              : 'dark:text-text-secondary dark:hover:text-text-highlight light:text-lightMode-text-secondary light:hover:text-lightMode-text-primary'
+                              ? 'ui-control-toggle-active'
+                              : 'ui-control-toggle-idle'
                           } ${tab.disabled ? 'cursor-not-allowed opacity-50' : ''}`}
                         >
                           {tab.label}
@@ -409,7 +409,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                 </div>
               </div>
 
-              <div className="overflow-y-auto overscroll-contain px-5 pb-6 pt-5 sm:px-6 sm:pb-8 md:px-8">
+              <div className="overflow-y-auto overscroll-contain px-5 pb-6 pt-5 light:bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] sm:px-6 sm:pb-8 md:px-8">
                 <div
                   id={overviewPanelId}
                   role="tabpanel"
@@ -418,7 +418,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                   className={activeTab === 'overview' ? undefined : 'hidden'}
                 >
                   <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
-                    <div className="self-start overflow-hidden rounded-[24px] border dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
+                    <div className="self-start overflow-hidden rounded-[24px] border shadow-sm dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-white">
                       <div className="aspect-[16/10] w-full">
                         <img
                           src={project.image}
@@ -430,8 +430,8 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                     </div>
 
                     <div className="space-y-4">
-                      <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:p-6">
-                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                      <section className="ui-surface-neutral rounded-[24px] border p-5 shadow-sm sm:p-6">
+                        <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
                           {t.projects.executiveSummary}
                         </p>
                         <p className="text-base leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
@@ -439,8 +439,8 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                         </p>
                       </section>
 
-                      <section className="rounded-[24px] border border-accent-cyan/25 bg-accent-cyan/10 p-5 sm:p-6">
-                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                      <section className="ui-surface-teal rounded-[24px] border p-5 sm:p-6">
+                        <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
                           {t.projects.roleInCaseTitle}
                         </p>
                         <p className="text-sm leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
@@ -452,7 +452,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
 
                   <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
                     <div className="space-y-4">
-                      <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:p-6">
+                      <section className="ui-surface-neutral rounded-[24px] border p-5 shadow-sm sm:p-6">
                         <h4 className="mb-3 text-lg font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                           {t.projects.metricsResultsTitle}
                         </h4>
@@ -460,7 +460,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                           {metricsAndResult.map((metric) => (
                             <div
                               key={metric}
-                              className="self-start rounded-2xl border px-4 py-3 dark:border-accent-cyan/20 dark:bg-accent-cyan/5 light:border-lightMode-border light:bg-lightMode-surface"
+                              className="self-start rounded-2xl border px-4 py-3 shadow-sm dark:border-accent-cyan/20 dark:bg-accent-cyan/5 light:border-lightMode-border light:bg-white"
                             >
                               <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                                 {metric}
@@ -470,7 +470,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                         </div>
                       </section>
 
-                      <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:p-6">
+                      <section className="ui-surface-neutral rounded-[24px] border p-5 shadow-sm sm:p-6">
                         <h4 className="mb-3 text-lg font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                           {t.projects.businessProblemTitle}
                         </h4>
@@ -489,7 +489,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                     </div>
 
                     <div className="space-y-4">
-                      <section className="rounded-[24px] border border-accent-cyan/25 bg-accent-cyan/10 p-5 sm:p-6">
+                      <section className="ui-surface-teal rounded-[24px] border p-5 sm:p-6">
                         <h4 className="mb-3 text-lg font-poppins font-semibold dark:text-accent-cyan light:text-lightMode-accent-primary">
                           {t.projects.whyItMattersTitle}
                         </h4>
@@ -498,7 +498,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                         </p>
                       </section>
 
-                      <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-bg/60 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:p-6">
+                      <section className="ui-surface-neutral rounded-[24px] border p-5 shadow-sm sm:p-6">
                         <h4 className="mb-3 text-lg font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                           {t.projects.datasetWorkflowTitle}
                         </h4>
@@ -517,10 +517,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                         <div className="mt-5 border-t pt-4 dark:border-primary-lighter light:border-lightMode-border">
                           <div className="flex flex-wrap gap-2">
                             {toolsUsed.map((tool) => (
-                              <span
-                                key={tool}
-                                className="rounded-full border border-accent-blue/25 bg-accent-blue/10 px-3 py-1 text-xs font-medium dark:text-accent-blue light:text-lightMode-accent-secondary"
-                              >
+                              <span key={tool} className="ui-pill-blue px-3 py-1 text-xs font-medium">
                                 {tool}
                               </span>
                             ))}
@@ -539,7 +536,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                       href={caseStudy.links.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="focus-ring flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-cyan px-4 py-2.5 text-sm font-medium text-primary-bg transition-colors hover:bg-accent-light"
+                      className="focus-ring ui-btn-primary flex"
                       onClick={handlePrimaryActionClick}
                     >
                       <ExternalLink size={16} />
@@ -552,7 +549,7 @@ const CaseStudyModal = ({ caseStudy, isOpen, onClose, onExited, project, trigger
                       href={caseStudy.links.caseStudyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="focus-ring flex min-h-11 items-center justify-center gap-2 rounded-lg border border-accent-cyan/40 bg-accent-cyan/10 px-4 py-2.5 text-sm font-medium dark:text-accent-cyan dark:hover:bg-accent-cyan dark:hover:text-primary-bg light:text-lightMode-accent-primary light:hover:border-lightMode-accent-primary light:hover:bg-lightMode-accent-primary light:hover:text-white"
+                      className="focus-ring ui-btn-secondary flex"
                     >
                       <FileText size={16} />
                       <span>{t.projects.repositoryNotes}</span>

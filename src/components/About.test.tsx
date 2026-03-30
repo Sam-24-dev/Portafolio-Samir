@@ -50,6 +50,7 @@ describe('phase 2 analyst depth batch 3', () => {
     expect(within(coreStackSection as HTMLElement).getAllByText('DAX').length).toBeGreaterThan(0);
     expect(within(coreStackSection as HTMLElement).getByText('Excel')).toBeInTheDocument();
     expect(within(coreStackSection as HTMLElement).getByText('MySQL')).toBeInTheDocument();
+    expect(within(coreStackSection as HTMLElement).queryByText('8')).not.toBeInTheDocument();
     expect(within(coreStackSection as HTMLElement).queryByText('TypeScript')).not.toBeInTheDocument();
 
     expect(within(supportingToolsSection as HTMLElement).getByText('Jupyter')).toBeInTheDocument();

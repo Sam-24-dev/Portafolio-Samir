@@ -1,12 +1,15 @@
 import { Sun, Moon } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
+import HintBubble from './HintBubble';
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
+  const [showHint, setShowHint] = useState(false);
   const motionProps = shouldReduceMotion
     ? {}
     : {
@@ -15,25 +18,37 @@ const ThemeToggle = () => {
       };
 
   return (
-    <motion.button
-      type="button"
-      onClick={toggleTheme}
-      className="focus-ring relative rounded-lg p-2 transition-colors hover:bg-accent-cyan/10"
-      aria-label={theme === 'dark' ? t.accessibility.switchToLightTheme : t.accessibility.switchToDarkTheme}
-      {...motionProps}
-    >
-      <motion.div
-        initial={false}
-        animate={{ rotate: theme === 'dark' ? 180 : 0 }}
-        transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.3, ease: 'easeInOut' }}
+    <div className="relative flex items-center">
+      <motion.button
+        type="button"
+        onClick={toggleTheme}
+        onMouseEnter={() => setShowHint(true)}
+        onMouseLeave={() => setShowHint(false)}
+        onFocus={() => setShowHint(true)}
+        onBlur={() => setShowHint(false)}
+        className="focus-ring relative rounded-lg p-2 transition-colors hover:bg-accent-cyan/10 light:hover:bg-lightMode-accent-primary/10"
+        aria-label={theme === 'dark' ? t.accessibility.switchToLightTheme : t.accessibility.switchToDarkTheme}
+        {...motionProps}
       >
-        {theme === 'light' ? (
-          <Moon size={20} className="text-lightMode-text-secondary" />
-        ) : (
-          <Sun size={20} className="text-accent-cyan" />
-        )}
-      </motion.div>
-    </motion.button>
+        <motion.div
+          initial={false}
+          animate={{ rotate: theme === 'dark' ? 180 : 0 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.3, ease: 'easeInOut' }}
+        >
+          {theme === 'light' ? (
+            <Moon size={20} className="text-lightMode-text-secondary" />
+          ) : (
+            <Sun size={20} className="text-accent-cyan" />
+          )}
+        </motion.div>
+      </motion.button>
+
+      <HintBubble
+        text={t.accessibility.changeTheme}
+        visible={showHint}
+        className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"
+      />
+    </div>
   );
 };
 

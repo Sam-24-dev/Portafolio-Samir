@@ -22,11 +22,22 @@ const About = () => {
   const getCertificationTagClasses = (kind: CertificationKind) => {
     switch (kind) {
       case 'verified':
-        return 'border-accent-cyan/25 bg-accent-cyan/10 text-accent-cyan';
+        return 'ui-pill-teal';
       case 'program':
-        return 'border-accent-blue/25 bg-accent-blue/10 text-accent-blue';
+        return 'ui-pill-blue';
       default:
-        return 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400';
+        return 'ui-pill-amber';
+    }
+  };
+
+  const getIssuerClasses = (kind: CertificationKind) => {
+    switch (kind) {
+      case 'verified':
+        return 'ui-eyebrow';
+      case 'program':
+        return 'text-lightMode-accent-secondary dark:text-accent-blue';
+      default:
+        return 'text-lightMode-accent-tertiary dark:text-yellow-400';
     }
   };
 
@@ -59,7 +70,7 @@ const About = () => {
             transition={{ duration: 0.6 }}
           >
             <div className="mb-6 flex items-center gap-3">
-              <User size={28} className="text-accent-cyan" />
+              <User size={28} className="ui-eyebrow" />
               <h3 className="text-2xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                 {t.about.knowMeBetter}
               </h3>
@@ -75,7 +86,7 @@ const About = () => {
               {t.about.focusAreas.map((area) => (
                 <span
                   key={area}
-                  className="rounded-full border border-accent-cyan/25 bg-accent-cyan/10 px-4 py-2 text-sm font-medium text-accent-cyan"
+                  className="ui-pill-teal px-4 py-2 text-sm font-medium"
                 >
                   {area}
                 </span>
@@ -91,7 +102,7 @@ const About = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="mb-6 flex items-center gap-3">
-              <BrainCircuit size={28} className="text-accent-cyan" />
+              <BrainCircuit size={28} className="ui-eyebrow" />
               <h3 className="text-2xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                 {t.about.skillsAndTools}
               </h3>
@@ -110,8 +121,8 @@ const About = () => {
             whileHover={{ y: -5, transition: { duration: 0.3 } }}
           >
             <div className="mb-4 flex items-center gap-3">
-              <div className="rounded-lg bg-accent-cyan/10 p-2">
-                <GraduationCap size={24} className="text-accent-cyan" />
+              <div className="ui-section-icon rounded-lg p-2">
+                <GraduationCap size={24} />
               </div>
               <h3 className="text-xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                 {t.about.education}
@@ -120,19 +131,19 @@ const About = () => {
 
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="flex h-full flex-col rounded-2xl border p-5 dark:border-primary-lighter dark:bg-primary-light/40 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
                   {t.about.academicTraining}
                 </p>
                 <p className="mb-1 font-semibold dark:text-text-primary light:text-lightMode-text-primary">{t.about.degree}</p>
                 <p className="mb-2 text-sm dark:text-text-secondary light:text-lightMode-text-secondary">{t.about.university}</p>
-                <p className="mb-3 text-sm font-medium text-accent-cyan">{t.about.academicDates}</p>
+                <p className="ui-eyebrow-soft mb-3 text-sm font-medium">{t.about.academicDates}</p>
                 <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                   {t.about.academicSummary}
                 </p>
               </div>
 
               <div className="flex h-full flex-col rounded-2xl border p-5 dark:border-primary-lighter dark:bg-primary-light/40 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
                   {t.about.specializedTraining}
                 </p>
                 <p className="mb-1 font-semibold dark:text-text-primary light:text-lightMode-text-primary">
@@ -141,7 +152,7 @@ const About = () => {
                 <p className="mb-2 text-sm dark:text-text-secondary light:text-lightMode-text-secondary">
                   {t.about.bootcampInstitution}
                 </p>
-                <p className="mb-3 text-sm font-medium text-accent-cyan">{t.about.bootcampDates}</p>
+                <p className="ui-eyebrow-soft mb-3 text-sm font-medium">{t.about.bootcampDates}</p>
                 <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                   {t.about.bootcampFinal}
                 </p>
@@ -158,8 +169,8 @@ const About = () => {
             whileHover={{ y: -5, transition: { duration: 0.3 } }}
           >
             <div className="mb-6 flex items-center gap-3">
-              <div className="rounded-lg bg-accent-cyan/10 p-2">
-                <Award size={28} className="text-accent-cyan" />
+              <div className="ui-section-icon rounded-lg p-2">
+                <Award size={28} />
               </div>
               <h3 className="text-xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                 {t.about.certifications}
@@ -174,7 +185,7 @@ const About = () => {
               <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
                 <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-cyan">
+                    <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
                       {t.about.verifiedCredentials}
                     </p>
                     <p className="max-w-2xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
@@ -190,15 +201,13 @@ const About = () => {
                       className="flex h-full flex-col justify-between rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
                     >
                       <div>
-                        <span
-                          className={`mb-4 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}
-                        >
+                        <span className={`mb-4 px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}>
                           {getCertificationTag(cert.kind)}
                         </span>
                         <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
                           {cert.title}
                         </p>
-                        <p className="mb-2 text-sm text-accent-cyan">{cert.issuer}</p>
+                        <p className={`mb-2 text-sm font-medium ${getIssuerClasses(cert.kind)}`}>{cert.issuer}</p>
                         <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                           {cert.meta}
                         </p>
@@ -209,7 +218,7 @@ const About = () => {
                           href={cert.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-accent-cyan/35 bg-accent-cyan/10 px-4 py-2.5 text-sm font-medium text-accent-cyan transition-colors hover:bg-accent-cyan hover:text-primary-bg"
+                          className="ui-btn-secondary mt-5 w-full"
                         >
                           <span>{cert.hrefLabel}</span>
                           <ExternalLink size={16} />
@@ -223,7 +232,7 @@ const About = () => {
               <div className="grid gap-5">
                 <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
                   <div className="mb-5">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent-blue">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-lightMode-accent-secondary dark:text-accent-blue">
                       {t.about.programCompletion}
                     </p>
                     <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
@@ -236,15 +245,13 @@ const About = () => {
                       key={`${cert.title}-${cert.issuer}`}
                       className="rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
                     >
-                      <span
-                        className={`mb-4 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}
-                      >
+                      <span className={`mb-4 px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}>
                         {getCertificationTag(cert.kind)}
                       </span>
                       <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
                         {cert.title}
                       </p>
-                      <p className="mb-2 text-sm text-accent-cyan">{cert.issuer}</p>
+                      <p className={`mb-2 text-sm font-medium ${getIssuerClasses(cert.kind)}`}>{cert.issuer}</p>
                       <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                         {cert.meta}
                       </p>
@@ -254,7 +261,7 @@ const About = () => {
 
                 <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
                   <div className="mb-5">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-yellow-400">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-lightMode-accent-tertiary dark:text-yellow-400">
                       {t.about.awardsRecognition}
                     </p>
                     <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
@@ -267,15 +274,13 @@ const About = () => {
                       key={`${cert.title}-${cert.issuer}`}
                       className="rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
                     >
-                      <span
-                        className={`mb-4 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}
-                      >
+                      <span className={`mb-4 px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}>
                         {getCertificationTag(cert.kind)}
                       </span>
                       <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
                         {cert.title}
                       </p>
-                      <p className="mb-2 text-sm text-accent-cyan">{cert.issuer}</p>
+                      <p className={`mb-2 text-sm font-medium ${getIssuerClasses(cert.kind)}`}>{cert.issuer}</p>
                       <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                         {cert.meta}
                       </p>
@@ -285,7 +290,7 @@ const About = () => {
                           href={cert.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-yellow-500/35 bg-yellow-500/10 px-4 py-2.5 text-sm font-medium text-yellow-400 transition-colors hover:bg-yellow-500/20"
+                          className="ui-btn-amber mt-5 w-full"
                         >
                           <span>{cert.hrefLabel}</span>
                           <ExternalLink size={16} />

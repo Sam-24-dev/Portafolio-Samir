@@ -4,11 +4,13 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSelector from './LanguageSelector';
 import ThemeToggle from './ThemeToggle';
+import HintBubble from './HintBubble';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [showMobileControlsHint, setShowMobileControlsHint] = useState(false);
   const { t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
 
@@ -43,6 +45,32 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const controlsHintKey = 'portfolio-controls-hint-seen';
+    const hasSeenHint = window.localStorage.getItem(controlsHintKey) === 'true';
+    const isTouchLikeViewport =
+      window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+
+    if (!isTouchLikeViewport || hasSeenHint) {
+      return;
+    }
+
+    setShowMobileControlsHint(true);
+
+    const timeoutId = window.setTimeout(() => {
+      setShowMobileControlsHint(false);
+      window.localStorage.setItem(controlsHintKey, 'true');
+    }, 4500);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const scrollToSection = (href: string) => {
@@ -125,7 +153,7 @@ const Navbar = () => {
             <LanguageSelector />
           </div>
 
-          <div className="flex items-center gap-4 md:hidden">
+          <div className="relative flex items-center gap-4 md:hidden">
             <ThemeToggle />
             <LanguageSelector />
             <button
@@ -138,6 +166,12 @@ const Navbar = () => {
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
+
+            <HintBubble
+              text={t.accessibility.controlsHint}
+              visible={showMobileControlsHint}
+              className="right-0 top-full mt-3 max-w-[15rem] rounded-2xl border px-3 py-2 text-left"
+            />
           </div>
         </div>
       </div>

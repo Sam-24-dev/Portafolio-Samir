@@ -168,7 +168,7 @@ const Contact = () => {
             className="space-y-8"
           >
             <div>
-              <h3 className="mb-6 text-2xl font-poppins font-semibold gradient-text">
+              <h3 className="mb-6 text-2xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                 {t.contact.info}
               </h3>
               <div className="space-y-4">
@@ -178,7 +178,7 @@ const Contact = () => {
                     className="flex items-start gap-4 rounded-lg border p-4 dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface"
                     whileHover={shouldReduceMotion ? undefined : { x: 5, transition: { duration: 0.2 } }}
                   >
-                    <div className="rounded-lg bg-accent-cyan/10 p-2 dark:text-accent-cyan light:text-lightMode-accent-primary">
+                    <div className="ui-section-icon rounded-lg p-2">
                       {info.icon}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -216,7 +216,7 @@ const Contact = () => {
               className="rounded-xl border p-6 dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface"
               whileHover={shouldReduceMotion ? undefined : { y: -5, transition: { duration: 0.3 } }}
             >
-              <h3 className="mb-4 text-xl font-poppins font-semibold gradient-text">
+              <h3 className="mb-4 text-xl font-poppins font-semibold dark:text-text-highlight light:text-lightMode-text-primary">
                 {t.contact.letsConnect}
               </h3>
               <p className="leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
@@ -265,7 +265,7 @@ const Contact = () => {
                   required
                   className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'name'
-                      ? 'border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt'
+                      ? 'dark:border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt shadow-[0_0_0_3px_rgba(15,118,110,0.08)]'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
                   }`}
                 />
@@ -294,7 +294,7 @@ const Contact = () => {
                   required
                   className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'email'
-                      ? 'border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt'
+                      ? 'dark:border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt shadow-[0_0_0_3px_rgba(15,118,110,0.08)]'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
                   }`}
                 />
@@ -320,7 +320,7 @@ const Contact = () => {
                   rows={6}
                   className={`focus-ring w-full resize-none rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'message'
-                      ? 'border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt'
+                      ? 'dark:border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt shadow-[0_0_0_3px_rgba(15,118,110,0.08)]'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
                   }`}
                 />
@@ -330,7 +330,7 @@ const Contact = () => {
                 type="submit"
                 disabled={submissionState === 'sending'}
                 aria-busy={submissionState === 'sending'}
-                className="focus-ring flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent-cyan px-8 py-3 font-semibold text-primary-bg transition-all hover:bg-accent-light disabled:cursor-not-allowed disabled:opacity-80"
+                className="focus-ring ui-btn-primary flex w-full disabled:cursor-not-allowed disabled:opacity-80"
                 whileHover={shouldReduceMotion ? undefined : { scale: 1.02, y: -2 }}
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               >
