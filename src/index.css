@@ -335,7 +335,8 @@
   .ui-btn-primary,
   .ui-btn-secondary,
   .ui-btn-neutral,
-  .ui-btn-amber {
+  .ui-btn-amber,
+  .ui-btn-lg {
     min-height: 2.75rem;
     border-width: 1px;
     border-radius: 0.75rem;
@@ -347,6 +348,11 @@
     line-height: 1.25rem;
     font-weight: 600;
     padding: 0.625rem 1rem;
+  }
+
+  .ui-btn-lg {
+    min-height: 3rem;
+    padding: 0.75rem 2rem;
   }
 
   .ui-btn-primary {

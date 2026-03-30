@@ -7,6 +7,7 @@ const LanguageSelector = () => {
   const { language, setLanguage, t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
   const [showHint, setShowHint] = useState(false);
+  const hintId = 'language-selector-hint';
   const motionProps = shouldReduceMotion
     ? {}
     : {
@@ -28,6 +29,7 @@ const LanguageSelector = () => {
         onFocus={() => setShowHint(true)}
         onBlur={() => setShowHint(false)}
         aria-pressed={language === 'en'}
+        aria-describedby={showHint ? hintId : undefined}
         aria-label={`EN - ${t.accessibility.switchToEnglish}`}
         className={`focus-ring ui-control-toggle ${
           language === 'en'
@@ -44,6 +46,7 @@ const LanguageSelector = () => {
         onFocus={() => setShowHint(true)}
         onBlur={() => setShowHint(false)}
         aria-pressed={language === 'es'}
+        aria-describedby={showHint ? hintId : undefined}
         aria-label={`ES - ${t.accessibility.switchToSpanish}`}
         className={`focus-ring ui-control-toggle ${
           language === 'es'
@@ -56,6 +59,7 @@ const LanguageSelector = () => {
       </motion.button>
 
       <HintBubble
+        id={hintId}
         text={t.accessibility.changeLanguage}
         visible={showHint}
         className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"

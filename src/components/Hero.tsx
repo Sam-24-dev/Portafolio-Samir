@@ -167,7 +167,7 @@ const Hero = () => {
               <motion.button
                 type="button"
                 onClick={() => scrollToSection('projects')}
-                className="focus-ring ui-btn-primary px-8"
+                className="focus-ring ui-btn-primary ui-btn-lg"
                 whileHover={buttonHoverMotion}
                 whileTap={buttonTapMotion}
               >
@@ -176,7 +176,7 @@ const Hero = () => {
               <motion.a
                 href="/cv/SamirCaizapastoCV.pdf"
                 download="SamirCaizapastoCV.pdf"
-                className="focus-ring ui-btn-secondary px-8"
+                className="focus-ring ui-btn-secondary ui-btn-lg"
                 whileHover={buttonHoverMotion}
                 whileTap={buttonTapMotion}
                 onClick={() =>
@@ -209,6 +209,7 @@ const Hero = () => {
                 const radius = 'calc(50% - 1.5rem)';
                 const x = `calc(50% + ${radius} * ${Math.cos(angle)} - 1.5rem)`;
                 const y = `calc(50% + ${radius} * ${Math.sin(angle)} - 1.5rem)`;
+                const hintId = `hero-tech-hint-${icon.alt.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
                 return (
                   <motion.div
@@ -221,6 +222,7 @@ const Hero = () => {
                     <button
                       type="button"
                       aria-label={icon.alt}
+                      aria-describedby={activeTechHint === icon.alt ? hintId : undefined}
                       className="focus-ring ui-orbit-tile relative flex h-full w-full items-center justify-center rounded-2xl border p-2"
                       onMouseEnter={() => setActiveTechHint(icon.alt)}
                       onMouseLeave={() => setActiveTechHint((current) => (current === icon.alt ? null : current))}
@@ -238,6 +240,7 @@ const Hero = () => {
                     >
                       <img src={icon.src} alt="" aria-hidden="true" className="h-full w-full object-contain" />
                       <HintBubble
+                        id={hintId}
                         text={icon.alt}
                         visible={activeTechHint === icon.alt}
                         className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"

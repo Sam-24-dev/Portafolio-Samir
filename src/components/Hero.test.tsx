@@ -109,8 +109,12 @@ describe('Hero', () => {
 
     expect(screen.queryByText('Python')).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Python' }));
+    const pythonButton = screen.getByRole('button', { name: 'Python' });
+
+    fireEvent.click(pythonButton);
 
     expect(screen.getByText('Python')).toBeInTheDocument();
+    expect(pythonButton).toHaveAttribute('aria-describedby', 'hero-tech-hint-python');
+    expect(screen.getByRole('tooltip')).toHaveAttribute('id', 'hero-tech-hint-python');
   });
 });

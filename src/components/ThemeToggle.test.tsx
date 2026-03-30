@@ -25,5 +25,7 @@ describe('ThemeToggle', () => {
     fireEvent.focus(toggle);
 
     expect(screen.getByText('Change theme')).toBeInTheDocument();
+    expect(toggle).toHaveAttribute('aria-describedby', 'theme-toggle-hint');
+    expect(screen.getByRole('tooltip')).toHaveAttribute('id', 'theme-toggle-hint');
   });
 });

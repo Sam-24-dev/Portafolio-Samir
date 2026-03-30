@@ -22,5 +22,7 @@ describe('LanguageSelector', () => {
     fireEvent.focus(englishButton);
 
     expect(screen.getByText('Change language')).toBeInTheDocument();
+    expect(englishButton).toHaveAttribute('aria-describedby', 'language-selector-hint');
+    expect(screen.getByRole('tooltip')).toHaveAttribute('id', 'language-selector-hint');
   });
 });
