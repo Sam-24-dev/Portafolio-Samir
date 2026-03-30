@@ -26,8 +26,9 @@ export default {
           surfaceAlt: '#f0f2f5',
           border: '#e1e4e8',
           accent: {
-            primary: '#0f766e',
-            secondary: '#0369a1',
+            primary: '#115e59',
+            secondary: '#1d4ed8',
+            tertiary: '#b45309',
           },
           text: {
             primary: '#1a202c',

@@ -1,9 +1,13 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import HintBubble from './HintBubble';
 
 const LanguageSelector = () => {
   const { language, setLanguage, t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
+  const [showHint, setShowHint] = useState(false);
+  const hintId = 'language-selector-hint';
   const motionProps = shouldReduceMotion
     ? {}
     : {
@@ -15,17 +19,22 @@ const LanguageSelector = () => {
     <div
       role="group"
       aria-label={t.accessibility.languageSelector}
-      className="flex items-center gap-2 rounded-lg border border-accent-cyan/20 bg-accent-cyan/10 p-1"
+      className="ui-control-shell relative flex items-center gap-2"
+      onMouseEnter={() => setShowHint(true)}
+      onMouseLeave={() => setShowHint(false)}
     >
       <motion.button
         type="button"
         onClick={() => setLanguage('en')}
+        onFocus={() => setShowHint(true)}
+        onBlur={() => setShowHint(false)}
         aria-pressed={language === 'en'}
+        aria-describedby={showHint ? hintId : undefined}
         aria-label={`EN - ${t.accessibility.switchToEnglish}`}
-        className={`focus-ring rounded-md px-3 py-1 text-sm font-medium transition-all ${
+        className={`focus-ring ui-control-toggle ${
           language === 'en'
-            ? 'bg-accent-cyan text-primary-bg dark:text-primary-bg'
-            : 'dark:text-accent-cyan dark:hover:bg-accent-cyan/20 light:text-lightMode-accent-primary light:hover:bg-accent-cyan/20'
+            ? 'ui-control-toggle-active'
+            : 'ui-control-toggle-idle'
         }`}
         {...motionProps}
       >
@@ -34,17 +43,27 @@ const LanguageSelector = () => {
       <motion.button
         type="button"
         onClick={() => setLanguage('es')}
+        onFocus={() => setShowHint(true)}
+        onBlur={() => setShowHint(false)}
         aria-pressed={language === 'es'}
+        aria-describedby={showHint ? hintId : undefined}
         aria-label={`ES - ${t.accessibility.switchToSpanish}`}
-        className={`focus-ring rounded-md px-3 py-1 text-sm font-medium transition-all ${
+        className={`focus-ring ui-control-toggle ${
           language === 'es'
-            ? 'bg-accent-cyan text-primary-bg dark:text-primary-bg'
-            : 'dark:text-accent-cyan dark:hover:bg-accent-cyan/20 light:text-lightMode-accent-primary light:hover:bg-accent-cyan/20'
+            ? 'ui-control-toggle-active'
+            : 'ui-control-toggle-idle'
         }`}
         {...motionProps}
       >
         ES
       </motion.button>
+
+      <HintBubble
+        id={hintId}
+        text={t.accessibility.changeLanguage}
+        visible={showHint}
+        className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"
+      />
     </div>
   );
 };

@@ -28,7 +28,7 @@ const SkillMark = ({ skill, compact = false }: { skill: SkillItem; compact?: boo
   if (skill.icon) {
     return (
       <span
-        className={`flex items-center justify-center rounded-2xl border border-accent-cyan/20 bg-accent-cyan/10 ${
+        className={`ui-orbit-tile flex items-center justify-center rounded-2xl border ${
           compact ? 'h-9 w-9' : 'h-12 w-12'
         }`}
       >
@@ -45,7 +45,7 @@ const SkillMark = ({ skill, compact = false }: { skill: SkillItem; compact?: boo
   return (
     <span
       aria-hidden="true"
-      className={`flex items-center justify-center rounded-2xl border border-accent-cyan/20 bg-accent-cyan/10 font-poppins font-semibold text-accent-cyan ${
+      className={`ui-orbit-tile ui-eyebrow flex items-center justify-center rounded-2xl border font-poppins font-semibold ${
         compact ? 'h-9 min-w-9 px-2 text-[11px]' : 'h-12 min-w-12 px-3 text-sm'
       }`}
     >
@@ -62,17 +62,14 @@ const SkillsGrid = () => {
     <div className="space-y-6">
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-cyan">{t.about.coreAnalystStack}</h4>
-          <span className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-accent-cyan">
-            {coreStack.length}
-          </span>
+          <h4 className="ui-eyebrow text-sm font-semibold uppercase tracking-[0.18em]">{t.about.coreAnalystStack}</h4>
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {coreStack.map((skill, index) => (
             <motion.div
               key={skill.name}
-              className="group flex min-h-[8.75rem] flex-col justify-between rounded-[24px] border p-4 text-left backdrop-blur-sm dark:border-primary-lighter/50 dark:bg-primary-light/60 light:border-lightMode-border light:bg-lightMode-surface/85"
+              className="group flex min-h-[8.75rem] flex-col justify-between rounded-[24px] border p-4 text-left backdrop-blur-sm dark:border-primary-lighter/50 dark:bg-primary-light/60 light:border-lightMode-border light:bg-lightMode-surface"
               initial={{ opacity: 0, scale: 0.94 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.28, delay: index * 0.04 }}

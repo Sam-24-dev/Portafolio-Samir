@@ -96,8 +96,7 @@ const Projects = () => {
 
   const hoverLift = shouldReduceMotion ? undefined : { scale: 1.04, y: -2 };
   const tapPress = shouldReduceMotion ? undefined : { scale: 0.98 };
-  const actionClass =
-    'focus-ring flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors sm:w-auto';
+  const actionClass = 'focus-ring flex w-full items-center justify-center gap-2 sm:w-auto';
 
   const handleCaseStudyOpen = (projectId: number, triggerElement: HTMLElement | null) => {
     lastCaseStudyTriggerRef.current = triggerElement;
@@ -193,11 +192,11 @@ const Projects = () => {
 
                   <div className="lg:col-span-5">
                     <div className="mb-3 flex flex-wrap items-center gap-3">
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                      <p className="ui-eyebrow text-sm font-semibold uppercase tracking-[0.2em]">
                         {t.projects.featuredEyebrow}
                       </p>
                       {projectHasCaseStudy && (
-                        <span className="rounded-full border border-accent-cyan/30 bg-accent-cyan/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                        <span className="ui-pill-teal px-3 py-1 text-[11px] uppercase tracking-[0.18em]">
                           {t.projects.caseStudyBadge}
                         </span>
                       )}
@@ -212,7 +211,7 @@ const Projects = () => {
                     </p>
 
                     <div className="mb-6">
-                      <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                      <p className="ui-eyebrow mb-3 text-sm font-semibold uppercase tracking-[0.16em]">
                         {t.projects.highlights}
                       </p>
                       <ul className="space-y-2">
@@ -221,7 +220,7 @@ const Projects = () => {
                             key={highlight}
                             className="flex items-start gap-3 text-sm dark:text-text-secondary light:text-lightMode-text-secondary"
                           >
-                            <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&gt;</span>
+                            <span className="ui-eyebrow mt-1">&gt;</span>
                             <span>{highlight}</span>
                           </li>
                         ))}
@@ -230,10 +229,7 @@ const Projects = () => {
 
                     <div className="mb-6 flex flex-wrap gap-2">
                       {project.tech.map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium dark:text-accent-cyan light:text-lightMode-accent-primary"
-                        >
+                        <span key={tech} className="ui-pill-teal px-3 py-1 text-xs font-medium">
                           {tech}
                         </span>
                       ))}
@@ -244,7 +240,7 @@ const Projects = () => {
                         <motion.button
                           type="button"
                           onClick={(event) => handleCaseStudyOpen(project.id, event.currentTarget)}
-                          className={`${actionClass} border border-accent-cyan/40 bg-accent-cyan/10 dark:text-accent-cyan dark:hover:bg-accent-cyan dark:hover:text-primary-bg light:text-lightMode-accent-primary light:hover:border-lightMode-accent-primary light:hover:bg-lightMode-accent-primary light:hover:text-white`}
+                          className={`${actionClass} ui-btn-secondary`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -256,7 +252,7 @@ const Projects = () => {
                           href={project.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} bg-accent-cyan text-primary-bg`}
+                          className={`${actionClass} ui-btn-primary`}
                           onClick={() => handleProjectDemoClick(project.id, 'featured_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
@@ -269,7 +265,7 @@ const Projects = () => {
                           href={project.dashboardUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} bg-accent-blue text-white hover:bg-accent-blue/80`}
+                          className={`${actionClass} ui-btn-primary`}
                           onClick={() => handleProjectDashboardClick(project.id, 'featured_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
@@ -282,7 +278,7 @@ const Projects = () => {
                           href={project.analysisUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
+                          className={`${actionClass} ui-btn-secondary`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -294,7 +290,7 @@ const Projects = () => {
                           href={project.reportUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
+                          className={`${actionClass} ui-btn-secondary`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -306,7 +302,7 @@ const Projects = () => {
                           href={project.certificateUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border border-yellow-500/50 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20`}
+                          className={`${actionClass} ui-btn-amber`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -318,7 +314,7 @@ const Projects = () => {
                           href={project.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary light:hover:text-lightMode-accent-primary`}
+                          className={`${actionClass} ui-btn-neutral`}
                           onClick={() => handleProjectRepoClick(project.id, 'featured_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
@@ -345,7 +341,7 @@ const Projects = () => {
           </div>
 
           <div className="mb-8 rounded-[24px] border border-dashed px-5 py-4 dark:border-primary-lighter dark:bg-primary-light/20 light:border-lightMode-border light:bg-lightMode-surfaceAlt sm:px-6">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+            <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
               {t.projects.supportingContextLabel}
             </p>
             <p className="max-w-3xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
@@ -366,8 +362,8 @@ const Projects = () => {
                     onClick={() => setActiveSupportingFilter(filter)}
                     className={`focus-ring whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? 'border-accent-cyan/50 bg-accent-cyan text-primary-bg shadow-lg shadow-accent-cyan/20'
-                        : 'dark:border-primary-lighter dark:bg-primary-light/25 dark:text-text-secondary dark:hover:border-accent-cyan/40 dark:hover:text-text-highlight light:border-lightMode-border light:bg-lightMode-surface light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary/50 light:hover:text-lightMode-text-primary'
+                        ? 'ui-pill-teal px-4 py-2 text-sm shadow-none'
+                        : 'ui-pill-neutral px-4 py-2 text-sm dark:hover:border-accent-cyan/40 dark:hover:text-text-highlight light:hover:border-lightMode-accent-primary/40 light:hover:text-lightMode-text-primary'
                     }`}
                     aria-pressed={isActive}
                   >
@@ -410,7 +406,7 @@ const Projects = () => {
 
                   <div className="p-5 sm:p-6">
                     {getSupportingLabel(project) && (
-                      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                      <p className="ui-eyebrow mb-3 text-[11px] font-semibold uppercase tracking-[0.18em]">
                         {getSupportingLabel(project)}
                       </p>
                     )}
@@ -421,7 +417,7 @@ const Projects = () => {
 
                     {getSupportingValue(project) && (
                       <div className="mb-4 rounded-2xl border px-4 py-3 dark:border-primary-lighter dark:bg-primary-bg/65 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] dark:text-accent-cyan light:text-lightMode-accent-primary">
+                        <p className="ui-eyebrow mb-2 text-[11px] font-semibold uppercase tracking-[0.16em]">
                           {t.projects.supportingContributionTitle}
                         </p>
                         <p className="text-sm leading-relaxed dark:text-text-primary light:text-lightMode-text-primary">
@@ -440,18 +436,15 @@ const Projects = () => {
                           key={highlight}
                           className="flex items-start gap-3 text-sm dark:text-text-secondary light:text-lightMode-text-secondary"
                         >
-                          <span className="mt-1 dark:text-accent-cyan light:text-lightMode-accent-primary">&gt;</span>
-                          <span>{highlight}</span>
-                        </li>
-                      ))}
+                            <span className="ui-eyebrow mt-1">&gt;</span>
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
                     </ul>
 
                     <div className="mb-5 flex flex-wrap gap-2">
                       {project.tech.slice(0, 3).map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded-full border border-accent-cyan/20 bg-accent-cyan/10 px-3 py-1 text-xs font-medium dark:text-accent-cyan light:text-lightMode-accent-primary"
-                        >
+                        <span key={tech} className="ui-pill-teal px-3 py-1 text-xs font-medium">
                           {tech}
                         </span>
                       ))}
@@ -463,7 +456,7 @@ const Projects = () => {
                           href={project.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} bg-accent-cyan text-primary-bg`}
+                          className={`${actionClass} ui-btn-primary`}
                           onClick={() => handleProjectDemoClick(project.id, 'supporting_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
@@ -476,7 +469,7 @@ const Projects = () => {
                           href={project.analysisUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
+                          className={`${actionClass} ui-btn-secondary`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -488,7 +481,7 @@ const Projects = () => {
                           href={project.reportUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-primary-bg`}
+                          className={`${actionClass} ui-btn-secondary`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -500,7 +493,7 @@ const Projects = () => {
                           href={project.certificateUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border border-yellow-500/50 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20`}
+                          className={`${actionClass} ui-btn-amber`}
                           whileHover={hoverLift}
                           whileTap={tapPress}
                         >
@@ -512,7 +505,7 @@ const Projects = () => {
                           href={project.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${actionClass} border dark:border-text-secondary dark:text-text-secondary dark:hover:border-accent-cyan dark:hover:text-accent-cyan light:border-lightMode-border light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary light:hover:text-lightMode-accent-primary`}
+                          className={`${actionClass} ui-btn-neutral`}
                           onClick={() => handleProjectRepoClick(project.id, 'supporting_card')}
                           whileHover={hoverLift}
                           whileTap={tapPress}
