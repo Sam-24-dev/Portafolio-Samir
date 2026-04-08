@@ -29,14 +29,14 @@ const Hero = () => {
 
       const timeout = window.setTimeout(() => {
         setTitleIndex((prev) => (prev + 1) % titles.length);
-      }, 3200);
+      }, 4600);
 
       return () => window.clearTimeout(timeout);
     }
 
     const currentTitle = titles[titleIndex];
-    const typingSpeed = isDeleting ? 35 : 65;
-    const pauseTime = isDeleting ? 800 : 1800;
+    const typingSpeed = isDeleting ? 28 : 58;
+    const pauseTime = isDeleting ? 240 : 2600;
 
     const timeout = setTimeout(() => {
       if (!isDeleting && displayText === currentTitle) {
@@ -121,35 +121,26 @@ const Hero = () => {
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8 }}
             className="flex-1 text-center lg:max-w-2xl lg:text-left"
           >
-            <p className="ui-eyebrow mb-4 text-sm font-semibold uppercase tracking-[0.28em]">
+            <p className="ui-hero-kicker mb-4 text-center text-sm font-semibold uppercase tracking-[0.32em] sm:text-[0.95rem] lg:text-left">
               {t.hero.eyebrow}
             </p>
 
-            <div className="mb-5 md:hidden">
-              <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
-                {t.hero.trustSignals.map((signal) => (
-                  <span key={signal} className="ui-pill-neutral px-3 py-1.5 text-[11px]">
+            <div className="mb-6">
+              <div className="flex flex-wrap justify-center gap-2.5 lg:justify-start">
+                {t.hero.trustSignals.map((signal, index) => (
+                  <span
+                    key={signal}
+                    className={`${index < 2 ? 'ui-pill-display' : 'ui-pill-neutral'} px-3.5 py-1.5 text-[11px] sm:text-xs`}
+                  >
                     {signal}
                   </span>
                 ))}
               </div>
             </div>
 
-            <div className="mb-5 hidden flex-wrap items-center gap-3 md:flex lg:justify-start">
-              {t.hero.trustSignals.map((signal, index) => (
-                <div key={signal} className="flex items-center gap-3">
-                  {index > 0 && (
-                    <span className="h-1.5 w-1.5 rounded-full dark:bg-accent-cyan/70 light:bg-lightMode-accent-primary/70" />
-                  )}
-                  <span className="text-sm font-medium dark:text-text-secondary light:text-lightMode-text-secondary">
-                    {signal}
-                  </span>
-                </div>
-              ))}
-            </div>
-
             <h1 className="text-4xl font-poppins font-bold leading-tight dark:text-text-highlight light:text-lightMode-text-primary sm:text-5xl md:text-6xl lg:text-7xl">
-              {t.hero.greeting}
+              {t.hero.greetingLead}{' '}
+              <span className="gradient-text inline-block">{t.hero.greetingAccent}</span>
             </h1>
 
             <div className="mx-auto flex min-h-[72px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">

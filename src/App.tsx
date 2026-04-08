@@ -3,9 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ProofStrip from './components/ProofStrip';
 import About from './components/About';
-import CareerSnapshot from './components/CareerSnapshot';
 import Projects from './components/Projects';
-import CodeDocumentation from './components/CodeDocumentation';
 import Strengths from './components/Strengths';
 import Contact from './components/Contact';
 import CustomCursor from './components/CustomCursor';
@@ -35,9 +33,7 @@ function App() {
         <Hero />
         <ProofStrip />
         <About />
-        <CareerSnapshot />
         <Projects />
-        <CodeDocumentation />
         <Strengths />
         <Contact />
       </main>

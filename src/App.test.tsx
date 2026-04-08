@@ -19,12 +19,13 @@ describe('phase 1 analyst foundation', () => {
     );
 
     expect(screen.getByText('Key Results')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Career Snapshot' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Code & Documentation' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Additional Relevant Projects' })).toBeInTheDocument();
     expect(screen.getByText('Customer Profile Analytics Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Data Analyst Portfolio')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Career Snapshot' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Code & Documentation' })).not.toBeInTheDocument();
+    expect(screen.getAllByText('Guayaquil, Ecuador').length).toBeGreaterThan(0);
+    expect(screen.getByText('Built with React, TypeScript, and Tailwind CSS')).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: 'Download CV' })[0]).toHaveAttribute('href', '/cv/SamirCaizapastoCV.pdf');
     expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute('href', '#main-content');
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
@@ -52,10 +53,11 @@ describe('phase 1 analyst foundation', () => {
 
     expect(screen.getByText('Analista de Datos')).toBeInTheDocument();
     expect(screen.getByText('Los proyectos que mejor reflejan como trabajo hoy como Analista de Datos.')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Resumen Profesional' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Codigo y Documentacion' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Otros Proyectos Seleccionados' })).toBeInTheDocument();
-    expect(screen.getByText('Portafolio de Analista de Datos')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Resumen Profesional' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Codigo y Documentacion' })).not.toBeInTheDocument();
+    expect(screen.getAllByText('Guayaquil, Ecuador').length).toBeGreaterThan(0);
+    expect(screen.getByText('Construido con React, TypeScript y Tailwind CSS')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Saltar al contenido principal' })).toHaveAttribute('href', '#main-content');
     expect(screen.getByRole('button', { name: 'Abrir menu' })).toHaveAttribute('aria-expanded', 'false');
 

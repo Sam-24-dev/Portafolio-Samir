@@ -87,13 +87,13 @@ describe('Hero', () => {
 
     renderHero();
 
-    expect(screen.getByText('Power BI Dashboard Builder')).toBeInTheDocument();
+    expect(screen.getByText('Business analytics and storytelling')).toBeInTheDocument();
 
     act(() => {
-      vi.advanceTimersByTime(4000);
+      vi.advanceTimersByTime(5200);
     });
 
-    expect(screen.getByText('SQL and Python Workflow Builder')).toBeInTheDocument();
+    expect(screen.getByText('Dashboards for real decisions')).toBeInTheDocument();
 
     vi.useRealTimers();
   });
@@ -102,7 +102,7 @@ describe('Hero', () => {
     renderHero();
 
     expect(screen.getAllByText('Guayaquil, Ecuador').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Data Analyst track').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('SQL + Python workflows').length).toBeGreaterThan(0);
 
     const technologies = ['Python', 'SQL', 'Power BI', 'R', 'Jupyter', 'Pandas', 'Git', 'TypeScript'];
 
