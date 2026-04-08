@@ -11,6 +11,17 @@ type MockResponse = {
   end: (payload?: string) => void;
 };
 
+const VALID_ORIGIN_HEADERS = {
+  origin: 'https://portafolio-samir-tau.vercel.app',
+};
+
+const VALID_PAYLOAD = {
+  name: 'Samir',
+  email: 'samir@example.com',
+  message: 'Hello from the website. I would like to discuss an analyst opportunity.',
+  startedAt: Date.now() - 10_000,
+};
+
 const createResponse = (): MockResponse => {
   const response: MockResponse = {
     statusCode: 200,
@@ -51,22 +62,106 @@ describe('contact API', () => {
     expect(response.body).toEqual({ message: 'Method not allowed.' });
   });
 
-  it('rejects invalid payloads', async () => {
+  it('returns silent success for honeypot submissions', async () => {
     const response = createResponse();
 
     await handler(
       {
         method: 'POST',
-        body: { name: '', email: 'bad-email', message: '' },
+        headers: VALID_ORIGIN_HEADERS,
+        body: {
+          ...VALID_PAYLOAD,
+          company: 'Bot Corp',
+        },
+      },
+      response
+    );
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual({ ok: true, message: 'Message sent successfully.' });
+  });
+
+  it('rejects invalid payloads with a generic message', async () => {
+    const response = createResponse();
+
+    await handler(
+      {
+        method: 'POST',
+        headers: VALID_ORIGIN_HEADERS,
+        body: { ...VALID_PAYLOAD, name: 'S', message: 'short' },
       },
       response
     );
 
     expect(response.statusCode).toBe(400);
-    expect(response.body).toEqual({ message: 'Please complete all fields with valid information.' });
+    expect(response.body).toEqual({
+      message: 'Unable to submit this message right now. Please review your information and try again.',
+    });
   });
 
-  it('sends an email through Resend when payload is valid', async () => {
+  it('rejects submissions that are too fast', async () => {
+    const response = createResponse();
+
+    await handler(
+      {
+        method: 'POST',
+        headers: VALID_ORIGIN_HEADERS,
+        body: {
+          ...VALID_PAYLOAD,
+          startedAt: Date.now() - 2_000,
+        },
+      },
+      response
+    );
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      message: 'Unable to submit this message right now. Please review your information and try again.',
+    });
+  });
+
+  it('rejects submissions that are too old', async () => {
+    const response = createResponse();
+
+    await handler(
+      {
+        method: 'POST',
+        headers: VALID_ORIGIN_HEADERS,
+        body: {
+          ...VALID_PAYLOAD,
+          startedAt: Date.now() - 3 * 60 * 60 * 1000,
+        },
+      },
+      response
+    );
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      message: 'Unable to submit this message right now. Please review your information and try again.',
+    });
+  });
+
+  it('rejects requests from disallowed origins', async () => {
+    const response = createResponse();
+
+    await handler(
+      {
+        method: 'POST',
+        headers: {
+          origin: 'https://example.com',
+        },
+        body: VALID_PAYLOAD,
+      },
+      response
+    );
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      message: 'Unable to submit this message right now. Please review your information and try again.',
+    });
+  });
+
+  it('sends an email through Resend when payload and origin are valid', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ id: 'email_123' }),
@@ -77,11 +172,8 @@ describe('contact API', () => {
     await handler(
       {
         method: 'POST',
-        body: {
-          name: 'Samir',
-          email: 'samir@example.com',
-          message: 'Hello from the website',
-        },
+        headers: VALID_ORIGIN_HEADERS,
+        body: VALID_PAYLOAD,
       },
       response
     );

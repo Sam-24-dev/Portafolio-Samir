@@ -6,6 +6,8 @@ import { trackPortfolioEvent } from '../lib/analytics';
 
 type SubmissionState = 'idle' | 'sending' | 'success' | 'error';
 type ContactApiResponse = { message?: string };
+const CONTACT_COOLDOWN_MS = 60_000;
+const CONTACT_COOLDOWN_KEY = 'portfolio-contact-last-success-at';
 
 const Contact = () => {
   const { t, language } = useLanguage();
@@ -20,6 +22,7 @@ const Contact = () => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
   const [statusMessage, setStatusMessage] = useState('');
+  const [formStartedAt, setFormStartedAt] = useState<number | null>(null);
 
   const readApiMessage = async (response: Response): Promise<string | null> => {
     try {
@@ -30,7 +33,31 @@ const Contact = () => {
     }
   };
 
+  const startFormSession = () => {
+    setFormStartedAt((current) => current ?? Date.now());
+  };
+
+  const getCooldownRemaining = () => {
+    if (typeof window === 'undefined') {
+      return 0;
+    }
+
+    const lastSubmittedAt = window.localStorage.getItem(CONTACT_COOLDOWN_KEY);
+    const parsedTimestamp = Number(lastSubmittedAt);
+
+    if (!Number.isFinite(parsedTimestamp) || parsedTimestamp <= 0) {
+      return 0;
+    }
+
+    return Math.max(0, parsedTimestamp + CONTACT_COOLDOWN_MS - Date.now());
+  };
+
+  const getCooldownMessage = (remainingMs: number) =>
+    t.contact.cooldownMessage.replace('{seconds}', String(Math.max(1, Math.ceil(remainingMs / 1000))));
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    startFormSession();
+
     if (submissionState !== 'idle') {
       setSubmissionState('idle');
       setStatusMessage('');
@@ -46,6 +73,20 @@ const Contact = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const cooldownRemaining = getCooldownRemaining();
+
+    if (cooldownRemaining > 0) {
+      setSubmissionState('error');
+      setStatusMessage(getCooldownMessage(cooldownRemaining));
+      trackPortfolioEvent('contact_submit_error', {
+        location: 'contact',
+        language,
+      });
+      return;
+    }
+
+    const startedAt = formStartedAt ?? Date.now();
+
     try {
       setSubmissionState('sending');
       setStatusMessage(t.contact.sendingMessage);
@@ -55,16 +96,26 @@ const Contact = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          startedAt,
+        }),
       });
 
       if (!response.ok) {
         const apiMessage = await readApiMessage(response);
         const isConfigIssue =
           response.status === 500 || (apiMessage?.toLowerCase().includes('not configured') ?? false);
+        const isInvalidSubmission = response.status === 400 || response.status === 403;
 
         setSubmissionState('error');
-        setStatusMessage(isConfigIssue ? t.contact.configError : (apiMessage ?? t.contact.errorMessage));
+        setStatusMessage(
+          isConfigIssue
+            ? t.contact.configError
+            : isInvalidSubmission
+              ? t.contact.invalidSubmissionMessage
+              : (apiMessage ?? t.contact.errorMessage)
+        );
         trackPortfolioEvent('contact_submit_error', {
           location: 'contact',
           language,
@@ -78,8 +129,12 @@ const Contact = () => {
         message: '',
         company: '',
       });
+      setFormStartedAt(null);
       setSubmissionState('success');
       setStatusMessage(t.contact.successMessage);
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(CONTACT_COOLDOWN_KEY, String(Date.now()));
+      }
       trackPortfolioEvent('contact_submit_success', {
         location: 'contact',
         language,
@@ -258,7 +313,10 @@ const Contact = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  onFocus={() => setFocusedField('name')}
+                  onFocus={() => {
+                    startFormSession();
+                    setFocusedField('name');
+                  }}
                   onBlur={() => setFocusedField(null)}
                   placeholder={t.contact.namePlaceholder}
                   autoComplete="name"
@@ -284,7 +342,10 @@ const Contact = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  onFocus={() => setFocusedField('email')}
+                  onFocus={() => {
+                    startFormSession();
+                    setFocusedField('email');
+                  }}
                   onBlur={() => setFocusedField(null)}
                   placeholder={t.contact.emailPlaceholder}
                   autoComplete="email"
@@ -312,7 +373,10 @@ const Contact = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  onFocus={() => setFocusedField('message')}
+                  onFocus={() => {
+                    startFormSession();
+                    setFocusedField('message');
+                  }}
                   onBlur={() => setFocusedField(null)}
                   placeholder={t.contact.messagePlaceholder}
                   autoComplete="off"

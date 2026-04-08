@@ -9,7 +9,7 @@ describe('phase 1 analyst foundation', () => {
     window.localStorage.clear();
   });
 
-  it('shows an analyst-first proof strip, main landmark, and accessible navigation controls', () => {
+  it('shows the full analyst-first structure, trust layer, and accessible navigation controls', () => {
     render(
       <ThemeProvider>
         <LanguageProvider>
@@ -19,9 +19,13 @@ describe('phase 1 analyst foundation', () => {
     );
 
     expect(screen.getByText('Key Results')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Career Snapshot' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Code & Documentation' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Additional Relevant Projects' })).toBeInTheDocument();
     expect(screen.getByText('Customer Profile Analytics Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Data Analyst Portfolio')).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Download CV' })[0]).toHaveAttribute('href', '/cv/SamirCaizapastoCV.pdf');
     expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute('href', '#main-content');
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
     expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false');
@@ -35,7 +39,7 @@ describe('phase 1 analyst foundation', () => {
     });
   });
 
-  it('uses Spanish-native analyst positioning and localized accessibility labels', () => {
+  it('uses Spanish analyst positioning, new trust sections, and localized accessibility labels', () => {
     window.localStorage.setItem('portfolio-language', 'es');
 
     render(
@@ -47,16 +51,19 @@ describe('phase 1 analyst foundation', () => {
     );
 
     expect(screen.getByText('Analista de Datos')).toBeInTheDocument();
-    expect(screen.getByText('Los proyectos que mejor reflejan cómo trabajo hoy como Analista de Datos.')).toBeInTheDocument();
+    expect(screen.getByText('Los proyectos que mejor reflejan como trabajo hoy como Analista de Datos.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Resumen Profesional' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Codigo y Documentacion' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Otros Proyectos Seleccionados' })).toBeInTheDocument();
+    expect(screen.getByText('Portafolio de Analista de Datos')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Saltar al contenido principal' })).toHaveAttribute('href', '#main-content');
-    expect(screen.getByRole('button', { name: 'Abrir menú' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: 'Abrir menu' })).toHaveAttribute('aria-expanded', 'false');
 
-    screen.getAllByRole('button', { name: 'EN - Cambiar a inglés' }).forEach((button) => {
+    screen.getAllByRole('button', { name: 'EN - Cambiar a ingles' }).forEach((button) => {
       expect(button).toHaveAttribute('aria-pressed', 'false');
     });
 
-    screen.getAllByRole('button', { name: 'ES - Cambiar a español' }).forEach((button) => {
+    screen.getAllByRole('button', { name: 'ES - Cambiar a espanol' }).forEach((button) => {
       expect(button).toHaveAttribute('aria-pressed', 'true');
     });
   });

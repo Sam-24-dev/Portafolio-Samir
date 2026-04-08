@@ -125,6 +125,29 @@ const Hero = () => {
               {t.hero.eyebrow}
             </p>
 
+            <div className="mb-5 md:hidden">
+              <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
+                {t.hero.trustSignals.map((signal) => (
+                  <span key={signal} className="ui-pill-neutral px-3 py-1.5 text-[11px]">
+                    {signal}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-5 hidden flex-wrap items-center gap-3 md:flex lg:justify-start">
+              {t.hero.trustSignals.map((signal, index) => (
+                <div key={signal} className="flex items-center gap-3">
+                  {index > 0 && (
+                    <span className="h-1.5 w-1.5 rounded-full dark:bg-accent-cyan/70 light:bg-lightMode-accent-primary/70" />
+                  )}
+                  <span className="text-sm font-medium dark:text-text-secondary light:text-lightMode-text-secondary">
+                    {signal}
+                  </span>
+                </div>
+              ))}
+            </div>
+
             <h1 className="text-4xl font-poppins font-bold leading-tight dark:text-text-highlight light:text-lightMode-text-primary sm:text-5xl md:text-6xl lg:text-7xl">
               {t.hero.greeting}
             </h1>
@@ -253,9 +276,10 @@ const Hero = () => {
 
             <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full p-1 gradient-border sm:h-64 sm:w-64 md:h-80 md:w-80">
               <img
-                src="/images/perfil.jpg"
+                src="/images/perfil.webp"
                 alt="Portrait of Samir Caizapasto"
                 className="h-full w-full rounded-full object-cover"
+                decoding="async"
               />
             </div>
           </motion.div>

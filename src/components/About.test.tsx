@@ -67,11 +67,11 @@ describe('phase 2 analyst depth batch 3', () => {
       </LanguageProvider>
     );
 
-    expect(screen.getByText('Analítica de clientes y segmentación')).toBeInTheDocument();
+    expect(screen.getByText('Analitica de clientes y segmentacion')).toBeInTheDocument();
     expect(screen.getByText('Storytelling de KPIs en Power BI')).toBeInTheDocument();
     expect(screen.getByText('Flujos reproducibles con SQL y Python')).toBeInTheDocument();
 
-    const coreStackSection = screen.getByText('Stack Principal de Analítica').closest('section');
+    const coreStackSection = screen.getByText('Stack Principal de Analitica').closest('section');
     const supportingToolsSection = screen.getByText('Herramientas de Apoyo').closest('section');
 
     expect(coreStackSection).not.toBeNull();

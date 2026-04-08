@@ -101,6 +101,9 @@ describe('Hero', () => {
   it('shows interactive labels for all orbit technologies', () => {
     renderHero();
 
+    expect(screen.getAllByText('Guayaquil, Ecuador').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Data Analyst track').length).toBeGreaterThan(0);
+
     const technologies = ['Python', 'SQL', 'Power BI', 'R', 'Jupyter', 'Pandas', 'Git', 'TypeScript'];
 
     technologies.forEach((technology) => {
