@@ -27,6 +27,9 @@
     --surface-amber-bg: rgba(245, 158, 11, 0.12);
     --surface-amber-border: rgba(245, 158, 11, 0.24);
     --surface-amber-text: #fbbf24;
+    --surface-display-bg: linear-gradient(90deg, rgba(100, 255, 218, 0.14), rgba(56, 189, 248, 0.12));
+    --surface-display-border: rgba(100, 255, 218, 0.3);
+    --surface-display-text: #64ffda;
     --btn-primary-bg: #64ffda;
     --btn-primary-hover: #7ef7e1;
     --btn-primary-text: #0a192f;
@@ -92,6 +95,9 @@
     --surface-amber-bg: rgba(245, 158, 11, 0.12);
     --surface-amber-border: rgba(245, 158, 11, 0.24);
     --surface-amber-text: #fbbf24;
+    --surface-display-bg: linear-gradient(90deg, rgba(100, 255, 218, 0.14), rgba(72, 199, 255, 0.12));
+    --surface-display-border: rgba(100, 255, 218, 0.3);
+    --surface-display-text: #64ffda;
     --btn-primary-bg: #64ffda;
     --btn-primary-hover: #8af3ff;
     --btn-primary-text: #0a192f;
@@ -141,6 +147,9 @@
     --surface-amber-bg: #fffbeb;
     --surface-amber-border: #f8d88a;
     --surface-amber-text: #b45309;
+    --surface-display-bg: linear-gradient(90deg, rgba(17, 94, 89, 0.12), rgba(29, 78, 216, 0.1));
+    --surface-display-border: rgba(17, 94, 89, 0.18);
+    --surface-display-text: #115e59;
     --btn-primary-bg: #0f766e;
     --btn-primary-hover: #115e59;
     --btn-primary-text: #ffffff;
@@ -247,6 +256,10 @@
     color: var(--eyebrow-muted);
   }
 
+  .ui-hero-kicker {
+    color: var(--display-gradient-start);
+  }
+
   .ui-section-icon {
     background-color: var(--section-icon-bg);
     color: var(--section-icon-text);
@@ -258,6 +271,7 @@
   .ui-surface-amber,
   .ui-pill-neutral,
   .ui-pill-teal,
+  .ui-pill-display,
   .ui-pill-blue,
   .ui-pill-amber,
   .ui-btn-primary,
@@ -296,6 +310,7 @@
 
   .ui-pill-neutral,
   .ui-pill-teal,
+  .ui-pill-display,
   .ui-pill-blue,
   .ui-pill-amber {
     border-width: 1px;
@@ -318,6 +333,12 @@
     background-color: var(--surface-teal-bg);
     border-color: var(--surface-teal-border);
     color: var(--surface-teal-text);
+  }
+
+  .ui-pill-display {
+    background-image: var(--surface-display-bg);
+    border-color: var(--surface-display-border);
+    color: var(--surface-display-text);
   }
 
   .ui-pill-blue {

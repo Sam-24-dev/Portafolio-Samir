@@ -3,11 +3,13 @@ type ContactPayload = {
   email?: string;
   message?: string;
   company?: string;
+  startedAt?: number;
 };
 
 type RequestLike = {
   method?: string;
   body?: ContactPayload | string;
+  headers?: Record<string, string | string[] | undefined>;
 };
 
 type ResponseLike = {
@@ -22,6 +24,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_NAME_LENGTH = 120;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_MESSAGE_LENGTH = 4000;
+const MIN_NAME_LENGTH = 2;
+const MIN_MESSAGE_LENGTH = 20;
+const MIN_FORM_FILL_MS = 4_000;
+const MAX_FORM_AGE_MS = 2 * 60 * 60 * 1000;
+const INVALID_SUBMISSION_MESSAGE = 'Unable to submit this message right now. Please review your information and try again.';
 
 const parseBody = (body: RequestLike['body']): ContactPayload => {
   if (!body) {
@@ -40,6 +47,13 @@ const parseBody = (body: RequestLike['body']): ContactPayload => {
 };
 
 const normalize = (value: unknown) => (typeof value === 'string' ? value.trim() : '');
+const normalizeNumber = (value: unknown) => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return value;
+};
 
 const stripControlChars = (value: string, preserveNewline: boolean) =>
   Array.from(value)
@@ -83,11 +97,84 @@ const isValidPayload = (payload: ContactPayload) => {
     name &&
       email &&
       message &&
+      name.length >= MIN_NAME_LENGTH &&
       name.length <= MAX_NAME_LENGTH &&
       email.length <= MAX_EMAIL_LENGTH &&
+      message.length >= MIN_MESSAGE_LENGTH &&
       message.length <= MAX_MESSAGE_LENGTH &&
       EMAIL_PATTERN.test(email)
   );
+};
+
+const getHeaderValue = (headers: RequestLike['headers'], targetHeader: string) => {
+  if (!headers) {
+    return '';
+  }
+
+  const matchedEntry = Object.entries(headers).find(([headerName]) => headerName.toLowerCase() === targetHeader);
+  const value = matchedEntry?.[1];
+
+  if (Array.isArray(value)) {
+    return value[0] ?? '';
+  }
+
+  return typeof value === 'string' ? value : '';
+};
+
+const getRequestOrigin = (headers: RequestLike['headers']) => {
+  const originHeader = getHeaderValue(headers, 'origin');
+
+  if (originHeader) {
+    try {
+      return new URL(originHeader).origin;
+    } catch {
+      return '';
+    }
+  }
+
+  const refererHeader = getHeaderValue(headers, 'referer');
+
+  if (!refererHeader) {
+    return '';
+  }
+
+  try {
+    return new URL(refererHeader).origin;
+  } catch {
+    return '';
+  }
+};
+
+const isAllowedOrigin = (origin: string) => {
+  if (!origin) {
+    return false;
+  }
+
+  const productionOrigins = new Set([
+    'https://portafolio-samir-tau.vercel.app',
+    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+  ]);
+
+  if (productionOrigins.has(origin)) {
+    return true;
+  }
+
+  try {
+    const parsedOrigin = new URL(origin);
+    return ['localhost', '127.0.0.1'].includes(parsedOrigin.hostname);
+  } catch {
+    return false;
+  }
+};
+
+const hasValidSubmissionWindow = (startedAt: number | null) => {
+  if (startedAt === null) {
+    return false;
+  }
+
+  const age = Date.now() - startedAt;
+
+  return age >= MIN_FORM_FILL_MS && age <= MAX_FORM_AGE_MS;
 };
 
 const buildEmailContent = (payload: Required<Pick<ContactPayload, 'name' | 'email' | 'message'>>) => {
@@ -120,7 +207,7 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   res.setHeader('Content-Type', 'application/json');
 
   if (req.method !== 'POST') {
-    res.status(405).json({ message: 'Method not allowed.' });
+    res.status(405).json({ message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -132,8 +219,20 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
     return;
   }
 
+  const requestOrigin = getRequestOrigin(req.headers);
+
+  if (!isAllowedOrigin(requestOrigin)) {
+    res.status(400).json({ message: INVALID_SUBMISSION_MESSAGE });
+    return;
+  }
+
+  if (!hasValidSubmissionWindow(normalizeNumber(payload.startedAt))) {
+    res.status(400).json({ message: INVALID_SUBMISSION_MESSAGE });
+    return;
+  }
+
   if (!isValidPayload(payload)) {
-    res.status(400).json({ message: 'Please complete all fields with valid information.' });
+    res.status(400).json({ message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -142,7 +241,7 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   const fromEmail = process.env.CONTACT_FROM_EMAIL;
 
   if (!resendApiKey || !toEmail || !fromEmail) {
-    res.status(500).json({ message: 'Contact service is not configured.' });
+    res.status(500).json({ message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -171,12 +270,12 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
     });
 
     if (!response.ok) {
-      res.status(502).json({ message: 'Email service unavailable.' });
+      res.status(502).json({ message: INVALID_SUBMISSION_MESSAGE });
       return;
     }
 
     res.status(200).json({ ok: true, message: 'Message sent successfully.' });
   } catch {
-    res.status(502).json({ message: 'Email service unavailable.' });
+    res.status(502).json({ message: INVALID_SUBMISSION_MESSAGE });
   }
 }

@@ -186,6 +186,7 @@ const Projects = () => {
                         alt={getTitle(project)}
                         className="relative z-10 h-full min-h-[220px] w-full object-cover object-center sm:min-h-[260px]"
                         loading="lazy"
+                        decoding="async"
                       />
                     </motion.div>
                   </div>
@@ -401,6 +402,7 @@ const Projects = () => {
                       alt={getTitle(project)}
                       className="relative z-10 h-44 w-full object-cover object-center opacity-90"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
 
