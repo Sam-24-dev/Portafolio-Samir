@@ -90,13 +90,13 @@ export const translations = {
       skillsAndTools: 'Core Stack',
       coreAnalystStack: 'Core Analyst Stack',
       supportingTools: 'Supporting Tools',
-      university: 'Escuela Superior Politecnica del Litoral (ESPOL)',
+      university: 'Escuela Superior Polit\u00E9cnica del Litoral (ESPOL)',
       academicDates: 'May 2023 - Aug 2028',
       academicSummary:
         'Academic training in software engineering with a focus on data architecture, algorithms, and scalable systems.',
       specializedTraining: 'Specialized Training',
       bootcampTitle: 'Data Analytics & Business Intelligence Bootcamp',
-      bootcampInstitution: 'Escuela Superior Politecnica del Litoral',
+      bootcampInstitution: 'Escuela Superior Polit\u00E9cnica del Litoral',
       bootcampDates: 'Aug 2025 - Mar 2026',
       bootcampFinal:
         'Specialized training in Business Intelligence, analytics, SQL, Python, Power BI, and GenAI for Data Analytics.',
@@ -155,25 +155,6 @@ export const translations = {
       location: 'Location',
       locationValue: 'Guayaquil, Ecuador',
     },
-    careerSnapshot: {
-      title: 'Career Snapshot',
-      subtitle:
-        'A compact view of where Samir is now, what he is sharpening, and how he turns analytical work into usable business delivery.',
-      items: [
-        {
-          title: 'Current Stage',
-          body: 'Computer Science student at ESPOL building analyst credibility through project-based evidence and steady technical execution.',
-        },
-        {
-          title: 'Current Focus',
-          body: 'Customer analytics, BI dashboards, SQL and Python workflows, and reproducible analysis for decision-ready reporting.',
-        },
-        {
-          title: 'Delivery Style',
-          body: 'Clear business framing, measurable outputs, and analytical deliverables that stay useful beyond the notebook or dashboard itself.',
-        },
-      ],
-    },
     projects: {
       title: 'Projects',
       subtitle:
@@ -228,14 +209,6 @@ export const translations = {
       certificate: 'Certificate',
       videoDemo: 'Video Demo',
     },
-    codeDocumentation: {
-      title: 'Code & Documentation',
-      subtitle:
-        'Selected repositories that show the implementation depth, documentation quality, and delivery discipline behind the portfolio projects.',
-      openRepository: 'Open Repository',
-      viewReadme: 'View README',
-      liveDemo: 'Live Demo',
-    },
     skills: {
       title: 'Technical Skills',
       subtitle: 'A comprehensive toolkit for data analysis, visualization, and business intelligence',
@@ -289,14 +262,7 @@ export const translations = {
       configError: 'Contact form is not configured yet. Add the contact service environment variables to enable it.',
     },
     footer: {
-      portfolioLabel: 'Data Analyst Portfolio',
-      positioning:
-        'Bilingual analyst-first portfolio focused on business-ready dashboards, reproducible workflows, and measurable project proof.',
       location: 'Guayaquil, Ecuador',
-      downloadCV: 'Download CV',
-      linkedin: 'LinkedIn',
-      github: 'GitHub',
-      contact: 'Contact',
       builtWith: 'Built with React, TypeScript, and Tailwind CSS',
       copyright: 'All rights reserved.',
     },
@@ -311,18 +277,18 @@ export const translations = {
     },
     accessibility: {
       skipToContent: 'Saltar al contenido principal',
-      openMenu: 'Abrir menu',
-      closeMenu: 'Cerrar menu',
-      primaryNavigation: 'Navegacion principal',
+      openMenu: 'Abrir men\u00FA',
+      closeMenu: 'Cerrar men\u00FA',
+      primaryNavigation: 'Navegaci\u00F3n principal',
       changeTheme: 'Cambiar tema',
       switchToDarkTheme: 'Cambiar a tema oscuro',
       switchToLightTheme: 'Cambiar a tema claro',
       changeLanguage: 'Cambiar idioma',
       languageSelector: 'Selector de idioma',
-      switchToEnglish: 'Cambiar a ingles',
-      switchToSpanish: 'Cambiar a espanol',
-      controlsHint: 'Tip: aqui puedes cambiar tema e idioma.',
-      scrollToAbout: 'Ir a la seccion Acerca de',
+      switchToEnglish: 'Cambiar a ingl\u00E9s',
+      switchToSpanish: 'Cambiar a espa\u00F1ol',
+      controlsHint: 'Tip: aqu\u00ED puedes cambiar tema e idioma.',
+      scrollToAbout: 'Ir a la secci\u00F3n Acerca de',
       scrollToTop: 'Volver arriba',
     },
     hero: {
@@ -392,13 +358,13 @@ export const translations = {
       skillsAndTools: 'Stack y Herramientas',
       coreAnalystStack: 'Stack Principal de Analitica',
       supportingTools: 'Herramientas de Apoyo',
-      university: 'Escuela Superior Politecnica del Litoral (ESPOL)',
+      university: 'Escuela Superior Polit\u00E9cnica del Litoral (ESPOL)',
       academicDates: 'may. 2023 - ago. 2028',
       academicSummary:
         'Formacion en ingenieria de software con enfoque en arquitectura de datos, algoritmos y sistemas escalables.',
       specializedTraining: 'Formacion Especializada',
       bootcampTitle: 'Bootcamp en Data Analytics & Business Intelligence',
-      bootcampInstitution: 'Escuela Superior Politecnica del Litoral',
+      bootcampInstitution: 'Escuela Superior Polit\u00E9cnica del Litoral',
       bootcampDates: 'ago. 2025 - mar. 2026',
       bootcampFinal:
         'Especializacion en Business Intelligence, analitica, SQL, Python, Power BI y GenAI for Data Analytics.',
@@ -457,25 +423,6 @@ export const translations = {
       location: 'Ubicacion',
       locationValue: 'Guayaquil, Ecuador',
     },
-    careerSnapshot: {
-      title: 'Resumen Profesional',
-      subtitle:
-        'Una vista compacta de la etapa actual de Samir, su foco tecnico y la forma en que convierte trabajo analitico en entregables utiles para negocio.',
-      items: [
-        {
-          title: 'Etapa Actual',
-          body: 'Estudiante de Ingenieria en Computacion en ESPOL que construye credibilidad analitica a traves de proyectos reales y ejecucion tecnica constante.',
-        },
-        {
-          title: 'Foco Actual',
-          body: 'Customer analytics, dashboards BI, flujos con SQL y Python, y analisis reproducible orientado a reportes listos para decision.',
-        },
-        {
-          title: 'Estilo de Entrega',
-          body: 'Framing claro de negocio, resultados medibles y entregables analiticos que siguen siendo utiles mas alla del notebook o del dashboard.',
-        },
-      ],
-    },
     projects: {
       title: 'Proyectos',
       subtitle:
@@ -529,14 +476,6 @@ export const translations = {
       github: 'GitHub',
       certificate: 'Certificado',
       videoDemo: 'Video Demo',
-    },
-    codeDocumentation: {
-      title: 'Codigo y Documentacion',
-      subtitle:
-        'Repositorios seleccionados que muestran la profundidad de implementacion, la calidad de la documentacion y la disciplina de entrega detras de los proyectos del portafolio.',
-      openRepository: 'Abrir Repositorio',
-      viewReadme: 'Ver README',
-      liveDemo: 'Demo en Vivo',
     },
     skills: {
       title: 'Habilidades Tecnicas',
@@ -592,14 +531,7 @@ export const translations = {
         'El formulario de contacto aun no esta configurado. Agrega las variables del servicio de correo para habilitarlo.',
     },
     footer: {
-      portfolioLabel: 'Portafolio de Analista de Datos',
-      positioning:
-        'Portafolio bilingue y analyst-first enfocado en dashboards listos para negocio, flujos reproducibles y evidencia medible de proyectos.',
       location: 'Guayaquil, Ecuador',
-      downloadCV: 'Descargar CV',
-      linkedin: 'LinkedIn',
-      github: 'GitHub',
-      contact: 'Contacto',
       builtWith: 'Construido con React, TypeScript y Tailwind CSS',
       copyright: 'Todos los derechos reservados.',
     },

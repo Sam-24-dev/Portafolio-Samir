@@ -45,7 +45,9 @@ describe('Contact form', () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
-      json: vi.fn().mockResolvedValue({ message: 'Contact service is not configured.' }),
+      json: vi.fn().mockResolvedValue({
+        message: 'Unable to submit this message right now. Please review your information and try again.',
+      }),
     });
     vi.stubGlobal('fetch', fetchMock);
 

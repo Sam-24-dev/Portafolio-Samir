@@ -59,7 +59,9 @@ describe('contact API', () => {
     await handler({ method: 'GET' }, response);
 
     expect(response.statusCode).toBe(405);
-    expect(response.body).toEqual({ message: 'Method not allowed.' });
+    expect(response.body).toEqual({
+      message: 'Unable to submit this message right now. Please review your information and try again.',
+    });
   });
 
   it('returns silent success for honeypot submissions', async () => {
@@ -190,5 +192,46 @@ describe('contact API', () => {
     );
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({ ok: true, message: 'Message sent successfully.' });
+  });
+
+  it('returns the generic message when the contact service is not configured', async () => {
+    delete process.env.RESEND_API_KEY;
+    const response = createResponse();
+
+    await handler(
+      {
+        method: 'POST',
+        headers: VALID_ORIGIN_HEADERS,
+        body: VALID_PAYLOAD,
+      },
+      response
+    );
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({
+      message: 'Unable to submit this message right now. Please review your information and try again.',
+    });
+  });
+
+  it('returns the generic message when the email provider fails', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const response = createResponse();
+
+    await handler(
+      {
+        method: 'POST',
+        headers: VALID_ORIGIN_HEADERS,
+        body: VALID_PAYLOAD,
+      },
+      response
+    );
+
+    expect(response.statusCode).toBe(502);
+    expect(response.body).toEqual({
+      message: 'Unable to submit this message right now. Please review your information and try again.',
+    });
   });
 });

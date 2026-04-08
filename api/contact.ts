@@ -207,7 +207,7 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   res.setHeader('Content-Type', 'application/json');
 
   if (req.method !== 'POST') {
-    res.status(405).json({ message: 'Method not allowed.' });
+    res.status(405).json({ message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -241,7 +241,7 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   const fromEmail = process.env.CONTACT_FROM_EMAIL;
 
   if (!resendApiKey || !toEmail || !fromEmail) {
-    res.status(500).json({ message: 'Contact service is not configured.' });
+    res.status(500).json({ message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -270,12 +270,12 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
     });
 
     if (!response.ok) {
-      res.status(502).json({ message: 'Email service unavailable.' });
+      res.status(502).json({ message: INVALID_SUBMISSION_MESSAGE });
       return;
     }
 
     res.status(200).json({ ok: true, message: 'Message sent successfully.' });
   } catch {
-    res.status(502).json({ message: 'Email service unavailable.' });
+    res.status(502).json({ message: INVALID_SUBMISSION_MESSAGE });
   }
 }

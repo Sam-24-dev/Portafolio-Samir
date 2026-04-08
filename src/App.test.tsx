@@ -40,7 +40,7 @@ describe('phase 1 analyst foundation', () => {
     });
   });
 
-  it('uses Spanish analyst positioning, new trust sections, and localized accessibility labels', () => {
+  it('uses Spanish analyst positioning and localized accessibility labels', () => {
     window.localStorage.setItem('portfolio-language', 'es');
 
     render(
@@ -55,17 +55,17 @@ describe('phase 1 analyst foundation', () => {
     expect(screen.getByText('Los proyectos que mejor reflejan como trabajo hoy como Analista de Datos.')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Otros Proyectos Seleccionados' })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Resumen Profesional' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Codigo y Documentacion' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'C\u00F3digo y Documentaci\u00F3n' })).not.toBeInTheDocument();
     expect(screen.getAllByText('Guayaquil, Ecuador').length).toBeGreaterThan(0);
     expect(screen.getByText('Construido con React, TypeScript y Tailwind CSS')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Saltar al contenido principal' })).toHaveAttribute('href', '#main-content');
-    expect(screen.getByRole('button', { name: 'Abrir menu' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: 'Abrir men\u00FA' })).toHaveAttribute('aria-expanded', 'false');
 
-    screen.getAllByRole('button', { name: 'EN - Cambiar a ingles' }).forEach((button) => {
+    screen.getAllByRole('button', { name: 'EN - Cambiar a ingl\u00E9s' }).forEach((button) => {
       expect(button).toHaveAttribute('aria-pressed', 'false');
     });
 
-    screen.getAllByRole('button', { name: 'ES - Cambiar a espanol' }).forEach((button) => {
+    screen.getAllByRole('button', { name: 'ES - Cambiar a espa\u00F1ol' }).forEach((button) => {
       expect(button).toHaveAttribute('aria-pressed', 'true');
     });
   });
