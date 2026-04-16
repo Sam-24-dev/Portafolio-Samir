@@ -1,51 +1,91 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { analystRouteContent, engineeringRouteContent } from '../data/routeContent';
+import {
+  type AnalystSectionId,
+  type EngineeringSectionId,
+  type PortfolioRouteMode,
+  analystSectionIds,
+  engineeringSectionIds,
+  getActiveNavigationSection,
+  getSectionIdFromPathname,
+} from '../lib/portfolioRoute';
+import { useRootRouteNavigation, useSectionNavigation } from '../hooks/useSectionNavigation';
 import LanguageSelector from './LanguageSelector';
 import ThemeToggle from './ThemeToggle';
 import HintBubble from './HintBubble';
+import ProfileRouteSwitch from './ProfileRouteSwitch';
 
-const Navbar = () => {
+interface NavbarProps {
+  routeMode: PortfolioRouteMode;
+}
+
+const Navbar = ({ routeMode }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState<AnalystSectionId | EngineeringSectionId>(
+    routeMode === 'engineer' ? 'engineering-home' : 'home'
+  );
   const [showMobileControlsHint, setShowMobileControlsHint] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
+  const navigateToSection = useSectionNavigation(routeMode);
+  const navigateToRoot = useRootRouteNavigation(routeMode);
 
-  const navLinks = [
-    { name: t.nav.home, href: '#home' },
-    { name: t.nav.about, href: '#about' },
-    { name: t.nav.projects, href: '#projects' },
-    { name: t.nav.skills, href: '#strengths' },
-    { name: t.nav.contact, href: '#contact' },
-  ];
+  const navLinks = useMemo(() => {
+    if (routeMode === 'engineer') {
+      return engineeringRouteContent[language].navigation.map((item) => ({
+        name: item.label,
+        id: item.id,
+      }));
+    }
+
+    return analystRouteContent[language].navigation.map((item) => ({
+      name: item.label,
+      id: item.id,
+    }));
+  }, [language, routeMode]);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
-      const sections = ['home', 'about', 'projects', 'strengths', 'contact'];
+      const sections = routeMode === 'engineer' ? engineeringSectionIds : analystSectionIds;
       const current = sections.find((section) => {
         const element = document.getElementById(section);
-
         if (!element) {
           return false;
         }
 
         const rect = element.getBoundingClientRect();
-        return rect.top <= 100 && rect.bottom >= 100;
+        return rect.top <= 120 && rect.bottom >= 120;
       });
 
       if (current) {
-        setActiveSection(current);
+        setActiveSection(getActiveNavigationSection(routeMode, current));
       }
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
+
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [routeMode]);
+
+  useEffect(() => {
+    const sectionFromPath = getSectionIdFromPathname(location.pathname);
+    setIsOpen(false);
+    if (sectionFromPath) {
+      setActiveSection(getActiveNavigationSection(routeMode, sectionFromPath));
+      return;
+    }
+
+    setActiveSection(routeMode === 'engineer' ? 'engineering-home' : 'home');
+  }, [location.pathname, routeMode]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -73,20 +113,14 @@ const Navbar = () => {
     };
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: shouldReduceMotion ? 'auto' : 'smooth',
-      });
+  const handleSectionNavigation = (sectionId: AnalystSectionId | EngineeringSectionId) => {
+    if (sectionId === (routeMode === 'engineer' ? 'engineering-home' : 'home')) {
+      navigateToRoot();
+    } else {
+      navigateToSection(sectionId);
     }
 
+    setActiveSection(sectionId);
     setIsOpen(false);
   };
 
@@ -97,6 +131,11 @@ const Navbar = () => {
         whileTap: { scale: 0.95 },
       };
   const mobileMenuTransition = shouldReduceMotion ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' };
+  const navAccentColor = routeMode === 'engineer' ? 'var(--engineering-link)' : '#64ffda';
+  const activeNavTextClass = routeMode === 'engineer' ? 'text-[var(--engineering-link)]' : 'text-[#64ffda]';
+  const idleNavTextClass =
+    'dark:text-text-secondary light:text-lightMode-text-secondary';
+  const hoverNavTextClass = routeMode === 'engineer' ? 'hover:text-[var(--engineering-link)]' : 'hover:text-[#64ffda]';
 
   return (
     <nav
@@ -108,52 +147,53 @@ const Navbar = () => {
       }`}
     >
       <div className="container-custom">
-        <div className="flex h-20 items-center justify-between">
-          <motion.a
-            href="#home"
-            onClick={(event) => {
-              event.preventDefault();
-              scrollToSection('#home');
-            }}
+        <div className="flex h-20 items-center justify-between gap-4">
+          <motion.button
+            type="button"
+            onClick={navigateToRoot}
             className="focus-ring cursor-pointer text-2xl font-poppins font-bold gradient-text"
             {...brandMotionProps}
           >
             SC
-          </motion.a>
+          </motion.button>
 
-          <div className="hidden items-center space-x-8 md:flex">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.href.slice(1);
+          <div className="hidden min-w-0 items-center gap-5 md:flex lg:gap-7">
+            <div className="flex items-center gap-5 lg:gap-7">
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.id;
 
-              return (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    scrollToSection(link.href);
-                  }}
-                  aria-current={isActive ? 'location' : undefined}
-                  className={`focus-ring relative text-sm font-medium transition-colors group ${
-                    isActive
-                      ? 'dark:text-accent-cyan light:text-lightMode-accent-primary'
-                      : 'dark:text-text-secondary dark:hover:text-accent-cyan light:text-lightMode-text-secondary light:hover:text-lightMode-accent-primary'
-                  }`}
-                >
-                  {link.name}
-                  <span
-                    className={`absolute -bottom-1 left-0 h-0.5 w-0 transition-all group-hover:w-full dark:bg-accent-cyan light:bg-lightMode-accent-primary ${
-                      isActive ? 'w-full' : ''
+                return (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => handleSectionNavigation(link.id)}
+                    aria-current={isActive ? 'location' : undefined}
+                    className={`focus-ring group relative inline-flex min-h-[2.5rem] items-center justify-center pb-2 text-sm transition-colors ${
+                      isActive ? `${activeNavTextClass} font-semibold` : `${idleNavTextClass} ${hoverNavTextClass} font-medium`
                     }`}
-                  />
-                </a>
-              );
-            })}
+                  >
+                    {link.name}
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute bottom-0 left-1/2 h-[3px] -translate-x-1/2 rounded-full transition-all duration-300 ease-out group-hover:w-full ${
+                        isActive ? 'w-full opacity-100' : 'w-0 opacity-70'
+                      }`}
+                      style={{
+                        backgroundColor: navAccentColor,
+                        boxShadow: isActive ? `0 0 14px ${navAccentColor}` : 'none',
+                      }}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            <ProfileRouteSwitch routeMode={routeMode} />
             <ThemeToggle />
             <LanguageSelector />
           </div>
 
-          <div className="relative flex items-center gap-4 md:hidden">
+          <div className="relative flex items-center gap-3 md:hidden">
             <ThemeToggle />
             <LanguageSelector />
             <button
@@ -187,26 +227,27 @@ const Navbar = () => {
             className="backdrop-blur-sm dark:bg-primary-light/95 light:bg-lightMode-surfaceAlt/95 md:hidden"
           >
             <div className="container-custom py-4">
+              <div className="mb-4">
+                <ProfileRouteSwitch routeMode={routeMode} onNavigate={() => setIsOpen(false)} />
+              </div>
+
               {navLinks.map((link) => {
-                const isActive = activeSection === link.href.slice(1);
+                const isActive = activeSection === link.id;
 
                 return (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      scrollToSection(link.href);
-                    }}
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => handleSectionNavigation(link.id)}
                     aria-current={isActive ? 'location' : undefined}
-                    className={`focus-ring block rounded-lg py-3 text-base font-medium transition-colors ${
+                    className={`focus-ring block w-full rounded-lg py-3 text-left text-base font-medium transition-colors ${
                       isActive
                         ? 'dark:text-accent-cyan light:text-lightMode-accent-primary'
                         : 'dark:text-text-secondary dark:hover:text-accent-cyan light:text-lightMode-text-secondary light:hover:text-lightMode-accent-primary'
                     }`}
                   >
                     {link.name}
-                  </a>
+                  </button>
                 );
               })}
             </div>

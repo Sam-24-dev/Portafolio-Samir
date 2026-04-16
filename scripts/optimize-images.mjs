@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import sharp from 'sharp';
 
 const imagePairs = [
-  ['public/images/perfil.jpg', 'public/images/perfil.webp'],
+  ['public/images/perfil.png', 'public/images/perfil.webp'],
   ['public/images/projects/customer-profile-analytics.png', 'public/images/projects/customer-profile-analytics.webp'],
   ['public/images/projects/esports-dashboard.png', 'public/images/projects/esports-dashboard.webp'],
   ['public/images/projects/powerbi-dashboard.png', 'public/images/projects/powerbi-dashboard.webp'],
@@ -18,7 +18,8 @@ const run = async () => {
     const absoluteOutput = resolve(process.cwd(), outputPath);
 
     if (!existsSync(absoluteInput)) {
-      throw new Error(`Source image not found: ${inputPath}`);
+      console.log(`Skipping ${inputPath}: source image not found.`);
+      continue;
     }
 
     mkdirSync(dirname(absoluteOutput), { recursive: true });

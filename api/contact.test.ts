@@ -110,7 +110,7 @@ describe('contact API', () => {
         headers: VALID_ORIGIN_HEADERS,
         body: {
           ...VALID_PAYLOAD,
-          startedAt: Date.now() - 2_000,
+          startedAt: Date.now() - 1_000,
         },
       },
       response
@@ -118,7 +118,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
-      message: 'Unable to submit this message right now. Please review your information and try again.',
+      message: 'Please wait a moment before sending the form.',
     });
   });
 

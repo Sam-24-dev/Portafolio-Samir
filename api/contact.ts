@@ -26,9 +26,10 @@ const MAX_EMAIL_LENGTH = 254;
 const MAX_MESSAGE_LENGTH = 4000;
 const MIN_NAME_LENGTH = 2;
 const MIN_MESSAGE_LENGTH = 20;
-const MIN_FORM_FILL_MS = 4_000;
+const MIN_FORM_FILL_MS = 2_000;
 const MAX_FORM_AGE_MS = 2 * 60 * 60 * 1000;
 const INVALID_SUBMISSION_MESSAGE = 'Unable to submit this message right now. Please review your information and try again.';
+const TOO_FAST_SUBMISSION_MESSAGE = 'Please wait a moment before sending the form.';
 
 const parseBody = (body: RequestLike['body']): ContactPayload => {
   if (!body) {
@@ -167,14 +168,22 @@ const isAllowedOrigin = (origin: string) => {
   }
 };
 
-const hasValidSubmissionWindow = (startedAt: number | null) => {
+const getSubmissionWindowState = (startedAt: number | null) => {
   if (startedAt === null) {
-    return false;
+    return 'invalid';
   }
 
   const age = Date.now() - startedAt;
 
-  return age >= MIN_FORM_FILL_MS && age <= MAX_FORM_AGE_MS;
+  if (age < MIN_FORM_FILL_MS) {
+    return 'too_fast';
+  }
+
+  if (age > MAX_FORM_AGE_MS) {
+    return 'too_old';
+  }
+
+  return 'valid';
 };
 
 const buildEmailContent = (payload: Required<Pick<ContactPayload, 'name' | 'email' | 'message'>>) => {
@@ -226,7 +235,14 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
     return;
   }
 
-  if (!hasValidSubmissionWindow(normalizeNumber(payload.startedAt))) {
+  const submissionWindowState = getSubmissionWindowState(normalizeNumber(payload.startedAt));
+
+  if (submissionWindowState === 'too_fast') {
+    res.status(400).json({ message: TOO_FAST_SUBMISSION_MESSAGE });
+    return;
+  }
+
+  if (submissionWindowState !== 'valid') {
     res.status(400).json({ message: INVALID_SUBMISSION_MESSAGE });
     return;
   }

@@ -245,7 +245,7 @@ export const translations = {
       location: 'Location',
       letsConnect: "Let's Connect",
       connectText:
-        'I am currently seeking Data Analyst opportunities and I am open to remote, on-site, national, and international teams.',
+        'I am currently open to data-focused opportunities and collaborations with remote, on-site, national, and international teams.',
       name: 'Name',
       emailLabel: 'Email',
       message: 'Message',
@@ -258,6 +258,7 @@ export const translations = {
       successMessage: "Message sent successfully. I'll get back to you soon.",
       errorMessage: 'Something went wrong. Please try again or email me directly.',
       invalidSubmissionMessage: 'Unable to submit this message right now. Please review your information and try again.',
+      tooFastSubmissionMessage: 'Please wait a moment before sending the form.',
       cooldownMessage: 'Please wait {seconds}s before sending another message.',
       configError: 'Contact form is not configured yet. Add the contact service environment variables to enable it.',
     },
@@ -513,7 +514,7 @@ export const translations = {
       location: 'Ubicacion',
       letsConnect: 'Conectemos',
       connectText:
-        'Actualmente busco oportunidades como Analista de Datos y estoy abierto a equipos remotos, presenciales, nacionales e internacionales.',
+        'Actualmente estoy abierto a oportunidades y colaboraciones orientadas a datos con equipos remotos, presenciales, nacionales e internacionales.',
       name: 'Nombre',
       emailLabel: 'Correo Electronico',
       message: 'Mensaje',
@@ -526,6 +527,7 @@ export const translations = {
       successMessage: 'Mensaje enviado correctamente. Te respondere pronto.',
       errorMessage: 'Ocurrio un problema. Intenta de nuevo o escribeme por correo.',
       invalidSubmissionMessage: 'No fue posible enviar este mensaje ahora. Revisa la informacion e intenta nuevamente.',
+      tooFastSubmissionMessage: 'Espera un momento antes de enviar el formulario.',
       cooldownMessage: 'Espera {seconds}s antes de enviar otro mensaje.',
       configError:
         'El formulario de contacto aun no esta configurado. Agrega las variables del servicio de correo para habilitarlo.',
