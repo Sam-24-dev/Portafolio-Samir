@@ -1,4 +1,7 @@
+import type { PortfolioRouteMode } from './portfolioRoute';
+
 export type PortfolioLanguage = 'en' | 'es';
+export type { PortfolioRouteMode } from './portfolioRoute';
 
 export type PortfolioEventName =
   | 'cv_download'
@@ -7,7 +10,12 @@ export type PortfolioEventName =
   | 'project_demo_click'
   | 'external_profile_click'
   | 'contact_submit_success'
-  | 'contact_submit_error';
+  | 'contact_submit_error'
+  | 'profile_route_switch'
+  | 'engineering_entry_click'
+  | 'engineering_case_open'
+  | 'engineering_repo_click'
+  | 'engineering_demo_click';
 
 export type PortfolioAnalyticsLocation =
   | 'hero'
@@ -15,7 +23,11 @@ export type PortfolioAnalyticsLocation =
   | 'supporting_card'
   | 'case_study_modal'
   | 'contact'
-  | 'about_certifications';
+  | 'about_certifications'
+  | 'navbar'
+  | 'engineering_projects'
+  | 'engineering_bridge_projects'
+  | 'engineering_case_modal';
 
 export type PortfolioAnalyticsTarget =
   | 'cv'
@@ -24,12 +36,16 @@ export type PortfolioAnalyticsTarget =
   | 'github_profile'
   | 'github_repo'
   | 'linkedin_profile'
-  | 'email';
+  | 'email'
+  | 'profile_switch'
+  | 'engineering_route';
 
 export interface PortfolioAnalyticsPayload {
   language: PortfolioLanguage;
   location: PortfolioAnalyticsLocation;
   projectId?: number;
+  projectSlug?: string;
+  routeMode?: PortfolioRouteMode;
   target?: PortfolioAnalyticsTarget;
 }
 

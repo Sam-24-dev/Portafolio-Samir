@@ -1,12 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ChevronDown, Download } from 'lucide-react';
+import { ChevronDown, Download, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { analystRouteContent } from '../data/routeContent';
 import { trackPortfolioEvent } from '../lib/analytics';
-import HintBubble from './HintBubble';
+import { analystOrbitIcons } from '../lib/techIcons';
+import { useSectionNavigation } from '../hooks/useSectionNavigation';
+import OrbitTechRing from './OrbitTechRing';
 
 const Hero = () => {
   const { t, language } = useLanguage();
+  const analystRoute = analystRouteContent[language];
   const prefersReducedMotion = useReducedMotion();
   const shouldReduceMotion =
     prefersReducedMotion ||
@@ -14,8 +19,7 @@ const Hero = () => {
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const [activeTechHint, setActiveTechHint] = useState<string | null>(null);
-  const touchHintTimeoutRef = useRef<number | null>(null);
+  const navigateToSection = useSectionNavigation('analyst');
 
   const titles = t.hero.titles;
 
@@ -56,39 +60,6 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, [displayText, isDeleting, shouldReduceMotion, titleIndex, titles]);
 
-  useEffect(() => {
-    return () => {
-      if (touchHintTimeoutRef.current !== null) {
-        window.clearTimeout(touchHintTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-
-    if (!element) {
-      return;
-    }
-
-    const offset = 80;
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-    window.scrollTo({ top: offsetPosition, behavior: shouldReduceMotion ? 'auto' : 'smooth' });
-  };
-
-  const techIcons = [
-    { src: '/images/icons/python.svg', alt: 'Python' },
-    { src: '/images/icons/mysql.svg', alt: 'SQL' },
-    { src: '/images/icons/powerbi.svg', alt: 'Power BI' },
-    { src: '/images/icons/r.svg', alt: 'R' },
-    { src: '/images/icons/jupyter.svg', alt: 'Jupyter' },
-    { src: '/images/icons/pandas.svg', alt: 'Pandas' },
-    { src: '/images/icons/git.svg', alt: 'Git' },
-    { src: '/images/icons/typescript.svg', alt: 'TypeScript' },
-  ];
-
   const contactLinks = [
     {
       href: 'https://github.com/Sam-24-dev',
@@ -121,7 +92,7 @@ const Hero = () => {
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8 }}
             className="flex-1 text-center lg:max-w-2xl lg:text-left"
           >
-            <p className="ui-hero-kicker mb-4 text-center text-sm font-semibold uppercase tracking-[0.32em] sm:text-[0.95rem] lg:text-left">
+            <p className="ui-analyst-kicker mb-4 text-center text-sm font-semibold uppercase tracking-[0.32em] sm:text-[0.95rem] lg:text-left">
               {t.hero.eyebrow}
             </p>
 
@@ -130,7 +101,7 @@ const Hero = () => {
                 {t.hero.trustSignals.map((signal, index) => (
                   <span
                     key={signal}
-                    className={`${index < 2 ? 'ui-pill-display' : 'ui-pill-neutral'} px-3.5 py-1.5 text-[11px] sm:text-xs`}
+                    className={`${index < 2 ? 'ui-analyst-pill' : 'ui-pill-neutral'} px-3.5 py-1.5 text-[11px] sm:text-xs`}
                   >
                     {signal}
                   </span>
@@ -180,7 +151,7 @@ const Hero = () => {
             <div className="flex flex-col justify-center gap-3 sm:gap-4 md:flex-row lg:justify-start">
               <motion.button
                 type="button"
-                onClick={() => scrollToSection('projects')}
+                onClick={() => navigateToSection('projects')}
                 className="focus-ring ui-btn-primary ui-btn-lg"
                 whileHover={buttonHoverMotion}
                 whileTap={buttonTapMotion}
@@ -203,7 +174,25 @@ const Hero = () => {
               >
                 <Download size={20} />
                 {t.hero.downloadCV}
-              </motion.a>
+                </motion.a>
+            </div>
+
+            <div className="mt-4 flex justify-center lg:justify-start">
+              <Link
+                to="/engineering"
+                className="focus-ring ui-analyst-link inline-flex items-center gap-2 text-sm font-semibold"
+                onClick={() =>
+                  trackPortfolioEvent('engineering_entry_click', {
+                    location: 'hero',
+                    language,
+                    routeMode: 'engineer',
+                    target: 'engineering_route',
+                  })
+                }
+              >
+                {analystRoute.exploreEngineering}
+                <ArrowRight size={16} />
+              </Link>
             </div>
           </motion.div>
 
@@ -213,59 +202,15 @@ const Hero = () => {
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
             className="relative h-[20rem] w-[20rem] flex-shrink-0 sm:h-[22rem] sm:w-[22rem] md:h-[26rem] md:w-[26rem]"
           >
-            <motion.div
-              className="absolute inset-0"
-              animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-              transition={shouldReduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: 'linear' }}
-            >
-              {techIcons.map((icon, index) => {
-                const angle = (index / techIcons.length) * 2 * Math.PI;
-                const radius = 'calc(50% - 1.5rem)';
-                const x = `calc(50% + ${radius} * ${Math.cos(angle)} - 1.5rem)`;
-                const y = `calc(50% + ${radius} * ${Math.sin(angle)} - 1.5rem)`;
-                const hintId = `hero-tech-hint-${icon.alt.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+            <OrbitTechRing
+              icons={analystOrbitIcons}
+              shouldReduceMotion={shouldReduceMotion}
+              hintPrefix="hero-tech-hint"
+              tileClassName="ui-analyst-orbit-tile"
+              dataTestId="analyst-orbit"
+            />
 
-                return (
-                  <motion.div
-                    key={icon.alt}
-                    className="absolute h-12 w-12 sm:h-12 sm:w-12 md:h-14 md:w-14"
-                    style={{ top: y, left: x }}
-                    animate={shouldReduceMotion ? undefined : { rotate: -360 }}
-                    transition={shouldReduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: 'linear' }}
-                  >
-                    <button
-                      type="button"
-                      aria-label={icon.alt}
-                      aria-describedby={activeTechHint === icon.alt ? hintId : undefined}
-                      className="focus-ring ui-orbit-tile relative flex h-full w-full items-center justify-center rounded-2xl border p-2"
-                      onMouseEnter={() => setActiveTechHint(icon.alt)}
-                      onMouseLeave={() => setActiveTechHint((current) => (current === icon.alt ? null : current))}
-                      onFocus={() => setActiveTechHint(icon.alt)}
-                      onBlur={() => setActiveTechHint((current) => (current === icon.alt ? null : current))}
-                      onClick={() => {
-                        setActiveTechHint(icon.alt);
-                        if (touchHintTimeoutRef.current !== null) {
-                          window.clearTimeout(touchHintTimeoutRef.current);
-                        }
-                        touchHintTimeoutRef.current = window.setTimeout(() => {
-                          setActiveTechHint((current) => (current === icon.alt ? null : current));
-                        }, 1800);
-                      }}
-                    >
-                      <img src={icon.src} alt="" aria-hidden="true" className="h-full w-full object-contain" />
-                      <HintBubble
-                        id={hintId}
-                        text={icon.alt}
-                        visible={activeTechHint === icon.alt}
-                        className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"
-                      />
-                    </button>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-
-            <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full p-1 gradient-border sm:h-64 sm:w-64 md:h-80 md:w-80">
+            <div className="absolute left-1/2 top-1/2 z-0 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full p-1 gradient-border sm:h-64 sm:w-64 md:h-80 md:w-80">
               <img
                 src="/images/perfil.webp"
                 alt="Portrait of Samir Caizapasto"
@@ -283,7 +228,7 @@ const Hero = () => {
         animate={{ opacity: 1 }}
         transition={shouldReduceMotion ? { duration: 0 } : { delay: 1, duration: 0.5 }}
         className="focus-ring absolute bottom-6 left-1/2 z-20 -translate-x-1/2 dark:text-accent-cyan light:text-lightMode-accent-primary sm:bottom-8"
-        onClick={() => scrollToSection('about')}
+        onClick={() => navigateToSection('about')}
         aria-label={t.accessibility.scrollToAbout}
       >
         <ChevronDown size={32} className={shouldReduceMotion ? '' : 'animate-bounce'} />

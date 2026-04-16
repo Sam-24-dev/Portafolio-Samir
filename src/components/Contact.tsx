@@ -2,14 +2,21 @@ import { useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Mail, Linkedin, Github, MapPin, Send } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { analystRouteContent, engineeringRouteContent } from '../data/routeContent';
+import type { PortfolioRouteMode } from '../lib/portfolioRoute';
 import { trackPortfolioEvent } from '../lib/analytics';
 
 type SubmissionState = 'idle' | 'sending' | 'success' | 'error';
-type ContactApiResponse = { message?: string };
+type ContactApiResponse = { code?: 'invalid_submission' | 'too_fast'; message?: string };
 const CONTACT_COOLDOWN_MS = 60_000;
 const CONTACT_COOLDOWN_KEY = 'portfolio-contact-last-success-at';
+const MIN_FORM_FILL_MS = 2_000;
 
-const Contact = () => {
+interface ContactProps {
+  routeMode?: PortfolioRouteMode;
+}
+
+const Contact = ({ routeMode = 'analyst' }: ContactProps) => {
   const { t, language } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
 
@@ -24,10 +31,10 @@ const Contact = () => {
   const [statusMessage, setStatusMessage] = useState('');
   const [formStartedAt, setFormStartedAt] = useState<number | null>(null);
 
-  const readApiMessage = async (response: Response): Promise<string | null> => {
+  const readApiResponse = async (response: Response): Promise<ContactApiResponse | null> => {
     try {
       const payload = (await response.json()) as ContactApiResponse;
-      return typeof payload.message === 'string' ? payload.message : null;
+      return payload;
     } catch {
       return null;
     }
@@ -81,11 +88,24 @@ const Contact = () => {
       trackPortfolioEvent('contact_submit_error', {
         location: 'contact',
         language,
+        routeMode,
       });
       return;
     }
 
     const startedAt = formStartedAt ?? Date.now();
+    const formAge = Date.now() - startedAt;
+
+    if (formAge < MIN_FORM_FILL_MS) {
+      setSubmissionState('error');
+      setStatusMessage(t.contact.tooFastSubmissionMessage);
+      trackPortfolioEvent('contact_submit_error', {
+        location: 'contact',
+        language,
+        routeMode,
+      });
+      return;
+    }
 
     try {
       setSubmissionState('sending');
@@ -103,15 +123,19 @@ const Contact = () => {
       });
 
       if (!response.ok) {
-        const apiMessage = await readApiMessage(response);
+        const apiResponse = await readApiResponse(response);
+        const apiMessage = typeof apiResponse?.message === 'string' ? apiResponse.message : null;
         const isConfigIssue =
           response.status === 500 || (apiMessage?.toLowerCase().includes('not configured') ?? false);
+        const isTooFastSubmission = apiResponse?.code === 'too_fast';
         const isInvalidSubmission = response.status === 400 || response.status === 403;
 
         setSubmissionState('error');
         setStatusMessage(
           isConfigIssue
             ? t.contact.configError
+            : isTooFastSubmission
+              ? t.contact.tooFastSubmissionMessage
             : isInvalidSubmission
               ? t.contact.invalidSubmissionMessage
               : (apiMessage ?? t.contact.errorMessage)
@@ -119,6 +143,7 @@ const Contact = () => {
         trackPortfolioEvent('contact_submit_error', {
           location: 'contact',
           language,
+          routeMode,
         });
         return;
       }
@@ -138,6 +163,7 @@ const Contact = () => {
       trackPortfolioEvent('contact_submit_success', {
         location: 'contact',
         language,
+        routeMode,
       });
     } catch {
       setSubmissionState('error');
@@ -145,6 +171,7 @@ const Contact = () => {
       trackPortfolioEvent('contact_submit_error', {
         location: 'contact',
         language,
+        routeMode,
       });
     }
   };
@@ -163,6 +190,10 @@ const Contact = () => {
   }, [submissionState]);
 
   const statusRole = submissionState === 'error' ? 'alert' : 'status';
+  const supportCopy =
+    routeMode === 'engineer'
+      ? engineeringRouteContent[language].contactSupportCopy
+      : analystRouteContent[language].contactSupportCopy;
   const contactInfo = [
     {
       icon: <Mail size={20} />,
@@ -196,7 +227,8 @@ const Contact = () => {
   return (
     <section
       id="contact"
-      className="section-padding overflow-x-clip transition-colors dark:bg-primary-light light:bg-lightMode-surfaceAlt"
+      data-route-mode={routeMode}
+      className="section-padding scroll-mt-28 overflow-x-clip transition-colors sm:scroll-mt-32 dark:bg-primary-light light:bg-lightMode-surfaceAlt"
     >
       <div className="container-custom">
         <motion.div
@@ -250,6 +282,7 @@ const Contact = () => {
                             trackPortfolioEvent('external_profile_click', {
                               location: 'contact',
                               language,
+                              routeMode,
                               target: info.target,
                             })
                           }
@@ -275,7 +308,7 @@ const Contact = () => {
                 {t.contact.letsConnect}
               </h3>
               <p className="leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                {t.contact.connectText}
+                {supportCopy}
               </p>
             </motion.div>
           </motion.div>

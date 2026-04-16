@@ -6,6 +6,8 @@ type ContactPayload = {
   startedAt?: number;
 };
 
+type ContactErrorCode = 'invalid_submission' | 'too_fast';
+
 type RequestLike = {
   method?: string;
   body?: ContactPayload | string;
@@ -26,9 +28,12 @@ const MAX_EMAIL_LENGTH = 254;
 const MAX_MESSAGE_LENGTH = 4000;
 const MIN_NAME_LENGTH = 2;
 const MIN_MESSAGE_LENGTH = 20;
-const MIN_FORM_FILL_MS = 4_000;
+const MIN_FORM_FILL_MS = 2_000;
 const MAX_FORM_AGE_MS = 2 * 60 * 60 * 1000;
 const INVALID_SUBMISSION_MESSAGE = 'Unable to submit this message right now. Please review your information and try again.';
+const TOO_FAST_SUBMISSION_MESSAGE = 'Please wait a moment before sending the form.';
+const INVALID_SUBMISSION_CODE: ContactErrorCode = 'invalid_submission';
+const TOO_FAST_SUBMISSION_CODE: ContactErrorCode = 'too_fast';
 
 const parseBody = (body: RequestLike['body']): ContactPayload => {
   if (!body) {
@@ -167,14 +172,22 @@ const isAllowedOrigin = (origin: string) => {
   }
 };
 
-const hasValidSubmissionWindow = (startedAt: number | null) => {
+const getSubmissionWindowState = (startedAt: number | null) => {
   if (startedAt === null) {
-    return false;
+    return 'invalid';
   }
 
   const age = Date.now() - startedAt;
 
-  return age >= MIN_FORM_FILL_MS && age <= MAX_FORM_AGE_MS;
+  if (age < MIN_FORM_FILL_MS) {
+    return 'too_fast';
+  }
+
+  if (age > MAX_FORM_AGE_MS) {
+    return 'too_old';
+  }
+
+  return 'valid';
 };
 
 const buildEmailContent = (payload: Required<Pick<ContactPayload, 'name' | 'email' | 'message'>>) => {
@@ -207,7 +220,7 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   res.setHeader('Content-Type', 'application/json');
 
   if (req.method !== 'POST') {
-    res.status(405).json({ message: INVALID_SUBMISSION_MESSAGE });
+    res.status(405).json({ code: INVALID_SUBMISSION_CODE, message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -222,17 +235,24 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   const requestOrigin = getRequestOrigin(req.headers);
 
   if (!isAllowedOrigin(requestOrigin)) {
-    res.status(400).json({ message: INVALID_SUBMISSION_MESSAGE });
+    res.status(400).json({ code: INVALID_SUBMISSION_CODE, message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
-  if (!hasValidSubmissionWindow(normalizeNumber(payload.startedAt))) {
-    res.status(400).json({ message: INVALID_SUBMISSION_MESSAGE });
+  const submissionWindowState = getSubmissionWindowState(normalizeNumber(payload.startedAt));
+
+  if (submissionWindowState === 'too_fast') {
+    res.status(400).json({ code: TOO_FAST_SUBMISSION_CODE, message: TOO_FAST_SUBMISSION_MESSAGE });
+    return;
+  }
+
+  if (submissionWindowState !== 'valid') {
+    res.status(400).json({ code: INVALID_SUBMISSION_CODE, message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
   if (!isValidPayload(payload)) {
-    res.status(400).json({ message: INVALID_SUBMISSION_MESSAGE });
+    res.status(400).json({ code: INVALID_SUBMISSION_CODE, message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -241,7 +261,7 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
   const fromEmail = process.env.CONTACT_FROM_EMAIL;
 
   if (!resendApiKey || !toEmail || !fromEmail) {
-    res.status(500).json({ message: INVALID_SUBMISSION_MESSAGE });
+    res.status(500).json({ code: INVALID_SUBMISSION_CODE, message: INVALID_SUBMISSION_MESSAGE });
     return;
   }
 
@@ -270,12 +290,12 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
     });
 
     if (!response.ok) {
-      res.status(502).json({ message: INVALID_SUBMISSION_MESSAGE });
+      res.status(502).json({ code: INVALID_SUBMISSION_CODE, message: INVALID_SUBMISSION_MESSAGE });
       return;
     }
 
     res.status(200).json({ ok: true, message: 'Message sent successfully.' });
   } catch {
-    res.status(502).json({ message: INVALID_SUBMISSION_MESSAGE });
+    res.status(502).json({ code: INVALID_SUBMISSION_CODE, message: INVALID_SUBMISSION_MESSAGE });
   }
 }

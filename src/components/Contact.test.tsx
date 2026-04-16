@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Contact from './Contact';
 import { ThemeProvider } from '../context/ThemeContext';
 import { LanguageProvider } from '../context/LanguageContext';
+import type { PortfolioRouteMode } from '../lib/portfolioRoute';
 
 const portfolioEvents: CustomEvent[] = [];
 
@@ -10,11 +11,11 @@ const capturePortfolioEvent = (event: Event) => {
   portfolioEvents.push(event as CustomEvent);
 };
 
-const renderContact = () =>
+const renderContact = (routeMode: PortfolioRouteMode = 'analyst') =>
   render(
     <ThemeProvider>
       <LanguageProvider>
-        <Contact />
+        <Contact routeMode={routeMode} />
       </LanguageProvider>
     </ThemeProvider>
   );
@@ -42,6 +43,8 @@ describe('Contact form', () => {
   });
 
   it('shows an error when the contact API fails and tracks the failure without PII', async () => {
+    let now = 1_710_000_000_000;
+    vi.spyOn(Date, 'now').mockImplementation(() => now);
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
@@ -53,6 +56,7 @@ describe('Contact form', () => {
 
     renderContact();
     fillContactForm();
+    now += 3_000;
     fireEvent.click(screen.getByRole('button', { name: 'Send Message' }));
 
     expect(
@@ -62,6 +66,7 @@ describe('Contact form', () => {
       name: 'contact_submit_error',
       location: 'contact',
       language: 'en',
+      routeMode: 'analyst',
     });
     expect(portfolioEvents.at(-1)?.detail).not.toHaveProperty('email');
     expect(portfolioEvents.at(-1)?.detail).not.toHaveProperty('message');
@@ -69,7 +74,8 @@ describe('Contact form', () => {
   });
 
   it('submits successfully through the contact API, sends startedAt, resets the form, and tracks success', async () => {
-    vi.spyOn(Date, 'now').mockReturnValue(1_710_000_000_000);
+    let now = 1_710_000_000_000;
+    vi.spyOn(Date, 'now').mockImplementation(() => now);
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ ok: true, message: 'Message sent successfully.' }),
@@ -78,6 +84,7 @@ describe('Contact form', () => {
 
     renderContact();
     fillContactForm();
+    now += 3_000;
     fireEvent.click(screen.getByRole('button', { name: 'Send Message' }));
 
     expect(screen.getByRole('button', { name: 'Sending...' })).toBeDisabled();
@@ -109,11 +116,30 @@ describe('Contact form', () => {
     expect(screen.getByLabelText('Name')).toHaveValue('');
     expect(screen.getByLabelText('Email')).toHaveValue('');
     expect(screen.getByLabelText('Message')).toHaveValue('');
-    expect(localStorage.getItem('portfolio-contact-last-success-at')).toBe('1710000000000');
+    expect(localStorage.getItem('portfolio-contact-last-success-at')).toBe('1710000003000');
     expect(portfolioEvents.at(-1)?.detail).toEqual({
       name: 'contact_submit_success',
       location: 'contact',
       language: 'en',
+      routeMode: 'analyst',
+    });
+  });
+
+  it('shows the faster feedback when the form is submitted too quickly', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    renderContact();
+    fillContactForm();
+    fireEvent.click(screen.getByRole('button', { name: 'Send Message' }));
+
+    expect(await screen.findByText('Please wait a moment before sending the form.')).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(portfolioEvents.at(-1)?.detail).toEqual({
+      name: 'contact_submit_error',
+      location: 'contact',
+      language: 'en',
+      routeMode: 'analyst',
     });
   });
 
@@ -133,6 +159,7 @@ describe('Contact form', () => {
       name: 'contact_submit_error',
       location: 'contact',
       language: 'en',
+      routeMode: 'analyst',
     });
   });
 
@@ -152,7 +179,61 @@ describe('Contact form', () => {
       name: 'external_profile_click',
       location: 'contact',
       language: 'en',
+      routeMode: 'analyst',
       target: 'linkedin_profile',
     });
+  });
+
+  it('keeps the engineering route context in shared contact analytics', async () => {
+    let now = 1_710_000_000_000;
+    vi.spyOn(Date, 'now').mockImplementation(() => now);
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ ok: true, message: 'Message sent successfully.' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    renderContact('engineer');
+    fillContactForm();
+    now += 3_000;
+    fireEvent.click(screen.getByRole('button', { name: 'Send Message' }));
+
+    expect(await screen.findByText("Message sent successfully. I'll get back to you soon.")).toBeInTheDocument();
+    expect(portfolioEvents.at(-1)?.detail).toEqual({
+      name: 'contact_submit_success',
+      location: 'contact',
+      language: 'en',
+      routeMode: 'engineer',
+    });
+
+    fireEvent.click(screen.getByRole('link', { name: 'github.com/Sam-24-dev' }));
+
+    expect(portfolioEvents.at(-1)?.detail).toEqual({
+      name: 'external_profile_click',
+      location: 'contact',
+      language: 'en',
+      routeMode: 'engineer',
+      target: 'github_profile',
+    });
+  });
+
+  it('changes the shared support copy based on the active profile', () => {
+    const { rerender } = renderContact('analyst');
+
+    expect(
+      screen.getByText(/turn data into clear analysis, useful dashboards, and better-informed decisions/i)
+    ).toBeInTheDocument();
+
+    rerender(
+      <ThemeProvider>
+        <LanguageProvider>
+          <Contact routeMode="engineer" />
+        </LanguageProvider>
+      </ThemeProvider>
+    );
+
+    expect(
+      screen.getByText(/build reliable pipelines, automate data delivery, and turn analysis into reviewable public products/i)
+    ).toBeInTheDocument();
   });
 });

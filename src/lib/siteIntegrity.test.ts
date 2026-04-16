@@ -29,4 +29,17 @@ describe('public SEO and asset integrity', () => {
     expect(html).toContain('"@type": "Person"');
     expect(html).toContain('"@type": "WebSite"');
   });
+
+  it('keeps runtime image references on optimized assets and removes deprecated duplicates', () => {
+    const projectData = readFileSync(resolve(process.cwd(), 'src/data/projects.ts'), 'utf8');
+    const heroData = readFileSync(resolve(process.cwd(), 'src/components/Hero.tsx'), 'utf8');
+    const engineeringHeroData = readFileSync(resolve(process.cwd(), 'src/components/EngineeringHero.tsx'), 'utf8');
+
+    expect(projectData).not.toContain('.png');
+    expect(heroData).toContain('/images/perfil.webp');
+    expect(engineeringHeroData).toContain('/images/perfil.webp');
+    expect(existsSync(resolve(process.cwd(), 'public/images/perfil.png'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'public/images/projects/customer-profile-analytics.png'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'public/og-image.svg'))).toBe(false);
+  });
 });

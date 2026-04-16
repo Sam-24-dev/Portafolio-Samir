@@ -1,6 +1,6 @@
 import { Sun, Moon } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { useState } from 'react';
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import HintBubble from './HintBubble';
@@ -10,6 +10,7 @@ const ThemeToggle = () => {
   const { t } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
   const [showHint, setShowHint] = useState(false);
+  const pointerOriginRef = useRef<{ x: number; y: number } | null>(null);
   const hintId = 'theme-toggle-hint';
   const motionProps = shouldReduceMotion
     ? {}
@@ -18,11 +19,30 @@ const ThemeToggle = () => {
         whileTap: { scale: 0.95 },
       };
 
+  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    pointerOriginRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+  };
+
+  const handleToggle = (button: HTMLButtonElement) => {
+    const rect = button.getBoundingClientRect();
+    const origin = pointerOriginRef.current ?? {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    };
+
+    pointerOriginRef.current = null;
+    toggleTheme({ origin });
+  };
+
   return (
     <div className="relative flex items-center">
       <motion.button
         type="button"
-        onClick={toggleTheme}
+        onClick={event => handleToggle(event.currentTarget)}
+        onPointerDown={handlePointerDown}
         onMouseEnter={() => setShowHint(true)}
         onMouseLeave={() => setShowHint(false)}
         onFocus={() => setShowHint(true)}

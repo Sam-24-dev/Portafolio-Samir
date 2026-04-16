@@ -1,72 +1,141 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { routeSectionOwnership, sharedShellComponents } from './lib/portfolioRoute';
 
-describe('phase 1 analyst foundation', () => {
-  afterEach(() => {
-    window.localStorage.clear();
-  });
-
-  it('shows the full analyst-first structure, trust layer, and accessible navigation controls', () => {
-    render(
+const renderApp = (initialEntries: string[] = ['/']) =>
+  render(
+    <MemoryRouter
+      initialEntries={initialEntries}
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <ThemeProvider>
         <LanguageProvider>
           <App />
         </LanguageProvider>
       </ThemeProvider>
-    );
+    </MemoryRouter>
+  );
+
+describe('Phase 04 routing shell', () => {
+  beforeEach(() => {
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
+    localStorage.setItem('portfolio-language', 'en');
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    window.localStorage.clear();
+  });
+
+  it('renders the analyst route by default and keeps the analyst-first structure intact', async () => {
+    renderApp(['/']);
 
     expect(screen.getByText('Key Results')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Additional Relevant Projects' })).toBeInTheDocument();
-    expect(screen.getByText('Customer Profile Analytics Dashboard')).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Career Snapshot' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Code & Documentation' })).not.toBeInTheDocument();
-    expect(screen.getAllByText('Guayaquil, Ecuador').length).toBeGreaterThan(0);
-    expect(screen.getByText('Built with React, TypeScript, and Tailwind CSS')).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Download CV' })[0]).toHaveAttribute('href', '/cv/SamirCaizapastoCV.pdf');
+    expect(screen.getByRole('heading', { name: 'Get In Touch' })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'Data Analyst' })[0]).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getAllByRole('button', { name: 'Data Engineer' })[0]).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('link', { name: 'Explore Data Engineering' })).toHaveAttribute('href', '/engineering');
     expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute('href', '#main-content');
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
-    expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getAllByText(/Built with React, TypeScript, and Tailwind CSS/i)).toHaveLength(1);
+    expect(sharedShellComponents).toContain('Contact');
+    expect(routeSectionOwnership.analyst).toContain('about');
+    expect(routeSectionOwnership.engineer).not.toContain('about');
 
-    screen.getAllByRole('button', { name: 'EN - Switch to English' }).forEach((button) => {
-      expect(button).toHaveAttribute('aria-pressed', 'true');
+    await waitFor(() => {
+      expect(document.title).toBe('Samir Caizapasto | Data Analyst Portfolio');
     });
 
-    screen.getAllByRole('button', { name: 'ES - Switch to Spanish' }).forEach((button) => {
-      expect(button).toHaveAttribute('aria-pressed', 'false');
-    });
+    expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://portafolio-samir-tau.vercel.app/'
+    );
   });
 
-  it('uses Spanish analyst positioning and localized accessibility labels', () => {
-    window.localStorage.setItem('portfolio-language', 'es');
+  it('renders the engineering route with route-aware metadata and anchor sections', async () => {
+    renderApp(['/engineering']);
 
-    render(
-      <ThemeProvider>
-        <LanguageProvider>
-          <App />
-        </LanguageProvider>
-      </ThemeProvider>
+    expect(screen.getByText('Technical evidence')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Key projects for the Data Engineer profile' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Bridge projects' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Engineering stack' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'How I turn data into reliable products' })).toBeInTheDocument();
+    expect(screen.getByText('Core stack')).toBeInTheDocument();
+    expect(screen.getByText('126')).toBeInTheDocument();
+    expect(screen.getByText('Technology Trend Analysis Platform')).toBeInTheDocument();
+    expect(screen.getByText('RideFare ETL Pipeline')).toBeInTheDocument();
+    expect(screen.getByText('Rice Crop Analytics Platform')).toBeInTheDocument();
+    expect(screen.getByText('eSports Analytics Dashboard LATAM')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Get In Touch' })).toBeInTheDocument();
+    expect(screen.getAllByText(/Built with React, TypeScript, and Tailwind CSS/i)).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: 'Data Engineer' })[0]).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getAllByRole('button', { name: 'Data Analyst' })[0]).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('link', { name: 'Back to Data Analyst Portfolio' })).toHaveAttribute('href', '/');
+    expect(screen.queryByText('Key Results')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'About Me' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Featured Projects' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/7th-semester/i)).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(document.title).toBe('Samir Caizapasto | Data Engineer Portfolio');
+    });
+
+    expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://portafolio-samir-tau.vercel.app/engineering'
     );
+  });
 
-    expect(screen.getByText('Analista de Datos')).toBeInTheDocument();
-    expect(screen.getByText('Los proyectos que mejor reflejan como trabajo hoy como Analista de Datos.')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Otros Proyectos Seleccionados' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Resumen Profesional' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'C\u00F3digo y Documentaci\u00F3n' })).not.toBeInTheDocument();
-    expect(screen.getAllByText('Guayaquil, Ecuador').length).toBeGreaterThan(0);
-    expect(screen.getByText('Construido con React, TypeScript y Tailwind CSS')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Saltar al contenido principal' })).toHaveAttribute('href', '#main-content');
-    expect(screen.getByRole('button', { name: 'Abrir men\u00FA' })).toHaveAttribute('aria-expanded', 'false');
+  it('uses the visible switch to navigate from analyst to engineering', async () => {
+    renderApp(['/']);
 
-    screen.getAllByRole('button', { name: 'EN - Cambiar a ingl\u00E9s' }).forEach((button) => {
-      expect(button).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(screen.getByRole('button', { name: 'Data Engineer' }));
+
+    expect(await screen.findByRole('heading', { name: 'Key projects for the Data Engineer profile' })).toBeInTheDocument();
+  });
+
+  it('renders analyst section paths with analyst metadata intact', async () => {
+    renderApp(['/projects']);
+
+    expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Key projects for the Data Engineer profile' })).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(document.title).toBe('Samir Caizapasto | Data Analyst Portfolio');
     });
 
-    screen.getAllByRole('button', { name: 'ES - Cambiar a espa\u00F1ol' }).forEach((button) => {
-      expect(button).toHaveAttribute('aria-pressed', 'true');
+    expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://portafolio-samir-tau.vercel.app/'
+    );
+  });
+
+  it('renders engineering section paths with engineering metadata intact', async () => {
+    renderApp(['/engineering/projects']);
+
+    expect(screen.getByRole('heading', { name: 'Key projects for the Data Engineer profile' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Featured Projects' })).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(document.title).toBe('Samir Caizapasto | Data Engineer Portfolio');
     });
+
+    expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://portafolio-samir-tau.vercel.app/engineering'
+    );
+  });
+
+  it('redirects unknown routes back to the analyst homepage', async () => {
+    renderApp(['/unexpected']);
+
+    expect(await screen.findByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Key projects for the Data Engineer profile' })).not.toBeInTheDocument();
   });
 });
