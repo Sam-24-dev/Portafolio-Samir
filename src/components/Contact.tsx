@@ -7,11 +7,10 @@ import type { PortfolioRouteMode } from '../lib/portfolioRoute';
 import { trackPortfolioEvent } from '../lib/analytics';
 
 type SubmissionState = 'idle' | 'sending' | 'success' | 'error';
-type ContactApiResponse = { message?: string };
+type ContactApiResponse = { code?: 'invalid_submission' | 'too_fast'; message?: string };
 const CONTACT_COOLDOWN_MS = 60_000;
 const CONTACT_COOLDOWN_KEY = 'portfolio-contact-last-success-at';
 const MIN_FORM_FILL_MS = 2_000;
-const TOO_FAST_SUBMISSION_MESSAGE = 'Please wait a moment before sending the form.';
 
 interface ContactProps {
   routeMode?: PortfolioRouteMode;
@@ -32,10 +31,10 @@ const Contact = ({ routeMode = 'analyst' }: ContactProps) => {
   const [statusMessage, setStatusMessage] = useState('');
   const [formStartedAt, setFormStartedAt] = useState<number | null>(null);
 
-  const readApiMessage = async (response: Response): Promise<string | null> => {
+  const readApiResponse = async (response: Response): Promise<ContactApiResponse | null> => {
     try {
       const payload = (await response.json()) as ContactApiResponse;
-      return typeof payload.message === 'string' ? payload.message : null;
+      return payload;
     } catch {
       return null;
     }
@@ -124,10 +123,11 @@ const Contact = ({ routeMode = 'analyst' }: ContactProps) => {
       });
 
       if (!response.ok) {
-        const apiMessage = await readApiMessage(response);
+        const apiResponse = await readApiResponse(response);
+        const apiMessage = typeof apiResponse?.message === 'string' ? apiResponse.message : null;
         const isConfigIssue =
           response.status === 500 || (apiMessage?.toLowerCase().includes('not configured') ?? false);
-        const isTooFastSubmission = apiMessage === TOO_FAST_SUBMISSION_MESSAGE;
+        const isTooFastSubmission = apiResponse?.code === 'too_fast';
         const isInvalidSubmission = response.status === 400 || response.status === 403;
 
         setSubmissionState('error');

@@ -103,6 +103,5 @@ export const getPortfolioMetadata = (language: PortfolioLocale, mode: PortfolioR
   return {
     ...metadata,
     canonicalUrl: `${siteOrigin}${metadata.canonicalPath}`,
-    ogUrl: `${siteOrigin}${metadata.canonicalPath}`,
   };
 };

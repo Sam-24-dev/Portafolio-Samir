@@ -15,11 +15,13 @@ const VALID_ORIGIN_HEADERS = {
   origin: 'https://portafolio-samir-tau.vercel.app',
 };
 
+const FIXED_NOW = 1_710_000_000_000;
+
 const VALID_PAYLOAD = {
   name: 'Samir',
   email: 'samir@example.com',
   message: 'Hello from the website. I would like to discuss an analyst opportunity.',
-  startedAt: Date.now() - 10_000,
+  startedAt: FIXED_NOW - 10_000,
 };
 
 const createResponse = (): MockResponse => {
@@ -48,6 +50,7 @@ const createResponse = (): MockResponse => {
 describe('contact API', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.spyOn(Date, 'now').mockReturnValue(FIXED_NOW);
     process.env.RESEND_API_KEY = 're_test_key';
     process.env.CONTACT_TO_EMAIL = 'samir.leonardo.caizapasto04@gmail.com';
     process.env.CONTACT_FROM_EMAIL = 'Portfolio <onboarding@resend.dev>';
@@ -60,6 +63,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(405);
     expect(response.body).toEqual({
+      code: 'invalid_submission',
       message: 'Unable to submit this message right now. Please review your information and try again.',
     });
   });
@@ -97,6 +101,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
+      code: 'invalid_submission',
       message: 'Unable to submit this message right now. Please review your information and try again.',
     });
   });
@@ -110,7 +115,7 @@ describe('contact API', () => {
         headers: VALID_ORIGIN_HEADERS,
         body: {
           ...VALID_PAYLOAD,
-          startedAt: Date.now() - 1_000,
+          startedAt: FIXED_NOW - 1_000,
         },
       },
       response
@@ -118,6 +123,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
+      code: 'too_fast',
       message: 'Please wait a moment before sending the form.',
     });
   });
@@ -139,6 +145,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
+      code: 'invalid_submission',
       message: 'Unable to submit this message right now. Please review your information and try again.',
     });
   });
@@ -159,6 +166,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
+      code: 'invalid_submission',
       message: 'Unable to submit this message right now. Please review your information and try again.',
     });
   });
@@ -209,6 +217,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(500);
     expect(response.body).toEqual({
+      code: 'invalid_submission',
       message: 'Unable to submit this message right now. Please review your information and try again.',
     });
   });
@@ -231,6 +240,7 @@ describe('contact API', () => {
 
     expect(response.statusCode).toBe(502);
     expect(response.body).toEqual({
+      code: 'invalid_submission',
       message: 'Unable to submit this message right now. Please review your information and try again.',
     });
   });

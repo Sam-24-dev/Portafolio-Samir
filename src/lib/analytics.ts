@@ -1,5 +1,7 @@
+import type { PortfolioRouteMode } from './portfolioRoute';
+
 export type PortfolioLanguage = 'en' | 'es';
-export type PortfolioRouteMode = 'analyst' | 'engineer';
+export type { PortfolioRouteMode } from './portfolioRoute';
 
 export type PortfolioEventName =
   | 'cv_download'
