@@ -93,7 +93,7 @@ describe('EngineeringProjects', () => {
 
     renderEngineeringProjects();
 
-    expect(screen.getByText('Proyectos clave del perfil Data Engineer')).toBeInTheDocument();
+    expect(screen.getByText('Proyectos clave del perfil de Ingeniero de Datos')).toBeInTheDocument();
     expect(screen.getByText(/Dos proyectos que muestran cómo convierto datos en flujos confiables/i)).toBeInTheDocument();
     expect(screen.getAllByText('El reto')[0]).toBeInTheDocument();
     expect(screen.getAllByText('Cómo funciona')[0]).toBeInTheDocument();

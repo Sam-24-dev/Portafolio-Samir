@@ -12,8 +12,9 @@ Current web stack:
 - Framer Motion
 
 Reference content lives in:
-- `README-PERSONAL.MD`
-- `Proyectos-refactoring/`
+- `src/data/`
+- `docs/`
+- source project repositories and READMEs referenced by each portfolio project
 
 ## Product Strategy
 
@@ -42,9 +43,9 @@ Current product direction:
 Use these in order:
 
 1. Website code in `src/`, `public/`, `index.html`
-2. Strategy and positioning in `README-PERSONAL.MD`
-3. Updated project evidence in `Proyectos-refactoring/`
-4. Roadmap and iteration docs in `docs/`
+2. Route-aware content datasets in `src/data/`
+3. Roadmap and release docs in `docs/`
+4. Source project repositories and READMEs referenced by each portfolio project
 
 When updating portfolio content, do not invent project claims.
 Read the corresponding project docs first.
@@ -52,18 +53,18 @@ Read the corresponding project docs first.
 ## Reference Project Map
 
 Primary `Data Analyst` candidates:
-- `Proyectos-refactoring/customer-profile-analytics-powerbi/`
-- `Proyectos-refactoring/eSports-Analytics-Dashboard/`
+- `Customer Profile Analytics Dashboard`
+- `eSports Analytics Dashboard LATAM`
 - `Grocery Sales BI Dashboard` already represented in the current site
 
 Bridge projects:
-- `Proyectos-refactoring/Analisis-Cultivo-Arroz/`
-- `Proyectos-refactoring/Analisis-Ping-Pong/`
+- `Rice Crop Analytics Platform`
+- `Statistical Analysis: Ping Pong Precision Model`
 - NASA project remains valid but should not dominate the portfolio
 
 Future `Data Engineer` route anchors:
-- `Proyectos-refactoring/Technology-trend-analysis-platform/`
-- `Proyectos-refactoring/RideFare-ETL-Pipeline/`
+- `Technology Trend Analysis Platform`
+- `RideFare ETL Pipeline`
 
 ## Working Rules
 
@@ -72,8 +73,8 @@ Future `Data Engineer` route anchors:
 - Do not redesign everything in one release.
 - Keep mobile performance and readability as first-class constraints.
 - Preserve the current stack unless a strong reason is documented.
-- Treat `Proyectos-refactoring/` as reference material by default, not as the main app to edit.
-- Do not edit the reference projects unless explicitly asked.
+- Treat source project repositories as reference material by default, not as the main app to edit.
+- Do not edit external reference projects unless explicitly asked.
 - Do not remove working features from the portfolio without replacing their purpose.
 
 ## UX And Design Rules
@@ -91,17 +92,16 @@ Future `Data Engineer` route anchors:
 Current portfolio strengths:
 - solid section-based structure
 - theme toggle works and persists
-- bilingual content works
-- projects and contact sections already exist
+- bilingual content works with persistence and browser detection
+- real contact form and route-aware metadata are already in place
+- analyst and engineering routes already share one shell without conflicting positioning
+- core public assets for SEO and trust are already shipped
 
-Known gaps:
-- contact form still uses `mailto`
-- language does not persist and does not auto-detect browser preference
-- Open Graph image is referenced but missing
-- favicon points to `/vite.svg`, which is not shipped correctly in production
-- project hierarchy is too flat
-- some docs are outdated
-- some dependencies are unused
+Current focus:
+- keep quality gates strict as the app grows
+- protect content and metadata against regressions
+- keep docs aligned with the real shipped state
+- avoid reopening V2 scope with unnecessary feature work
 
 ## Standard Commands
 
@@ -128,8 +128,7 @@ npm run lint
 ## Validation Checklist For Any Change
 
 Before closing an iteration:
-- run `npm run build`
-- run `npm run lint`
+- run `npm run verify`
 - validate desktop layout
 - validate mobile layout
 - verify no horizontal scroll on mobile

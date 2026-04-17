@@ -354,7 +354,7 @@ const Contact = ({ routeMode = 'analyst' }: ContactProps) => {
                   placeholder={t.contact.namePlaceholder}
                   autoComplete="name"
                   required
-                  className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
+                  className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-[background-color,border-color,box-shadow,color] dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'name'
                       ? 'dark:border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt shadow-[0_0_0_3px_rgba(15,118,110,0.08)]'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
@@ -386,7 +386,7 @@ const Contact = ({ routeMode = 'analyst' }: ContactProps) => {
                   autoCapitalize="off"
                   autoCorrect="off"
                   required
-                  className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
+                  className={`focus-ring w-full rounded-lg border px-4 py-3.5 transition-[background-color,border-color,box-shadow,color] dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'email'
                       ? 'dark:border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt shadow-[0_0_0_3px_rgba(15,118,110,0.08)]'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'
@@ -415,7 +415,7 @@ const Contact = ({ routeMode = 'analyst' }: ContactProps) => {
                   autoComplete="off"
                   required
                   rows={6}
-                  className={`focus-ring w-full resize-none rounded-lg border px-4 py-3.5 transition-all dark:text-text-primary light:text-lightMode-text-primary ${
+                  className={`focus-ring w-full resize-none rounded-lg border px-4 py-3.5 transition-[background-color,border-color,box-shadow,color] dark:text-text-primary light:text-lightMode-text-primary ${
                     focusedField === 'message'
                       ? 'dark:border-accent-cyan dark:bg-primary-light light:border-lightMode-accent-primary light:bg-lightMode-surfaceAlt shadow-[0_0_0_3px_rgba(15,118,110,0.08)]'
                       : 'dark:border-primary-lighter dark:bg-primary-bg light:border-lightMode-border light:bg-lightMode-surface'

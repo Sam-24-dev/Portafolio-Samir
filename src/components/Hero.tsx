@@ -109,13 +109,13 @@ const Hero = () => {
               </div>
             </div>
 
-            <h1 className="text-4xl font-poppins font-bold leading-tight dark:text-text-highlight light:text-lightMode-text-primary sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="text-[2.7rem] font-poppins font-bold leading-tight dark:text-text-highlight light:text-lightMode-text-primary sm:text-5xl md:text-6xl lg:text-7xl">
               {t.hero.greetingLead}{' '}
               <span className="gradient-text inline-block">{t.hero.greetingAccent}</span>
             </h1>
 
-            <div className="mx-auto flex min-h-[72px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">
-              <h2 className="text-2xl font-poppins font-semibold leading-tight gradient-text sm:text-3xl md:text-4xl">
+            <div className="mx-auto flex min-h-[64px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">
+              <h2 className="text-[1.45rem] font-poppins font-semibold leading-tight gradient-text sm:text-3xl md:text-4xl">
                 {displayText}
                 <span className={shouldReduceMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
               </h2>
@@ -200,7 +200,7 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
-            className="relative h-[20rem] w-[20rem] flex-shrink-0 sm:h-[22rem] sm:w-[22rem] md:h-[26rem] md:w-[26rem]"
+            className="relative h-[17rem] w-[17rem] flex-shrink-0 sm:h-[22rem] sm:w-[22rem] md:h-[26rem] md:w-[26rem]"
           >
             <OrbitTechRing
               icons={analystOrbitIcons}
@@ -210,7 +210,7 @@ const Hero = () => {
               dataTestId="analyst-orbit"
             />
 
-            <div className="absolute left-1/2 top-1/2 z-0 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full p-1 gradient-border sm:h-64 sm:w-64 md:h-80 md:w-80">
+            <div className="absolute left-1/2 top-1/2 z-0 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full p-1 gradient-border sm:h-64 sm:w-64 md:h-80 md:w-80">
               <img
                 src="/images/perfil.webp"
                 alt="Portrait of Samir Caizapasto"

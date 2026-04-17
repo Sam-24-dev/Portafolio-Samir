@@ -8,6 +8,11 @@ const sampleIcons: TechIconItem[] = [
   { name: 'SQL', profile: 'analyst', source: '/images/icons/analyst/sql.svg' },
 ];
 
+const engineeringIcons: TechIconItem[] = [
+  { name: 'Python', profile: 'engineering', source: '/images/icons/engineering/python.svg' },
+  { name: 'DuckDB', profile: 'engineering', source: '/images/icons/engineering/duckdb.svg' },
+];
+
 const setMotionPreferences = ({
   reducedMotion = false,
   coarsePointer = false,
@@ -92,21 +97,38 @@ describe('OrbitTechRing', () => {
 
     fireEvent.click(pythonButton);
     expect(screen.getByRole('tooltip')).toHaveTextContent('Python');
-    expect(screen.getByRole('status')).toHaveTextContent('Python');
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(orbit).toHaveAttribute('data-orbit-paused', 'true');
 
     fireEvent.click(sqlButton);
     expect(screen.getByRole('tooltip')).toHaveTextContent('SQL');
-    expect(screen.getByRole('status')).toHaveTextContent('SQL');
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(2200);
     });
 
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(orbit).toHaveAttribute('data-orbit-paused', 'false');
 
     vi.useRealTimers();
+  });
+
+  it('uses profile-specific tooltip styling for engineering icons', () => {
+    render(
+      <div className="relative h-80 w-80">
+        <OrbitTechRing
+          icons={engineeringIcons}
+          shouldReduceMotion={false}
+          hintPrefix="orbit-engineering"
+          tileClassName="ui-engineering-orbit-tile"
+          dataTestId="orbit-engineering"
+        />
+      </div>
+    );
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Python' }));
+
+    expect(screen.getByRole('tooltip')).toHaveClass('ui-tooltip-engineering');
   });
 });

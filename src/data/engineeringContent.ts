@@ -5,7 +5,7 @@ export type EngineeringCaseTab = 'overview' | 'architecture' | 'delivery';
 export type EngineeringStrengthIcon = 'workflow' | 'shield' | 'automation' | 'delivery' | 'bridge';
 export type EngineeringNavigationId = Extract<
   EngineeringSectionId,
-  'engineering-home' | 'engineering-projects' | 'engineering-stack' | 'engineering-strengths' | 'contact'
+  'engineering-home' | 'engineering-projects' | 'engineering-stack' | 'engineering-how-i-work' | 'contact'
 >;
 
 interface RouteMetaContent {
@@ -381,7 +381,7 @@ export const engineeringRouteContent: Record<'en' | 'es', EngineeringRouteConten
       { id: 'engineering-home', label: 'Home' },
       { id: 'engineering-projects', label: 'Projects' },
       { id: 'engineering-stack', label: 'Stack' },
-      { id: 'engineering-strengths', label: 'How I work' },
+      { id: 'engineering-how-i-work', label: 'How I work' },
       { id: 'contact', label: 'Contact' },
     ],
     hero: {
@@ -389,11 +389,7 @@ export const engineeringRouteContent: Record<'en' | 'es', EngineeringRouteConten
       greetingLead: 'Hey,',
       greetingAccent: "I'm Samir",
       badges: ['ETL pipelines', 'Data quality contracts', 'Automation & CI/CD'],
-      titles: [
-        'Reproducible pipelines for real data',
-        'ETL, contracts, and public artifacts',
-        'Automation with evidence',
-      ],
+      titles: ['Reproducible pipelines', 'Contracts and public delivery', 'Automation with evidence'],
       subtitle:
         'I build data pipelines and public-facing products that turn raw sources into validated artifacts, reproducible workflows, and reliable delivery layers.',
       primaryCta: 'View Projects',
@@ -575,39 +571,35 @@ export const engineeringRouteContent: Record<'en' | 'es', EngineeringRouteConten
   },
   es: {
     metadata: {
-      title: 'Samir Caizapasto | Portafolio Data Engineer',
+      title: 'Samir Caizapasto | Portafolio de Ingeniero de Datos',
       description:
-        'Portafolio Data Engineer enfocado en pipelines ETL reproducibles, automatización, contratos de calidad y artefactos públicos.',
+        'Portafolio de Ingeniero de Datos enfocado en pipelines ETL reproducibles, automatización, contratos de calidad y artefactos públicos.',
       canonicalPath: '/engineering',
-      ogTitle: 'Samir Caizapasto | Portafolio Data Engineer',
+      ogTitle: 'Samir Caizapasto | Portafolio de Ingeniero de Datos',
       ogDescription:
         'Ruta engineering enfocada en sistemas ETL, artefactos validados, disciplina de automatización y productos de datos públicos.',
-      twitterTitle: 'Samir Caizapasto | Portafolio Data Engineer',
+      twitterTitle: 'Samir Caizapasto | Portafolio de Ingeniero de Datos',
       twitterDescription:
-        'Ruta Data Engineer construida alrededor de ETL, automatización, contratos y capas de entrega confiables.',
+        'Ruta de Ingeniero de Datos construida alrededor de ETL, automatización, contratos y capas de entrega confiables.',
     },
     navigation: [
       { id: 'engineering-home', label: 'Inicio' },
       { id: 'engineering-projects', label: 'Proyectos' },
       { id: 'engineering-stack', label: 'Stack' },
-      { id: 'engineering-strengths', label: 'Cómo trabajo' },
+      { id: 'engineering-how-i-work', label: 'Cómo trabajo' },
       { id: 'contact', label: 'Contacto' },
     ],
     hero: {
-      eyebrow: 'DATA ENGINEER',
+      eyebrow: 'INGENIERO DE DATOS',
       greetingLead: 'Hola,',
       greetingAccent: 'soy Samir',
-      badges: ['ETL pipelines', 'Data quality contracts', 'Automation & CI/CD'],
-      titles: [
-        'Pipelines reproducibles para datos reales',
-        'ETL, contratos y artefactos públicos',
-        'Automatización con evidencia',
-      ],
+      badges: ['Pipelines ETL', 'Contratos de datos', 'Automatización y CI/CD'],
+      titles: ['Pipelines reproducibles', 'Contratos y entrega pública', 'Automatización con evidencia'],
       subtitle:
         'Construyo pipelines y productos de datos que convierten fuentes crudas en artefactos validados, salidas públicas y flujos reproducibles.',
       primaryCta: 'Ver Proyectos',
       secondaryCta: 'Descargar CV',
-      tertiaryCta: 'Volver al perfil Data Analyst',
+      tertiaryCta: 'Volver al perfil de Analista de Datos',
     },
     proofStrip: {
       title: 'Evidencia técnica',
@@ -637,8 +629,8 @@ export const engineeringRouteContent: Record<'en' | 'es', EngineeringRouteConten
       ],
     },
     anchorProjects: {
-      eyebrow: 'Perfil Data Engineer',
-      title: 'Proyectos clave del perfil Data Engineer',
+      eyebrow: 'Perfil de Ingeniero de Datos',
+      title: 'Proyectos clave del perfil de Ingeniero de Datos',
       subtitle:
         'Dos proyectos que muestran cómo convierto datos en flujos confiables, resultados verificables y productos públicos.',
       labels: {
@@ -726,14 +718,14 @@ export const engineeringRouteContent: Record<'en' | 'es', EngineeringRouteConten
       ],
     },
     stack: {
-      title: 'Stack de engineering',
+      title: 'Stack de ingeniería',
       subtitle:
         'Las herramientas detrás de esta ruta, desde lógica ETL reproducible hasta entrega pública y salidas explicables.',
       coreLabel: 'Stack principal',
       supportingLabel: 'Herramientas de apoyo',
     },
     strengths: {
-      eyebrow: 'Forma de trabajo',
+      eyebrow: 'Cómo trabajo',
       title: 'Cómo convierto datos en productos confiables',
       subtitle:
         'Estos principios resumen cómo organizo un flujo de datos para que otra persona pueda entenderlo, revisarlo y volver a ejecutarlo.',

@@ -23,6 +23,19 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const getThemeColor = (theme: Theme) => (theme === 'dark' ? '#0a192f' : '#f8fafc');
+
+const ensureThemeColorMeta = () => {
+  let element = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute('name', 'theme-color');
+    document.head.appendChild(element);
+  }
+
+  return element;
+};
+
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
@@ -33,7 +46,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
+    root.style.colorScheme = theme;
     localStorage.setItem('theme', theme);
+    ensureThemeColorMeta().setAttribute('content', getThemeColor(theme));
   }, [theme]);
 
   const toggleTheme = (options?: ThemeToggleOptions) => {
@@ -41,6 +56,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const viewTransitionDocument = document as ViewTransitionDocument;
     const startViewTransition = viewTransitionDocument.startViewTransition;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const supportsRichThemeTransition = window.matchMedia('(pointer: fine) and (hover: hover)').matches;
 
     if (options?.origin) {
       root.style.setProperty('--theme-transition-x', `${options.origin.x}px`);
@@ -51,7 +67,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
     };
 
-    if (!startViewTransition || prefersReducedMotion) {
+    if (!startViewTransition || prefersReducedMotion || !supportsRichThemeTransition) {
       applyTheme();
       return;
     }

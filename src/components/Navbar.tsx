@@ -140,9 +140,9 @@ const Navbar = ({ routeMode }: NavbarProps) => {
   return (
     <nav
       aria-label={t.accessibility.primaryNavigation}
-      className={`fixed z-50 w-full transition-all duration-300 ${
+      className={`fixed z-50 w-full transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 ${
         scrolled
-          ? 'border-b shadow-lg backdrop-blur-md dark:border-primary-lighter dark:bg-primary-bg/80 light:border-lightMode-border light:bg-lightMode-surface/80'
+          ? 'border-b shadow-lg backdrop-blur-[6px] md:backdrop-blur-md dark:border-primary-lighter dark:bg-primary-bg/84 light:border-lightMode-border light:bg-lightMode-surface/88'
           : 'bg-transparent'
       }`}
     >
@@ -175,7 +175,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
                     {link.name}
                     <span
                       aria-hidden="true"
-                      className={`pointer-events-none absolute bottom-0 left-1/2 h-[3px] -translate-x-1/2 rounded-full transition-all duration-300 ease-out group-hover:w-full ${
+                      className={`pointer-events-none absolute bottom-0 left-1/2 h-[3px] -translate-x-1/2 rounded-full transition-[width,opacity,box-shadow] duration-300 ease-out group-hover:w-full ${
                         isActive ? 'w-full opacity-100' : 'w-0 opacity-70'
                       }`}
                       style={{
@@ -224,7 +224,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={mobileMenuTransition}
-            className="backdrop-blur-sm dark:bg-primary-light/95 light:bg-lightMode-surfaceAlt/95 md:hidden"
+            className="backdrop-blur-[2px] dark:bg-primary-light/97 light:bg-lightMode-surfaceAlt/97 md:hidden"
           >
             <div className="container-custom py-4">
               <div className="mb-4">
@@ -240,10 +240,10 @@ const Navbar = ({ routeMode }: NavbarProps) => {
                     type="button"
                     onClick={() => handleSectionNavigation(link.id)}
                     aria-current={isActive ? 'location' : undefined}
-                    className={`focus-ring block w-full rounded-lg py-3 text-left text-base font-medium transition-colors ${
+                    className={`focus-ring block w-full rounded-xl border px-3 py-3 text-left text-base font-medium transition-[background-color,border-color,color] ${
                       isActive
-                        ? 'dark:text-accent-cyan light:text-lightMode-accent-primary'
-                        : 'dark:text-text-secondary dark:hover:text-accent-cyan light:text-lightMode-text-secondary light:hover:text-lightMode-accent-primary'
+                        ? 'border-current/15 dark:bg-accent-cyan/10 dark:text-accent-cyan light:bg-lightMode-accent-primary/10 light:text-lightMode-accent-primary'
+                        : 'border-transparent dark:text-text-secondary dark:hover:border-accent-cyan/10 dark:hover:bg-accent-cyan/5 dark:hover:text-accent-cyan light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary/10 light:hover:bg-lightMode-accent-primary/5 light:hover:text-lightMode-accent-primary'
                     }`}
                   >
                     {link.name}

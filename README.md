@@ -1,37 +1,46 @@
 # Samir Caizapasto Portfolio
 
-Analyst-first portfolio built with Vite, React, TypeScript, Tailwind CSS, and Framer Motion.
+Professional bilingual portfolio built with Vite, React, TypeScript, Tailwind CSS, and Framer Motion.
 
-The site is a single bilingual experience focused on:
+The product is designed as one portfolio with two intentional profile routes:
+- `/` for the `Data Analyst` experience
+- `/engineering` for the `Data Engineer` experience
 
+It is optimized for:
 - recruiter clarity on first view
-- measurable project proof for hiring managers
-- optional technical depth through featured case studies
+- stronger proof for hiring managers
+- optional technical depth without turning the homepage into a dashboard
 
-## Stack
+## Live Site
+
+- Production: `https://portafolio-samir-tau.vercel.app/`
+
+## Product Overview
+
+This portfolio ships:
+- bilingual English and Spanish content
+- analyst-first default positioning
+- engineering route on the same shared shell
+- route-aware metadata and canonical handling
+- featured projects and case-study depth
+- shared contact form backed by `/api/contact`
+- dark and light themes with persisted preference
+- responsive layouts across mobile, tablet, and desktop
+
+## Tech Stack
 
 - React 18
 - TypeScript
 - Vite
 - Tailwind CSS
 - Framer Motion
-- Lucide React
+- React Router
+- Floating UI
 - Vitest + Testing Library
-- Vercel serverless function for contact delivery
+- Vercel Analytics
+- Vercel Serverless Function for contact delivery
 
-## Product Snapshot
-
-Current portfolio behavior includes:
-
-- bilingual English and Spanish content
-- browser-language detection with persisted language selection
-- theme toggle with persistence
-- featured project hierarchy with case-study modals
-- supporting project archive
-- contact form backed by `/api/contact`
-- social preview and favicon assets for sharing
-
-## Run Locally
+## Local Development
 
 Install dependencies:
 
@@ -39,7 +48,7 @@ Install dependencies:
 npm install
 ```
 
-Start the development server:
+Run the app locally:
 
 ```bash
 npm run dev
@@ -51,32 +60,41 @@ Create a production build:
 npm run build
 ```
 
-Preview the production build:
+Preview the build:
 
 ```bash
 npm run preview
 ```
 
-Run tests:
+## Quality Workflow
+
+Run the full local validation suite before opening a PR:
 
 ```bash
-npm run test
+npm run verify
 ```
 
-## Validation Commands
+This command includes:
+- public asset validation
+- content and metadata integrity checks
+- lint with zero warnings
+- TypeScript typecheck
+- test suite
+- production build
 
-Run these before closing a meaningful change:
+Useful individual commands:
 
 ```bash
-npm run lint
-npx tsc --noEmit
-npm run build
-npm run test -- --run
+npm run check:public
+npm run check:content
+npm run lint:ci
+npm run typecheck
+npm run test
 ```
 
 ## Environment Variables
 
-The contact form posts to `api/contact.ts` and expects these variables in local or Vercel environments:
+The contact form posts to `api/contact.ts` and expects:
 
 ```bash
 RESEND_API_KEY=
@@ -84,66 +102,67 @@ CONTACT_TO_EMAIL=
 CONTACT_FROM_EMAIL=
 ```
 
-Use `.env.local` for local development and keep `.env.example` as the public template.
+Use `.env.local` for local development and keep public examples free of secrets.
 
 ## Project Structure
 
 ```text
 src/
-  components/   UI sections and shared UI pieces
+  components/   route sections, shared UI, and interaction surfaces
   context/      language and theme providers
-  data/         translations, project data, case studies
-  test/         shared test setup
+  data/         analyst/engineering content and translations
+  hooks/        route, metadata, motion, and interaction hooks
+  lib/          shared helpers, analytics, and route maps
+  pages/        analyst and engineering route entry pages
 api/
   contact.ts    Vercel serverless contact endpoint
 public/
   cv/           downloadable CV
-  certificates/ downloadable certificates
-  images/       profile, project screenshots, icons
+  certificates/ public certificate assets
+  images/       profile, project, case-study, and icon assets
+scripts/
+  check-public-assets.mjs
+  check-content-integrity.mjs
 docs/
   roadmap-v2.md
-  iterations/
+  release-workflow.md
 ```
 
-## Content Maintenance
+## Content Sources Of Truth
 
-Main places to update content:
+When updating portfolio content, use these in order:
 
-- `src/data/translations.ts` for bilingual UI copy
-- `src/data/projects.ts` for project cards and URLs
-- `src/data/caseStudies.ts` for featured project modal content
-- `public/images/projects/` for project screenshots
-- `public/cv/SamirCaizapastoCV.pdf` for the downloadable CV
-- `public/certificates/` for public certificate assets
-- `index.html` and `public/` root assets for metadata, favicon, and social preview
+1. application code in `src/`, `public/`, and `index.html`
+2. route-aware content datasets in `src/data/`
+3. release and roadmap docs in `docs/`
+4. source project repositories and READMEs referenced by each portfolio project
 
-Reference material for future content updates lives in:
+Do not invent project claims. Validate every project statement against the corresponding source project first.
 
-- `README-PERSONAL.MD`
-- `Proyectos-refactoring/`
-- `docs/`
+## Release Process
 
-Do not invent project claims when updating portfolio content. Validate against the corresponding project source first.
+The release workflow is documented in:
+
+- [docs/release-workflow.md](docs/release-workflow.md)
+
+Standard flow:
+1. work in a short-lived branch
+2. run `npm run verify`
+3. open a PR
+4. wait for CI to pass
+5. validate the critical routes locally or in preview
+6. merge to `main`
 
 ## Deployment
 
 The site is configured for Vercel.
 
-- static frontend output comes from `dist/`
+- frontend output comes from `dist/`
 - `/api/contact` is served as a serverless function
-- CV files are served as attachments through `vercel.json`
-
-Deploy flow:
-
-```bash
-npm install
-npm run build
-```
-
-Then deploy through Vercel or push to the connected repository branch.
+- public CV and asset files are served from `public/`
 
 ## Notes
 
-- `README-PERSONAL.MD` and `Proyectos-refactoring/` are reference sources, not the main app to edit by default.
+- Source project evidence may live outside this repo; treat those repositories as reference material when updating claims.
 - The live portfolio should remain usable at every stage.
-- Prefer small, reviewable changes over large redesign passes.
+- Prefer small, reviewable changes over broad redesign passes.

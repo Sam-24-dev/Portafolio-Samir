@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { engineeringCaseStudies, engineeringRouteContent } from './engineeringContent';
 
 describe('engineeringContent', () => {
+  const mojibakePattern = /\u00C3|\u00C2|\uFFFD|â†’|â€™|â€œ|â€/;
+
   it('locks the proof strip to verified metrics only', () => {
     expect(engineeringRouteContent.en.proofStrip.items.map((item) => item.value)).toEqual([
       '931',
@@ -11,7 +13,7 @@ describe('engineeringContent', () => {
     ]);
   });
 
-  it('keeps the spanish engineering copy free of mojibake', () => {
+  it('keeps the spanish engineering copy readable, localized, and free of mojibake', () => {
     const serialized = JSON.stringify({
       route: engineeringRouteContent.es,
       cases: engineeringCaseStudies.map((caseStudy) => ({
@@ -20,9 +22,9 @@ describe('engineeringContent', () => {
       })),
     });
 
-    expect(serialized).not.toContain('Ã');
-    expect(serialized).not.toContain('ï¿½');
-    expect(engineeringRouteContent.es.anchorProjects.title).toBe('Proyectos clave del perfil Data Engineer');
+    expect(serialized).not.toMatch(mojibakePattern);
+    expect(engineeringRouteContent.es.metadata.title).toBe('Samir Caizapasto | Portafolio de Ingeniero de Datos');
+    expect(engineeringRouteContent.es.anchorProjects.title).toBe('Proyectos clave del perfil de Ingeniero de Datos');
     expect(engineeringRouteContent.es.caseStudyModal.caseButtonLabel).toBe('Ver caso completo');
     expect(engineeringCaseStudies[0].summaryEs).toContain('señales públicas');
     expect(engineeringRouteContent.es.proofStrip.items[1].note).toContain('22 tecnologías');

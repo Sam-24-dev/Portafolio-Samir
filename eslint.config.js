@@ -32,5 +32,11 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: globals.node,
     },
+  },
+  {
+    files: ['src/context/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
   }
 );

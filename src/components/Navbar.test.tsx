@@ -76,4 +76,21 @@ describe('Navbar route-aware shell', () => {
 
     expect(screen.getByTestId('current-pathname')).toHaveTextContent('/engineering/projects');
   });
+
+  it('localizes the mobile and desktop navigation in spanish for the engineer profile', () => {
+    localStorage.setItem('portfolio-language', 'es');
+    renderNavbar('engineer', ['/engineering']);
+
+    expect(screen.getByRole('button', { name: 'Analista de Datos' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ingeniero de Datos' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Cómo trabajo' })).toBeInTheDocument();
+  });
+
+  it('navigates the engineer profile to the exclusive how-i-work path', () => {
+    renderNavbar('engineer', ['/engineering']);
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'How I work' })[0]);
+
+    expect(screen.getByTestId('current-pathname')).toHaveTextContent('/engineering/how-i-work');
+  });
 });

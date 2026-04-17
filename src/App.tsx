@@ -2,7 +2,12 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import PortfolioShell from './components/PortfolioShell';
 import AnalystPage from './pages/AnalystPage';
 import EngineeringPage from './pages/EngineeringPage';
-import { analystAliasRoutes, engineeringAliasRoutes } from './lib/portfolioRoute';
+import {
+  analystAliasRoutes,
+  engineeringAliasRoutes,
+  engineeringLegacyAliasRoutes,
+  resolveLegacyEngineeringPathname,
+} from './lib/portfolioRoute';
 
 function App() {
   return (
@@ -16,6 +21,15 @@ function App() {
         {engineeringAliasRoutes.map((path) => (
           <Route key={path} path={path.slice(1)} element={<EngineeringPage />} />
         ))}
+        {engineeringLegacyAliasRoutes.map((path) => {
+          const redirectPath = resolveLegacyEngineeringPathname(path);
+
+          if (!redirectPath) {
+            return null;
+          }
+
+          return <Route key={path} path={path.slice(1)} element={<Navigate to={redirectPath} replace />} />;
+        })}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
