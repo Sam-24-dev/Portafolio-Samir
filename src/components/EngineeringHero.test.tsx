@@ -59,13 +59,13 @@ describe('EngineeringHero', () => {
 
     renderEngineeringHero();
 
-    expect(screen.getByText('Reproducible pipelines for real data')).toBeInTheDocument();
+    expect(screen.getByText('Reproducible pipelines')).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(5200);
     });
 
-    expect(screen.getByText('ETL, contracts, and public artifacts')).toBeInTheDocument();
+    expect(screen.getByText('Contracts and public delivery')).toBeInTheDocument();
 
     vi.useRealTimers();
   });

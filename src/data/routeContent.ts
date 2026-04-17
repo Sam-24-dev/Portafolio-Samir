@@ -39,8 +39,8 @@ export const routeSwitchContent: Record<PortfolioLocale, RouteSwitchContent> = {
   },
   es: {
     label: 'Perfil del portafolio',
-    analyst: 'Data Analyst',
-    engineer: 'Data Engineer',
+    analyst: 'Analista de Datos',
+    engineer: 'Ingeniero de Datos',
   },
 };
 
@@ -81,7 +81,7 @@ export const analystRouteContent: Record<PortfolioLocale, AnalystRouteContent> =
       twitterDescription:
         'Analista de datos enfocado en dashboards claros, KPIs y resultados listos para decisión.',
     },
-    exploreEngineering: 'Ver perfil Data Engineer',
+    exploreEngineering: 'Ver perfil de Ingeniero de Datos',
     navigation: [
       { id: 'home', label: 'Inicio' },
       { id: 'about', label: 'Sobre mí' },

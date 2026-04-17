@@ -7,11 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "lint:ci": "eslint . --max-warnings=0",
     "preview": "vite preview",
     "check:public": "node scripts/check-public-assets.mjs",
+    "check:content": "node scripts/check-content-integrity.mjs && vitest run src/lib/contentIntegrity.test.ts src/data/routeContent.test.ts src/data/engineeringContent.test.ts src/data/projects.test.ts",
     "images:optimize": "node scripts/optimize-images.mjs",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "verify": "npm run check:public && npm run check:content && npm run lint:ci && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",

@@ -34,6 +34,7 @@ const renderShell = (initialEntries: string[]) =>
               <Route index element={<div>Analyst root</div>} />
               <Route path="projects" element={<div>Analyst projects</div>} />
               <Route path="engineering" element={<div>Engineering root</div>} />
+              <Route path="engineering/how-i-work" element={<div>Engineering how i work</div>} />
               <Route path="engineering/contact" element={<div>Engineering contact</div>} />
             </Route>
           </Routes>
@@ -74,5 +75,16 @@ describe('PortfolioShell section-path synchronization', () => {
 
     expect(screen.getByText('Engineering root')).toBeInTheDocument();
     expect(navigationMocks.scrollToHashTarget).toHaveBeenCalledWith('#contact', false);
+  });
+
+  it('scrolls to the engineer how-i-work section when the new path is opened directly', () => {
+    renderShell(['/engineering/how-i-work']);
+
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+
+    expect(screen.getByText('Engineering how i work')).toBeInTheDocument();
+    expect(navigationMocks.scrollToSectionById).toHaveBeenCalledWith('engineering-how-i-work', false);
   });
 });

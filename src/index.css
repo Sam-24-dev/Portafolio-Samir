@@ -91,9 +91,6 @@
 
   * {
     @apply box-border;
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow, opacity;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
   }
 
   html {
@@ -103,6 +100,7 @@
   body {
     @apply font-inter;
     overflow-x: hidden;
+    transition: background-color 220ms ease, color 220ms ease;
   }
 
   .dark {
@@ -348,7 +346,8 @@
   }
 
   .card-base {
-    @apply rounded-xl border transition-all duration-300;
+    @apply rounded-xl border;
+    transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease, color 220ms ease;
   }
 
   .dark .card-base {
@@ -360,7 +359,8 @@
   }
 
   .hover-lift {
-    @apply transform transition-all duration-300;
+    @apply transform;
+    transition: transform 220ms ease, box-shadow 220ms ease;
   }
 
   .hover-lift:hover {
@@ -599,6 +599,20 @@
     box-shadow: 0 18px 38px rgba(15, 23, 42, 0.18);
   }
 
+  .ui-tooltip-analyst {
+    background-color: rgba(10, 25, 47, 0.96);
+    border-color: rgba(100, 255, 218, 0.28);
+    color: #e6f1ff;
+    box-shadow: 0 18px 38px rgba(20, 184, 166, 0.18);
+  }
+
+  .ui-tooltip-engineering {
+    background-color: rgba(15, 23, 42, 0.96);
+    border-color: rgba(96, 165, 250, 0.3);
+    color: #eff6ff;
+    box-shadow: 0 18px 38px rgba(37, 99, 235, 0.18);
+  }
+
   .ui-control-shell {
     @apply rounded-lg border p-1;
   }
@@ -613,7 +627,8 @@
   }
 
   .ui-control-toggle {
-    @apply rounded-md px-3 py-1 text-sm font-medium transition-all;
+    @apply rounded-md px-3 py-1 text-sm font-medium;
+    transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
   }
 
   .dark .ui-control-toggle-active {

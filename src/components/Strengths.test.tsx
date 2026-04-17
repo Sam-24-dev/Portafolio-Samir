@@ -35,13 +35,13 @@ describe('analyst-first strengths polish', () => {
     expect(screen.getByRole('heading', { name: 'Fortalezas Clave', level: 2 })).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { name: 'Fortalezas Clave' })).toHaveLength(1);
     expect(
-      screen.getByText('Las capacidades que mejor explican como convierto datos en decisiones y entregables listos para negocio.')
+      screen.getByText('Las capacidades que mejor explican cómo convierto datos en decisiones y entregables listos para negocio.')
     ).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Fortalezas Tecnicas', level: 3 })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Fortalezas Técnicas', level: 3 })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Habilidades Blandas', level: 3 })).toBeInTheDocument();
-    expect(screen.getByText('Analitica de clientes y segmentacion accionable')).toBeInTheDocument();
+    expect(screen.getByText('Analítica de clientes y segmentación accionable')).toBeInTheDocument();
     expect(screen.getByText('Dashboards ejecutivos en Power BI con storytelling de KPIs')).toBeInTheDocument();
-    expect(screen.getByText('Reportes listos para la toma de decisiones de stakeholders no tecnicos')).toBeInTheDocument();
-    expect(screen.getByText('Comunicacion clara de insights para audiencias de negocio')).toBeInTheDocument();
+    expect(screen.getByText('Reportes listos para la toma de decisiones de stakeholders no técnicos')).toBeInTheDocument();
+    expect(screen.getByText('Comunicación clara de insights para audiencias de negocio')).toBeInTheDocument();
   });
 });

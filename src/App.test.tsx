@@ -132,6 +132,36 @@ describe('Phase 04 routing shell', () => {
     );
   });
 
+  it('renders the localized engineer title and switch labels in spanish', async () => {
+    localStorage.setItem('portfolio-language', 'es');
+
+    renderApp(['/engineering']);
+
+    expect(screen.getAllByRole('button', { name: 'Analista de Datos' })[0]).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getAllByRole('button', { name: 'Ingeniero de Datos' })[0]).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('link', { name: 'Volver al perfil de Analista de Datos' })).toHaveAttribute('href', '/');
+
+    await waitFor(() => {
+      expect(document.title).toBe('Samir Caizapasto | Portafolio de Ingeniero de Datos');
+    });
+  });
+
+  it('supports the new how-i-work path with engineering metadata intact', async () => {
+    renderApp(['/engineering/how-i-work']);
+
+    expect(screen.getByRole('heading', { name: 'How I turn data into reliable products' })).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(document.title).toBe('Samir Caizapasto | Data Engineer Portfolio');
+    });
+  });
+
+  it('keeps the legacy strengths alias compatible', async () => {
+    renderApp(['/engineering/strengths']);
+
+    expect(await screen.findByRole('heading', { name: 'How I turn data into reliable products' })).toBeInTheDocument();
+  });
+
   it('redirects unknown routes back to the analyst homepage', async () => {
     renderApp(['/unexpected']);
 

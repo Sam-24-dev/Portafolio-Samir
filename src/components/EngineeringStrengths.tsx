@@ -19,7 +19,7 @@ const EngineeringStrengths = () => {
 
   return (
     <section
-      id="engineering-strengths"
+      id="engineering-how-i-work"
       className="section-padding overflow-x-clip dark:bg-primary-light light:bg-lightMode-surfaceAlt"
     >
       <div className="container-custom">

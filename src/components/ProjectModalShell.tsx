@@ -276,7 +276,7 @@ const ProjectModalShell = ({
                       const isSelected = activeTab === tab.id;
                       const tabClassName =
                         theme === 'engineering'
-                          ? `focus-ring rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
+                          ? `focus-ring rounded-full px-3 py-1.5 text-sm font-medium transition-[background-color,color,box-shadow] ${
                               isSelected
                                 ? 'bg-[var(--engineering-chip-bg)] text-[var(--engineering-chip-text)]'
                                 : 'text-[var(--engineering-link)] hover:bg-[var(--engineering-pill-bg)]'

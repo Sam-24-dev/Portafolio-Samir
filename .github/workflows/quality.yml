@@ -31,14 +31,17 @@ jobs:
       - name: Verify required public assets
         run: npm run check:public
 
+      - name: Verify content and metadata integrity
+        run: npm run check:content
+
       - name: Lint
-        run: npm run lint
+        run: npm run lint:ci
 
       - name: Type check
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Run tests
-        run: npm run test -- --run
+        run: npm run test
 
       - name: Build
         run: npm run build

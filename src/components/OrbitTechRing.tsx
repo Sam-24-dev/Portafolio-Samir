@@ -20,15 +20,12 @@ const OrbitTechRing = ({
   tileClassName,
   dataTestId,
 }: OrbitTechRingProps) => {
-  const { activeName, activeTrigger, containerRef, handlers, isCoarsePointer, isOrbitPaused, setTriggerRef, tooltip } =
+  const { activeName, activeTrigger, containerRef, handlers, isOrbitPaused, setTriggerRef, tooltip } =
     useOrbitInteraction({
       hintPrefix,
     });
   const profile = icons[0]?.profile ?? 'analyst';
-  const dockedLabelClassName =
-    profile === 'engineering'
-      ? 'ui-engineering-pill border-[var(--engineering-pill-border)] bg-[var(--engineering-pill-bg)] text-[var(--engineering-pill-text)]'
-      : 'ui-analyst-pill';
+  const tooltipProfileClassName = profile === 'engineering' ? 'ui-tooltip-engineering' : 'ui-tooltip-analyst';
   const { refs, floatingStyles } = useFloating({
     open: Boolean(activeTrigger && tooltip),
     placement: 'top',
@@ -109,19 +106,9 @@ const OrbitTechRing = ({
           visible={Boolean(tooltip && activeTrigger)}
           floating
           style={floatingStyles}
-          className="max-w-[12rem] text-center leading-snug"
+          className={`max-w-[12rem] text-center leading-snug ${tooltipProfileClassName}`}
         />
       </FloatingPortal>
-
-      {isCoarsePointer && activeName ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className={`pointer-events-none absolute left-1/2 top-full z-40 mt-3 -translate-x-1/2 rounded-full px-4 py-2 text-xs font-semibold shadow-lg ${dockedLabelClassName}`}
-        >
-          {activeName}
-        </div>
-      ) : null}
     </motion.div>
   );
 };

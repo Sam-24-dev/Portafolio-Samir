@@ -28,7 +28,7 @@ export const engineeringUniqueSectionIds = [
   'engineering-projects',
   'engineering-bridge-projects',
   'engineering-stack',
-  'engineering-strengths',
+  'engineering-how-i-work',
 ] as const;
 
 export const analystSectionIds = [...analystUniqueSectionIds, ...sharedSectionIds] as const;
@@ -53,12 +53,17 @@ export const engineeringSectionPathMap: Record<EngineeringSectionId, string> = {
   'engineering-projects': '/engineering/projects',
   'engineering-bridge-projects': '/engineering/bridge-projects',
   'engineering-stack': '/engineering/stack',
-  'engineering-strengths': '/engineering/strengths',
+  'engineering-how-i-work': '/engineering/how-i-work',
   contact: '/engineering/contact',
 };
 
+const engineeringLegacySectionPathMap = {
+  '/engineering/strengths': 'engineering-how-i-work',
+} as const;
+
 export const analystAliasRoutes = Object.values(analystSectionPathMap).filter((path) => path !== '/');
 export const engineeringAliasRoutes = Object.values(engineeringSectionPathMap).filter((path) => path !== '/engineering');
+export const engineeringLegacyAliasRoutes = Object.keys(engineeringLegacySectionPathMap);
 
 export const routeSectionOwnership = {
   shared: sharedSectionIds,
@@ -68,9 +73,10 @@ export const routeSectionOwnership = {
 
 const sectionPathToId = new Map<string, PortfolioSectionId>(
   [
-    ...Object.entries(analystSectionPathMap),
-    ...Object.entries(engineeringSectionPathMap),
-  ].map(([sectionId, path]) => [path, sectionId as PortfolioSectionId])
+    ...Object.entries(analystSectionPathMap).map(([sectionId, path]) => [path, sectionId as PortfolioSectionId] as const),
+    ...Object.entries(engineeringSectionPathMap).map(([sectionId, path]) => [path, sectionId as PortfolioSectionId] as const),
+    ...Object.entries(engineeringLegacySectionPathMap).map(([path, sectionId]) => [path, sectionId as PortfolioSectionId] as const),
+  ]
 );
 
 const normalizePathname = (pathname: string) => {

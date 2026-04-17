@@ -91,17 +91,16 @@ Future `Data Engineer` route anchors:
 Current portfolio strengths:
 - solid section-based structure
 - theme toggle works and persists
-- bilingual content works
-- projects and contact sections already exist
+- bilingual content works with persistence and browser detection
+- real contact form and route-aware metadata are already in place
+- analyst and engineering routes already share one shell without conflicting positioning
+- core public assets for SEO and trust are already shipped
 
-Known gaps:
-- contact form still uses `mailto`
-- language does not persist and does not auto-detect browser preference
-- Open Graph image is referenced but missing
-- favicon points to `/vite.svg`, which is not shipped correctly in production
-- project hierarchy is too flat
-- some docs are outdated
-- some dependencies are unused
+Current focus:
+- keep quality gates strict as the app grows
+- protect content and metadata against regressions
+- keep docs aligned with the real shipped state
+- avoid reopening V2 scope with unnecessary feature work
 
 ## Standard Commands
 
@@ -128,8 +127,7 @@ npm run lint
 ## Validation Checklist For Any Change
 
 Before closing an iteration:
-- run `npm run build`
-- run `npm run lint`
+- run `npm run verify`
 - validate desktop layout
 - validate mobile layout
 - verify no horizontal scroll on mobile
