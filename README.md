@@ -133,9 +133,9 @@ docs/
 When updating portfolio content, use these in order:
 
 1. application code in `src/`, `public/`, and `index.html`
-2. positioning and achievements in `README-PERSONAL.MD`
-3. project evidence in `Proyectos-refactoring/`
-4. roadmap and iteration docs in `docs/`
+2. route-aware content datasets in `src/data/`
+3. release and roadmap docs in `docs/`
+4. source project repositories and READMEs referenced by each portfolio project
 
 Do not invent project claims. Validate every project statement against the corresponding source project first.
 
@@ -163,6 +163,6 @@ The site is configured for Vercel.
 
 ## Notes
 
-- `README-PERSONAL.MD` and `Proyectos-refactoring/` are reference sources, not the main app to edit by default.
+- Source project evidence may live outside this repo; treat those repositories as reference material when updating claims.
 - The live portfolio should remain usable at every stage.
 - Prefer small, reviewable changes over broad redesign passes.

@@ -10,7 +10,7 @@
     "lint:ci": "eslint . --max-warnings=0",
     "preview": "vite preview",
     "check:public": "node scripts/check-public-assets.mjs",
-    "check:content": "node scripts/check-content-integrity.mjs && vitest run src/lib/contentIntegrity.test.ts src/data/routeContent.test.ts src/data/engineeringContent.test.ts src/data/projects.test.ts",
+    "check:content": "node scripts/check-content-integrity.mjs",
     "images:optimize": "node scripts/optimize-images.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

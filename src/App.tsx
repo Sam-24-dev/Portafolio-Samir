@@ -6,6 +6,7 @@ import {
   analystAliasRoutes,
   engineeringAliasRoutes,
   engineeringLegacyAliasRoutes,
+  resolveLegacyEngineeringPathname,
 } from './lib/portfolioRoute';
 
 function App() {
@@ -20,9 +21,15 @@ function App() {
         {engineeringAliasRoutes.map((path) => (
           <Route key={path} path={path.slice(1)} element={<EngineeringPage />} />
         ))}
-        {engineeringLegacyAliasRoutes.map((path) => (
-          <Route key={path} path={path.slice(1)} element={<Navigate to="/engineering/how-i-work" replace />} />
-        ))}
+        {engineeringLegacyAliasRoutes.map((path) => {
+          const redirectPath = resolveLegacyEngineeringPathname(path);
+
+          if (!redirectPath) {
+            return null;
+          }
+
+          return <Route key={path} path={path.slice(1)} element={<Navigate to={redirectPath} replace />} />;
+        })}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

@@ -101,6 +101,19 @@ export const getSectionPath = (routeMode: PortfolioRouteMode, sectionId: Portfol
   return analystSectionPathMap[sectionId as AnalystSectionId] ?? ANALYST_PATHNAME;
 };
 
+export const resolveLegacyEngineeringPathname = (pathname: string) => {
+  const normalizedPathname = normalizePathname(pathname);
+  const sectionId = engineeringLegacySectionPathMap[
+    normalizedPathname as keyof typeof engineeringLegacySectionPathMap
+  ];
+
+  if (!sectionId) {
+    return null;
+  }
+
+  return engineeringSectionPathMap[sectionId];
+};
+
 export const getSectionIdFromPathname = (pathname: string) => {
   const normalizedPathname = normalizePathname(pathname);
   return sectionPathToId.get(normalizedPathname) ?? null;

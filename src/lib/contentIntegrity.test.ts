@@ -7,6 +7,7 @@ import {
   engineeringLegacyAliasRoutes,
   engineeringSectionPathMap,
   getSectionIdFromPathname,
+  resolveLegacyEngineeringPathname,
 } from './portfolioRoute';
 
 const mojibakePattern = /\u00C3|\u00C2|\uFFFD|â†’|â€™|â€œ|â€/;
@@ -50,5 +51,7 @@ describe('content and metadata integrity', () => {
     expect(engineeringLegacyAliasRoutes).toContain('/engineering/strengths');
     expect(getSectionIdFromPathname('/engineering/how-i-work')).toBe('engineering-how-i-work');
     expect(getSectionIdFromPathname('/engineering/strengths')).toBe('engineering-how-i-work');
+    expect(resolveLegacyEngineeringPathname('/engineering/strengths')).toBe('/engineering/how-i-work');
+    expect(resolveLegacyEngineeringPathname('/engineering/unknown')).toBeNull();
   });
 });
