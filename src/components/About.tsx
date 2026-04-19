@@ -255,6 +255,18 @@ const About = () => {
                       <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
                         {cert.meta}
                       </p>
+
+                      {cert.href && cert.hrefLabel && (
+                        <a
+                          href={cert.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ui-btn-secondary mt-5 w-full"
+                        >
+                          <span>{cert.hrefLabel}</span>
+                          <ExternalLink size={16} />
+                        </a>
+                      )}
                     </article>
                   ))}
                 </section>

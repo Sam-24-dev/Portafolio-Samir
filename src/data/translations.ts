@@ -142,6 +142,8 @@ export const translations = {
           issuer: 'ESPOL & MINTEL',
           meta: 'Bootcamp completion',
           kind: 'program',
+          href: 'https://acreditta.com/credential/9a908bad-12b0-4134-99ea-06ca940a92e3?utm_source=copy&resource_type=badge&resource=9a908bad-12b0-4134-99ea-06ca940a92e3',
+          hrefLabel: 'View credential',
         },
         {
           title: 'NASA Space Apps Challenge 2025',
@@ -411,6 +413,8 @@ export const translations = {
           issuer: 'ESPOL & MINTEL',
           meta: 'Bootcamp completado',
           kind: 'program',
+          href: 'https://acreditta.com/credential/9a908bad-12b0-4134-99ea-06ca940a92e3?utm_source=copy&resource_type=badge&resource=9a908bad-12b0-4134-99ea-06ca940a92e3',
+          hrefLabel: 'Ver credencial',
         },
         {
           title: 'NASA Space Apps Challenge 2025',

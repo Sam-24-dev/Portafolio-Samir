@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { LanguageProvider } from '../context/LanguageContext';
 import About from './About';
 
@@ -56,6 +56,48 @@ describe('phase 2 analyst depth batch 3', () => {
     expect(within(supportingToolsSection as HTMLElement).getByText('Jupyter')).toBeInTheDocument();
     expect(within(supportingToolsSection as HTMLElement).getByText('Git')).toBeInTheDocument();
     expect(within(supportingToolsSection as HTMLElement).getByText('TypeScript')).toBeInTheDocument();
+  });
+
+  it('shows the bootcamp credential link in both languages', () => {
+    const credentialUrl =
+      'https://acreditta.com/credential/9a908bad-12b0-4134-99ea-06ca940a92e3?utm_source=copy&resource_type=badge&resource=9a908bad-12b0-4134-99ea-06ca940a92e3';
+
+    render(
+      <LanguageProvider>
+        <About />
+      </LanguageProvider>
+    );
+
+    const bootcampCard = screen.getByText('Data Analytics & Business Intelligence Bootcamp').closest('div');
+    expect(bootcampCard).not.toBeNull();
+    expect(within(bootcampCard as HTMLElement).queryByRole('link', { name: 'View credential' })).not.toBeInTheDocument();
+
+    const programSection = screen.getByText('Program Completion').closest('section');
+    expect(programSection).not.toBeNull();
+    expect(within(programSection as HTMLElement).getByRole('link', { name: 'View credential' })).toHaveAttribute(
+      'href',
+      credentialUrl
+    );
+
+    window.localStorage.setItem('portfolio-language', 'es');
+    cleanup();
+
+    render(
+      <LanguageProvider>
+        <About />
+      </LanguageProvider>
+    );
+
+    const bootcampCardEs = screen.getByText('Bootcamp en Data Analytics & Business Intelligence').closest('div');
+    expect(bootcampCardEs).not.toBeNull();
+    expect(within(bootcampCardEs as HTMLElement).queryByRole('link', { name: 'Ver credencial' })).not.toBeInTheDocument();
+
+    const programSectionEs = screen.getByText('Formación Completada').closest('section');
+    expect(programSectionEs).not.toBeNull();
+    expect(within(programSectionEs as HTMLElement).getByRole('link', { name: 'Ver credencial' })).toHaveAttribute(
+      'href',
+      credentialUrl
+    );
   });
 
   it('shows a grouped analyst stack and refreshed focus areas in Spanish', () => {
