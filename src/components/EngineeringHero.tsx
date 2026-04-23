@@ -233,7 +233,7 @@ const EngineeringHero = () => {
         transition={shouldReduceMotion ? { duration: 0 } : { delay: 1, duration: 0.5 }}
         className="focus-ring ui-engineering-kicker absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8"
         onClick={() => navigateToSection('engineering-proof-strip')}
-        aria-label={language === 'es' ? 'Ir a la prueba técnica' : 'Scroll to engineering proof'}
+        aria-label={language === 'es' ? 'Ir a la prueba t\u00e9cnica' : 'Scroll to engineering proof'}
       >
         <ChevronDown size={32} className={shouldReduceMotion ? '' : 'animate-bounce'} />
       </motion.button>

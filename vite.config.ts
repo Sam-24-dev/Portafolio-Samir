@@ -80,13 +80,23 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
-                return 'react-core';
+            const normalizedId = id.replace(/\\/g, '/');
+
+            if (normalizedId.includes('node_modules')) {
+              if (
+                normalizedId.includes('/framer-motion/') ||
+                normalizedId.includes('/@floating-ui/react/') ||
+                normalizedId.includes('/animejs/')
+              ) {
+                return 'motion-ui';
               }
 
-              if (id.includes('framer-motion') || id.includes('@floating-ui/react') || id.includes('animejs')) {
-                return 'motion-ui';
+              if (
+                normalizedId.includes('/react/') ||
+                normalizedId.includes('/react-dom/') ||
+                normalizedId.includes('/react-router-dom/')
+              ) {
+                return 'react-core';
               }
             }
 
