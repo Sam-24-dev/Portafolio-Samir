@@ -9,6 +9,8 @@ const capturePortfolioEvent = (event: Event) => {
   portfolioEvents.push(event as CustomEvent);
 };
 
+const findModalDialog = () => screen.findByRole('dialog', undefined, { timeout: 5000 });
+
 afterEach(() => {
   window.localStorage.clear();
   portfolioEvents.length = 0;
@@ -51,13 +53,15 @@ describe('phase 2 analyst depth batch 1', () => {
     const triggerButton = screen.getAllByRole('button', { name: 'View Case Study' })[0];
     fireEvent.click(triggerButton);
 
-    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' });
+    const dialog = await findModalDialog();
     const closeButton = within(dialog).getByRole('button', { name: 'Close case study' });
     const appShell = document.getElementById('app-shell');
 
-    expect(dialog).toBeInTheDocument();
+    expect(within(dialog).getByText('Customer Profile Analytics Dashboard')).toBeInTheDocument();
     expect(dialog).toHaveAttribute('aria-labelledby');
-    expect(closeButton).toHaveFocus();
+    await waitFor(() => {
+      expect(closeButton).toHaveFocus();
+    });
     expect(document.body.style.overflow).toBe('hidden');
     expect(appShell).toHaveAttribute('inert', '');
     expect(appShell).toHaveAttribute('aria-hidden', 'true');
@@ -77,7 +81,7 @@ describe('phase 2 analyst depth batch 1', () => {
     fireEvent.keyDown(window, { key: 'Escape' });
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Customer Profile Analytics Dashboard' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
 
     expect(document.body.style.overflow).toBe('');
@@ -95,15 +99,15 @@ describe('phase 2 analyst depth batch 1', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: 'View Case Study' })[0]);
 
-    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' });
+    const dialog = await findModalDialog();
     const closeButton = within(dialog).getByRole('button', { name: 'Close case study' });
 
     fireEvent.click(closeButton);
 
-    expect(screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Customer Profile Analytics Dashboard' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
   });
 
@@ -120,7 +124,7 @@ describe('phase 2 analyst depth batch 1', () => {
     expect(screen.getByText('Otros Proyectos Seleccionados')).toBeInTheDocument();
   });
 
-  it('shows a more concise modal hierarchy in Spanish', () => {
+  it('shows a more concise modal hierarchy in Spanish', async () => {
     window.localStorage.setItem('portfolio-language', 'es');
 
     render(
@@ -131,8 +135,9 @@ describe('phase 2 analyst depth batch 1', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Ver Caso de Estudio' })[0]);
 
-    const dialog = screen.getByRole('dialog', { name: 'Dashboard de Customer Profile Analytics' });
+    const dialog = await findModalDialog();
 
+    expect(within(dialog).getByText('Dashboard de Customer Profile Analytics')).toBeInTheDocument();
     expect(within(dialog).getByRole('tab', { name: 'Resumen' })).toHaveAttribute('aria-selected', 'true');
     expect(within(dialog).getByRole('tab', { name: 'Vista en Vivo' })).toHaveAttribute('aria-selected', 'false');
     expect(within(dialog).getByText('Resultado del caso')).toBeInTheDocument();
@@ -169,7 +174,7 @@ describe('phase 2 analyst depth batch 1', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('opens Grocery on overview first and lazy-loads the live preview only when selected', () => {
+  it('opens Grocery on overview first and lazy-loads the live preview only when selected', async () => {
     render(
       <LanguageProvider>
         <Projects />
@@ -182,8 +187,9 @@ describe('phase 2 analyst depth batch 1', () => {
 
     fireEvent.click(within(groceryCard as HTMLElement).getByRole('button', { name: 'View Case Study' }));
 
-    const dialog = screen.getByRole('dialog', { name: 'Grocery Sales BI Dashboard' });
+    const dialog = await findModalDialog();
 
+    expect(within(dialog).getByText('Grocery Sales BI Dashboard')).toBeInTheDocument();
     expect(within(dialog).getByRole('tab', { name: 'Overview' })).toHaveAttribute('aria-selected', 'true');
     expect(within(dialog).getByRole('tab', { name: 'Live Preview' })).toHaveAttribute('aria-selected', 'false');
     expect(within(dialog).queryByTitle('Grocery Sales BI Dashboard live preview')).not.toBeInTheDocument();
@@ -191,13 +197,11 @@ describe('phase 2 analyst depth batch 1', () => {
     fireEvent.click(within(dialog).getByRole('tab', { name: 'Live Preview' }));
 
     expect(within(dialog).getByRole('tab', { name: 'Live Preview' })).toHaveAttribute('aria-selected', 'true');
-    expect(within(dialog).getByTitle('Grocery Sales BI Dashboard live preview')).toBeInTheDocument();
+    expect(await within(dialog).findByTitle('Grocery Sales BI Dashboard live preview')).toBeInTheDocument();
     expect(within(dialog).getByText('Loading live preview...')).toBeInTheDocument();
   });
 
-  it('renders a clean fallback when a live preview cannot be embedded', () => {
-    vi.useFakeTimers();
-
+  it('renders a clean fallback when a live preview cannot be embedded', async () => {
     render(
       <LanguageProvider>
         <Projects />
@@ -206,13 +210,14 @@ describe('phase 2 analyst depth batch 1', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: 'View Case Study' })[0]);
 
-    const dialog = screen.getByRole('dialog', { name: 'Customer Profile Analytics Dashboard' });
+    const dialog = await findModalDialog();
 
+    expect(within(dialog).getByText('Customer Profile Analytics Dashboard')).toBeInTheDocument();
+
+    vi.useFakeTimers();
     fireEvent.click(within(dialog).getByRole('tab', { name: 'Live Preview' }));
 
-    const previewFrame = within(dialog).getByTitle('Customer Profile Analytics Dashboard live preview');
-
-    expect(previewFrame).toBeInTheDocument();
+    expect(within(dialog).getByTitle('Customer Profile Analytics Dashboard live preview')).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(6600);

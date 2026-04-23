@@ -21,6 +21,7 @@ describe('public SEO and asset integrity', () => {
     const robots = readFileSync(resolve(process.cwd(), 'public/robots.txt'), 'utf8');
     const sitemap = readFileSync(resolve(process.cwd(), 'public/sitemap.xml'), 'utf8');
     const html = readFileSync(resolve(process.cwd(), 'index.html'), 'utf8');
+    const css = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8');
 
     expect(robots).toContain('User-agent: *');
     expect(robots).toContain('Sitemap: https://portafolio-samir-tau.vercel.app/sitemap.xml');
@@ -28,6 +29,9 @@ describe('public SEO and asset integrity', () => {
     expect(html).toContain('application/ld+json');
     expect(html).toContain('"@type": "Person"');
     expect(html).toContain('"@type": "WebSite"');
+    expect(html).toContain('fonts.googleapis.com');
+    expect(html).toContain('fonts.gstatic.com');
+    expect(css).not.toContain('@import url(\'https://fonts.googleapis.com');
   });
 
   it('keeps runtime image references on optimized assets and removes deprecated duplicates', () => {

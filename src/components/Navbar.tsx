@@ -133,8 +133,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
   const mobileMenuTransition = shouldReduceMotion ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' };
   const navAccentColor = routeMode === 'engineer' ? 'var(--engineering-link)' : '#64ffda';
   const activeNavTextClass = routeMode === 'engineer' ? 'text-[var(--engineering-link)]' : 'text-[#64ffda]';
-  const idleNavTextClass =
-    'dark:text-text-secondary light:text-lightMode-text-secondary';
+  const idleNavTextClass = 'dark:text-text-secondary light:text-slate-700';
   const hoverNavTextClass = routeMode === 'engineer' ? 'hover:text-[var(--engineering-link)]' : 'hover:text-[#64ffda]';
 
   return (
@@ -142,7 +141,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
       aria-label={t.accessibility.primaryNavigation}
       className={`fixed z-50 w-full transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 ${
         scrolled
-          ? 'border-b shadow-lg backdrop-blur-[6px] md:backdrop-blur-md dark:border-primary-lighter dark:bg-primary-bg/84 light:border-lightMode-border light:bg-lightMode-surface/88'
+          ? 'border-b shadow-lg backdrop-blur-[4px] md:backdrop-blur-md dark:border-primary-lighter dark:bg-primary-bg/84 light:border-lightMode-border light:bg-lightMode-surface/88'
           : 'bg-transparent'
       }`}
     >
@@ -193,7 +192,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
             <LanguageSelector />
           </div>
 
-          <div className="relative flex items-center gap-3 md:hidden">
+          <div className="relative flex items-center gap-2.5 md:hidden">
             <ThemeToggle />
             <LanguageSelector />
             <button
@@ -202,7 +201,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
               aria-controls="mobile-navigation"
               aria-expanded={isOpen}
               aria-label={isOpen ? t.accessibility.closeMenu : t.accessibility.openMenu}
-              className="focus-ring rounded-lg p-2 dark:text-accent-cyan light:text-lightMode-accent-primary"
+              className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 dark:text-accent-cyan light:text-lightMode-accent-primary"
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -210,7 +209,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
             <HintBubble
               text={t.accessibility.controlsHint}
               visible={showMobileControlsHint}
-              className="right-0 top-full mt-3 max-w-[15rem] rounded-2xl border px-3 py-2 text-left"
+              className="right-0 top-full mt-2 max-w-[13rem] rounded-2xl border px-3 py-2 text-left text-xs"
             />
           </div>
         </div>
@@ -243,7 +242,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
                     className={`focus-ring block w-full rounded-xl border px-3 py-3 text-left text-base font-medium transition-[background-color,border-color,color] ${
                       isActive
                         ? 'border-current/15 dark:bg-accent-cyan/10 dark:text-accent-cyan light:bg-lightMode-accent-primary/10 light:text-lightMode-accent-primary'
-                        : 'border-transparent dark:text-text-secondary dark:hover:border-accent-cyan/10 dark:hover:bg-accent-cyan/5 dark:hover:text-accent-cyan light:text-lightMode-text-secondary light:hover:border-lightMode-accent-primary/10 light:hover:bg-lightMode-accent-primary/5 light:hover:text-lightMode-accent-primary'
+                        : 'border-transparent dark:text-text-secondary dark:hover:border-accent-cyan/10 dark:hover:bg-accent-cyan/5 dark:hover:text-accent-cyan light:text-slate-700 light:hover:border-lightMode-accent-primary/10 light:hover:bg-lightMode-accent-primary/5 light:hover:text-lightMode-accent-primary'
                     }`}
                   >
                     {link.name}

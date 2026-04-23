@@ -76,6 +76,25 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), contactApiPlugin()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+                return 'react-core';
+              }
+
+              if (id.includes('framer-motion') || id.includes('@floating-ui/react') || id.includes('animejs')) {
+                return 'motion-ui';
+              }
+            }
+
+            return undefined;
+          },
+        },
+      },
+    },
     optimizeDeps: {
       exclude: ['lucide-react'],
     },

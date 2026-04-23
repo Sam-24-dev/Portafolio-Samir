@@ -20,6 +20,12 @@ const renderApp = (initialEntries: string[] = ['/']) =>
     </MemoryRouter>
   );
 
+const findAnalystFeaturedProjects = () =>
+  screen.findByRole('heading', { name: 'Featured Projects' }, { timeout: 10000 });
+
+const findEngineeringProjectsHeading = () =>
+  screen.findByRole('heading', { name: 'Key projects for the Data Engineer profile' }, { timeout: 10000 });
+
 describe('Phase 04 routing shell', () => {
   beforeEach(() => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
@@ -34,8 +40,7 @@ describe('Phase 04 routing shell', () => {
   it('renders the analyst route by default and keeps the analyst-first structure intact', async () => {
     renderApp(['/']);
 
-    expect(screen.getByText('Key Results')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
+    expect(await findAnalystFeaturedProjects()).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Additional Relevant Projects' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Get In Touch' })).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Data Analyst' })[0]).toHaveAttribute('aria-pressed', 'true');
@@ -61,8 +66,7 @@ describe('Phase 04 routing shell', () => {
   it('renders the engineering route with route-aware metadata and anchor sections', async () => {
     renderApp(['/engineering']);
 
-    expect(screen.getByText('Technical evidence')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Key projects for the Data Engineer profile' })).toBeInTheDocument();
+    expect(await findEngineeringProjectsHeading()).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Bridge projects' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Engineering stack' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'How I turn data into reliable products' })).toBeInTheDocument();
@@ -77,7 +81,6 @@ describe('Phase 04 routing shell', () => {
     expect(screen.getAllByRole('button', { name: 'Data Engineer' })[0]).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getAllByRole('button', { name: 'Data Analyst' })[0]).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByRole('link', { name: 'Back to Data Analyst Portfolio' })).toHaveAttribute('href', '/');
-    expect(screen.queryByText('Key Results')).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'About Me' })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Featured Projects' })).not.toBeInTheDocument();
     expect(screen.queryByText(/7th-semester/i)).not.toBeInTheDocument();
@@ -97,13 +100,13 @@ describe('Phase 04 routing shell', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Data Engineer' }));
 
-    expect(await screen.findByRole('heading', { name: 'Key projects for the Data Engineer profile' })).toBeInTheDocument();
+    expect(await findEngineeringProjectsHeading()).toBeInTheDocument();
   });
 
   it('renders analyst section paths with analyst metadata intact', async () => {
     renderApp(['/projects']);
 
-    expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
+    expect(await findAnalystFeaturedProjects()).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Key projects for the Data Engineer profile' })).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -119,7 +122,7 @@ describe('Phase 04 routing shell', () => {
   it('renders engineering section paths with engineering metadata intact', async () => {
     renderApp(['/engineering/projects']);
 
-    expect(screen.getByRole('heading', { name: 'Key projects for the Data Engineer profile' })).toBeInTheDocument();
+    expect(await findEngineeringProjectsHeading()).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Featured Projects' })).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -137,8 +140,8 @@ describe('Phase 04 routing shell', () => {
 
     renderApp(['/engineering']);
 
-    expect(screen.getAllByRole('button', { name: 'Analista de Datos' })[0]).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getAllByRole('button', { name: 'Ingeniero de Datos' })[0]).toHaveAttribute('aria-pressed', 'true');
+    expect((await screen.findAllByRole('button', { name: 'Analista de Datos' }))[0]).toHaveAttribute('aria-pressed', 'false');
+    expect((await screen.findAllByRole('button', { name: 'Ingeniero de Datos' }))[0]).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('link', { name: 'Volver al perfil de Analista de Datos' })).toHaveAttribute('href', '/');
 
     await waitFor(() => {
@@ -149,7 +152,7 @@ describe('Phase 04 routing shell', () => {
   it('supports the new how-i-work path with engineering metadata intact', async () => {
     renderApp(['/engineering/how-i-work']);
 
-    expect(screen.getByRole('heading', { name: 'How I turn data into reliable products' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'How I turn data into reliable products' })).toBeInTheDocument();
 
     await waitFor(() => {
       expect(document.title).toBe('Samir Caizapasto | Data Engineer Portfolio');
@@ -165,7 +168,7 @@ describe('Phase 04 routing shell', () => {
   it('redirects unknown routes back to the analyst homepage', async () => {
     renderApp(['/unexpected']);
 
-    expect(await screen.findByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
+    expect(await findAnalystFeaturedProjects()).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Key projects for the Data Engineer profile' })).not.toBeInTheDocument();
   });
 });

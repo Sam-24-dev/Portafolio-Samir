@@ -58,6 +58,14 @@ describe('Navbar route-aware shell', () => {
     expect(screen.getByRole('button', { name: 'Contact' })).toBeInTheDocument();
   });
 
+  it('keeps theme, language, and menu controls visible in the mobile header', () => {
+    renderNavbar('analyst', ['/']);
+
+    expect(screen.getAllByRole('button', { name: 'Switch to dark theme' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('button', { name: /EN -/ }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('button', { name: 'Open menu' })).toBeInTheDocument();
+  });
+
   it('keeps the switch inside the mobile menu block', () => {
     renderNavbar('analyst', ['/']);
 
@@ -65,8 +73,8 @@ describe('Navbar route-aware shell', () => {
 
     const mobileNavigation = document.getElementById('mobile-navigation');
     expect(mobileNavigation).not.toBeNull();
-    expect(within(mobileNavigation as HTMLElement).getAllByRole('button', { name: 'Data Analyst' }).length).toBe(1);
-    expect(within(mobileNavigation as HTMLElement).getAllByRole('button', { name: 'Data Engineer' }).length).toBe(1);
+    expect(within(mobileNavigation as HTMLElement).getAllByRole('button', { name: 'Data Analyst' })).toHaveLength(1);
+    expect(within(mobileNavigation as HTMLElement).getAllByRole('button', { name: 'Data Engineer' })).toHaveLength(1);
   });
 
   it('navigates to clean section paths instead of mutating the hash', () => {
