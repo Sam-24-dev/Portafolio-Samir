@@ -7,22 +7,25 @@ import { engineeringRouteContent } from '../data/routeContent';
 import { trackPortfolioEvent } from '../lib/analytics';
 import { engineeringOrbitIcons } from '../lib/techIcons';
 import { useSectionNavigation } from '../hooks/useSectionNavigation';
+import useCompactViewport from '../hooks/useCompactViewport';
 import OrbitTechRing from './OrbitTechRing';
 
 const EngineeringHero = () => {
   const { language } = useLanguage();
   const hero = engineeringRouteContent[language].hero;
   const prefersReducedMotion = useReducedMotion();
+  const isCompactViewport = useCompactViewport();
   const shouldReduceMotion =
     prefersReducedMotion ||
     (typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false);
+  const shouldSimplifyMotion = shouldReduceMotion || isCompactViewport;
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const navigateToSection = useSectionNavigation('engineer');
 
   useEffect(() => {
-    if (shouldReduceMotion) {
+    if (shouldSimplifyMotion) {
       const nextTitle = hero.titles[titleIndex] ?? '';
       if (displayText !== nextTitle) {
         setDisplayText(nextTitle);
@@ -56,7 +59,7 @@ const EngineeringHero = () => {
     }, typingSpeed);
 
     return () => window.clearTimeout(timeout);
-  }, [displayText, hero.titles, isDeleting, shouldReduceMotion, titleIndex]);
+  }, [displayText, hero.titles, isDeleting, shouldSimplifyMotion, titleIndex]);
 
   const contactLinks = [
     {
@@ -112,7 +115,7 @@ const EngineeringHero = () => {
             <div className="mx-auto flex min-h-[64px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">
               <h2 className="engineering-gradient-text text-[1.45rem] font-poppins font-semibold leading-tight sm:text-3xl md:text-4xl">
                 {displayText}
-                <span className={shouldReduceMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
+                <span className={shouldSimplifyMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
               </h2>
             </div>
 
@@ -202,6 +205,7 @@ const EngineeringHero = () => {
             <OrbitTechRing
               icons={engineeringOrbitIcons}
               shouldReduceMotion={shouldReduceMotion}
+              allowContinuousRotation={!shouldSimplifyMotion}
               hintPrefix="engineering-tech-hint"
               tileClassName="ui-engineering-orbit-tile"
               dataTestId="engineering-orbit"
@@ -213,6 +217,9 @@ const EngineeringHero = () => {
                 alt="Portrait of Samir Caizapasto"
                 className="h-full w-full rounded-full object-cover"
                 decoding="async"
+                fetchpriority="high"
+                width={1200}
+                height={1083}
               />
             </div>
           </motion.div>
@@ -226,7 +233,7 @@ const EngineeringHero = () => {
         transition={shouldReduceMotion ? { duration: 0 } : { delay: 1, duration: 0.5 }}
         className="focus-ring ui-engineering-kicker absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8"
         onClick={() => navigateToSection('engineering-proof-strip')}
-        aria-label={language === 'es' ? 'Ir a la prueba técnica' : 'Scroll to engineering proof'}
+        aria-label={language === 'es' ? 'Ir a la prueba t\u00e9cnica' : 'Scroll to engineering proof'}
       >
         <ChevronDown size={32} className={shouldReduceMotion ? '' : 'animate-bounce'} />
       </motion.button>

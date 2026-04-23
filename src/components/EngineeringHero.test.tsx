@@ -13,9 +13,24 @@ const renderEngineeringHero = () =>
     </MemoryRouter>
   );
 
-const setReducedMotionPreference = (matches: boolean) => {
+const setMotionPreferences = ({
+  reducedMotion = false,
+  coarsePointer = false,
+  compactWidth = false,
+}: {
+  reducedMotion?: boolean;
+  coarsePointer?: boolean;
+  compactWidth?: boolean;
+}) => {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches: query === '(prefers-reduced-motion: reduce)' ? matches : false,
+    matches:
+      query === '(prefers-reduced-motion: reduce)'
+        ? reducedMotion
+        : query === '(pointer: coarse)'
+          ? coarsePointer
+          : query === '(max-width: 767px)'
+            ? compactWidth
+            : false,
     media: query,
     onchange: null,
     addListener: () => undefined,
@@ -30,7 +45,7 @@ describe('EngineeringHero', () => {
   beforeEach(() => {
     localStorage.setItem('portfolio-language', 'en');
     vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
-    setReducedMotionPreference(false);
+    setMotionPreferences({});
   });
 
   afterEach(() => {
@@ -55,11 +70,29 @@ describe('EngineeringHero', () => {
 
   it('keeps rotating only the defined engineering hero titles when reduced motion is enabled', () => {
     vi.useFakeTimers();
-    setReducedMotionPreference(true);
+    setMotionPreferences({ reducedMotion: true });
 
     renderEngineeringHero();
 
     expect(screen.getByText('Reproducible pipelines')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(5200);
+    });
+
+    expect(screen.getByText('Contracts and public delivery')).toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
+  it('uses the compact motion policy on coarse pointers without orbit rotation', () => {
+    vi.useFakeTimers();
+    setMotionPreferences({ coarsePointer: true });
+
+    renderEngineeringHero();
+
+    expect(screen.getByText('Reproducible pipelines')).toBeInTheDocument();
+    expect(screen.getByTestId('engineering-orbit')).toHaveAttribute('data-orbit-animated', 'false');
 
     act(() => {
       vi.advanceTimersByTime(5200);

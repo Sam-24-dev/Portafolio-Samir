@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import useCompactViewport from '../hooks/useCompactViewport';
 
 type Theme = 'light' | 'dark';
 type ThemeToggleOptions = {
@@ -37,6 +38,7 @@ const ensureThemeColorMeta = () => {
 };
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const isCompactViewport = useCompactViewport();
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
     return savedTheme || 'light';
@@ -56,7 +58,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const viewTransitionDocument = document as ViewTransitionDocument;
     const startViewTransition = viewTransitionDocument.startViewTransition;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const supportsRichThemeTransition = window.matchMedia('(pointer: fine) and (hover: hover)').matches;
+    const supportsRichThemeTransition =
+      !isCompactViewport && window.matchMedia('(pointer: fine) and (hover: hover)').matches;
 
     if (options?.origin) {
       root.style.setProperty('--theme-transition-x', `${options.origin.x}px`);

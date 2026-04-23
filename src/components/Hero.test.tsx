@@ -19,9 +19,24 @@ const renderHero = () =>
     </MemoryRouter>
   );
 
-const setReducedMotionPreference = (matches: boolean) => {
+const setMotionPreferences = ({
+  reducedMotion = false,
+  coarsePointer = false,
+  compactWidth = false,
+}: {
+  reducedMotion?: boolean;
+  coarsePointer?: boolean;
+  compactWidth?: boolean;
+}) => {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches: query === '(prefers-reduced-motion: reduce)' ? matches : false,
+    matches:
+      query === '(prefers-reduced-motion: reduce)'
+        ? reducedMotion
+        : query === '(pointer: coarse)'
+          ? coarsePointer
+          : query === '(max-width: 767px)'
+            ? compactWidth
+            : false,
     media: query,
     onchange: null,
     addListener: () => undefined,
@@ -38,7 +53,7 @@ describe('Hero', () => {
     window.addEventListener('portfolio:analytics', capturePortfolioEvent as EventListener);
     localStorage.setItem('portfolio-language', 'en');
     vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
-    setReducedMotionPreference(false);
+    setMotionPreferences({});
   });
 
   afterEach(() => {
@@ -95,11 +110,29 @@ describe('Hero', () => {
 
   it('keeps rotating full hero titles when reduced motion is enabled', async () => {
     vi.useFakeTimers();
-    setReducedMotionPreference(true);
+    setMotionPreferences({ reducedMotion: true });
 
     renderHero();
 
     expect(screen.getByText('Business analytics and storytelling')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(5200);
+    });
+
+    expect(screen.getByText('Dashboards for real decisions')).toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
+  it('uses the compact motion policy on coarse pointers without orbit rotation', () => {
+    vi.useFakeTimers();
+    setMotionPreferences({ coarsePointer: true });
+
+    renderHero();
+
+    expect(screen.getByText('Business analytics and storytelling')).toBeInTheDocument();
+    expect(screen.getByTestId('analyst-orbit')).toHaveAttribute('data-orbit-animated', 'false');
 
     act(() => {
       vi.advanceTimersByTime(5200);

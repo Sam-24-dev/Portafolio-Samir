@@ -312,13 +312,13 @@ const ProjectModalShell = ({
 
               <div className="overflow-y-auto overscroll-contain px-5 pb-6 pt-5 light:bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] sm:px-6 sm:pb-8 md:px-8">
                 {children}
-
-                {footer ? (
-                  <div className="mt-6 flex flex-col gap-3 border-t pt-5 dark:border-primary-lighter light:border-lightMode-border sm:flex-row sm:flex-wrap">
-                    {footer}
-                  </div>
-                ) : null}
               </div>
+
+              {footer ? (
+                <div className="border-t px-5 py-4 backdrop-blur-sm dark:border-primary-lighter dark:bg-primary-light/98 light:border-lightMode-border light:bg-lightMode-surface/98 sm:px-6 md:px-8">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">{footer}</div>
+                </div>
+              ) : null}
             </motion.div>
           </div>
         </motion.div>

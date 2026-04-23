@@ -1,7 +1,6 @@
+import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import PortfolioShell from './components/PortfolioShell';
-import AnalystPage from './pages/AnalystPage';
-import EngineeringPage from './pages/EngineeringPage';
 import {
   analystAliasRoutes,
   engineeringAliasRoutes,
@@ -9,17 +8,52 @@ import {
   resolveLegacyEngineeringPathname,
 } from './lib/portfolioRoute';
 
+const AnalystPage = lazy(() => import('./pages/AnalystPage'));
+const EngineeringPage = lazy(() => import('./pages/EngineeringPage'));
+
+const RouteFallback = () => <div aria-hidden="true" className="min-h-[40vh]" />;
+
 function App() {
   return (
     <Routes>
       <Route element={<PortfolioShell />}>
-        <Route index element={<AnalystPage />} />
+        <Route
+          index
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <AnalystPage />
+            </Suspense>
+          }
+        />
         {analystAliasRoutes.map((path) => (
-          <Route key={path} path={path.slice(1)} element={<AnalystPage />} />
+          <Route
+            key={path}
+            path={path.slice(1)}
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <AnalystPage />
+              </Suspense>
+            }
+          />
         ))}
-        <Route path="engineering" element={<EngineeringPage />} />
+        <Route
+          path="engineering"
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <EngineeringPage />
+            </Suspense>
+          }
+        />
         {engineeringAliasRoutes.map((path) => (
-          <Route key={path} path={path.slice(1)} element={<EngineeringPage />} />
+          <Route
+            key={path}
+            path={path.slice(1)}
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <EngineeringPage />
+              </Suspense>
+            }
+          />
         ))}
         {engineeringLegacyAliasRoutes.map((path) => {
           const redirectPath = resolveLegacyEngineeringPathname(path);

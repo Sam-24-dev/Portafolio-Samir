@@ -7,15 +7,18 @@ import { analystRouteContent } from '../data/routeContent';
 import { trackPortfolioEvent } from '../lib/analytics';
 import { analystOrbitIcons } from '../lib/techIcons';
 import { useSectionNavigation } from '../hooks/useSectionNavigation';
+import useCompactViewport from '../hooks/useCompactViewport';
 import OrbitTechRing from './OrbitTechRing';
 
 const Hero = () => {
   const { t, language } = useLanguage();
   const analystRoute = analystRouteContent[language];
   const prefersReducedMotion = useReducedMotion();
+  const isCompactViewport = useCompactViewport();
   const shouldReduceMotion =
     prefersReducedMotion ||
     (typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false);
+  const shouldSimplifyMotion = shouldReduceMotion || isCompactViewport;
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -24,7 +27,7 @@ const Hero = () => {
   const titles = t.hero.titles;
 
   useEffect(() => {
-    if (shouldReduceMotion) {
+    if (shouldSimplifyMotion) {
       const nextTitle = titles[titleIndex] ?? '';
       if (displayText !== nextTitle) {
         setDisplayText(nextTitle);
@@ -58,7 +61,7 @@ const Hero = () => {
     }, typingSpeed);
 
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, shouldReduceMotion, titleIndex, titles]);
+  }, [displayText, isDeleting, shouldSimplifyMotion, titleIndex, titles]);
 
   const contactLinks = [
     {
@@ -117,7 +120,7 @@ const Hero = () => {
             <div className="mx-auto flex min-h-[64px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">
               <h2 className="text-[1.45rem] font-poppins font-semibold leading-tight gradient-text sm:text-3xl md:text-4xl">
                 {displayText}
-                <span className={shouldReduceMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
+                <span className={shouldSimplifyMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
               </h2>
             </div>
 
@@ -205,6 +208,7 @@ const Hero = () => {
             <OrbitTechRing
               icons={analystOrbitIcons}
               shouldReduceMotion={shouldReduceMotion}
+              allowContinuousRotation={!shouldSimplifyMotion}
               hintPrefix="hero-tech-hint"
               tileClassName="ui-analyst-orbit-tile"
               dataTestId="analyst-orbit"
@@ -216,6 +220,9 @@ const Hero = () => {
                 alt="Portrait of Samir Caizapasto"
                 className="h-full w-full rounded-full object-cover"
                 decoding="async"
+                fetchpriority="high"
+                width={1200}
+                height={1083}
               />
             </div>
           </motion.div>

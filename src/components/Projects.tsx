@@ -1,11 +1,12 @@
+import { Suspense, lazy, useRef, useState } from 'react';
 import { motion, useReducedMotion, Variants } from 'framer-motion';
 import { Award, ExternalLink, FileText, Github } from 'lucide-react';
-import { useRef, useState } from 'react';
-import CaseStudyModal from './CaseStudyModal';
 import { getCaseStudyByProjectId } from '../data/caseStudies';
 import { ProjectCategory, projects } from '../data/projects';
 import { useLanguage } from '../context/LanguageContext';
 import { trackPortfolioEvent } from '../lib/analytics';
+
+const CaseStudyModal = lazy(() => import('./CaseStudyModal'));
 
 const gradients = [
   'from-cyan-400/70 to-blue-500/70',
@@ -523,14 +524,18 @@ const Projects = () => {
           )}
         </div>
       </div>
-      <CaseStudyModal
-        caseStudy={activeCaseStudy}
-        isOpen={isCaseStudyModalOpen && Boolean(activeCaseStudy && activeProject)}
-        onClose={() => setIsCaseStudyModalOpen(false)}
-        onExited={() => setActiveCaseStudyProjectId(null)}
-        project={activeProject}
-        triggerElement={lastCaseStudyTriggerRef.current}
-      />
+      {activeCaseStudy && activeProject ? (
+        <Suspense fallback={null}>
+          <CaseStudyModal
+            caseStudy={activeCaseStudy}
+            isOpen={isCaseStudyModalOpen}
+            onClose={() => setIsCaseStudyModalOpen(false)}
+            onExited={() => setActiveCaseStudyProjectId(null)}
+            project={activeProject}
+            triggerElement={lastCaseStudyTriggerRef.current}
+          />
+        </Suspense>
+      ) : null}
     </section>
   );
 };

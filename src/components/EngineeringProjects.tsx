@@ -1,11 +1,12 @@
+import { Suspense, lazy, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, FileText, Github } from 'lucide-react';
-import { useRef, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { getEngineeringCaseStudyById, type EngineeringProjectId } from '../data/engineeringContent';
 import { engineeringRouteContent } from '../data/routeContent';
 import { trackPortfolioEvent } from '../lib/analytics';
-import EngineeringCaseModal from './EngineeringCaseModal';
+
+const EngineeringCaseModal = lazy(() => import('./EngineeringCaseModal'));
 
 const EngineeringProjects = () => {
   const { language } = useLanguage();
@@ -179,14 +180,18 @@ const EngineeringProjects = () => {
         </div>
       </div>
 
-      <EngineeringCaseModal
-        caseStudy={activeCaseStudy}
-        isOpen={isCaseModalOpen && Boolean(activeCaseStudy && activeProject)}
-        onClose={() => setIsCaseModalOpen(false)}
-        onExited={handleCaseExited}
-        project={activeProject}
-        triggerElement={lastTriggerRef.current}
-      />
+      {activeCaseStudy && activeProject ? (
+        <Suspense fallback={null}>
+          <EngineeringCaseModal
+            caseStudy={activeCaseStudy}
+            isOpen={isCaseModalOpen}
+            onClose={() => setIsCaseModalOpen(false)}
+            onExited={handleCaseExited}
+            project={activeProject}
+            triggerElement={lastTriggerRef.current}
+          />
+        </Suspense>
+      ) : null}
     </section>
   );
 };
