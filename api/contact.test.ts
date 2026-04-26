@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import handler from './contact';
+import handler from './contact.js';
 
 type MockResponse = {
   statusCode: number;
