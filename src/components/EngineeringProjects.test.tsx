@@ -50,13 +50,17 @@ describe('EngineeringProjects', () => {
 
     fireEvent.click(within(dialog).getByRole('tab', { name: 'Architecture' }));
 
-    expect(within(dialog).getByRole('img', { name: 'Technology Trend Analysis Platform architecture diagram' })).toBeInTheDocument();
-    expect(within(dialog).getByText(/Three public sources land in one shared flow/i)).toBeInTheDocument();
+    expect(
+      await within(dialog).findByRole('img', { name: 'Technology Trend Analysis Platform architecture diagram' })
+    ).toBeInTheDocument();
+    expect(await within(dialog).findByText(/Three public sources land in one shared flow/i)).toBeInTheDocument();
 
     fireEvent.click(within(dialog).getByRole('tab', { name: 'Delivery' }));
 
-    expect(within(dialog).getByRole('img', { name: 'Technology Trend Analysis Platform public product screenshot' })).toBeInTheDocument();
-    expect(within(dialog).getByText(/The result is a product someone can inspect end to end/i)).toBeInTheDocument();
+    expect(
+      await within(dialog).findByRole('img', { name: 'Technology Trend Analysis Platform public product screenshot' })
+    ).toBeInTheDocument();
+    expect(await within(dialog).findByText(/The result is a product someone can inspect end to end/i)).toBeInTheDocument();
   });
 
   it('tracks case, repository, and demo interactions with engineering context', async () => {
