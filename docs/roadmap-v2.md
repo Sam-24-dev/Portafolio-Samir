@@ -10,7 +10,7 @@ It is optimized for:
 - future `Data Engineer` expansion
 - minimal production risk
 
-## Strategic Summary
+## Strategic Summarys
 
 Portfolio V2 will remain one website, but it will evolve in phases.
 

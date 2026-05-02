@@ -103,6 +103,35 @@ Current focus:
 - keep docs aligned with the real shipped state
 - avoid reopening V2 scope with unnecessary feature work
 
+Latest implementation state:
+- the production site is already running with the post-hotfix rendering fix from `main`
+- hero motion is shared across `Data Analyst` and `Data Engineer`
+  - orbit rotates on desktop, tablet, and mobile unless `prefers-reduced-motion` disables it
+  - orbit pauses on hover / focus / tap when a tooltip is active
+  - title phrases use the same typewriter-style behavior across both profiles, with gentler pacing on compact devices
+- profile-specific certifications are now split by route
+  - analyst certifications stay inside `About`
+  - engineer certifications render in their own in-page section after stack and before how-i-work
+  - there is no navbar item or new route for certifications
+- certification data now lives in `src/data/profileCertifications.ts`
+- reusable certification UI now lives in:
+  - `src/components/CertificationGroups.tsx`
+  - `src/components/EngineeringCertifications.tsx`
+- engineer certifications currently emphasize:
+  - verified: `ETL and ELT in Python`
+  - program: `Data-Driven Decision Specialist`
+  - recognition: `NASA Space Apps Challenge 2025`
+- analyst certifications currently emphasize:
+  - `Microsoft Certified: Power BI Data Analyst Associate`
+  - `Data Analyst Associate`
+  - `Microsoft Office Specialist: Excel Associate`
+  - `Data-Driven Decision Specialist`
+  - `NASA Space Apps Challenge 2025`
+- the certifications renderer is responsive:
+  - when verified credentials > 1, it uses a two-column grid from `md`
+  - when verified credentials = 1, it collapses to a single-column grid to avoid dead space
+- the current active work after launch is polish and maintenance, not route expansion
+
 ## Standard Commands
 
 Install:
@@ -152,3 +181,108 @@ The V2 roadmap is succeeding when:
 - the first release improves analyst positioning without confusing the audience
 - the portfolio gains stronger project proof and recruiter trust
 - the engineering route can be added later without restructuring from scratch
+
+## Handoff To Another AI Editor
+
+Use this section when moving the project to another AI editor (Cursor, etc.) so the new assistant can pick up where you left off.
+
+### Current branch state (update before merge)
+
+- Date: 2026-05-01
+- Branch: `post-launch-improvements` (tracking `origin/main`)
+- Last commit: `2cc9616` — fix: restore production render stability (#13)
+- Local review: user confirmed the app looks good locally on 2026-05-01.
+- Working tree: uncommitted changes present.
+- Modified files:
+  - `AGENTS.md`
+  - `docs/roadmap-v2.md`
+  - `src/App.test.tsx`
+  - `src/components/About.test.tsx`
+  - `src/components/About.tsx`
+  - `src/components/EngineeringHero.test.tsx`
+  - `src/components/EngineeringHero.tsx`
+  - `src/components/EngineeringProjects.test.tsx`
+  - `src/components/Hero.test.tsx`
+  - `src/components/Hero.tsx`
+  - `src/components/LanguageSelector.tsx`
+  - `src/components/Navbar.test.tsx`
+  - `src/components/Navbar.tsx`
+  - `src/components/OrbitTechRing.tsx`
+  - `src/components/Projects.test.tsx`
+  - `src/components/Projects.tsx`
+  - `src/components/StackMotion.test.tsx`
+  - `src/components/ThemeToggle.tsx`
+  - `src/data/engineeringContent.ts`
+  - `src/data/translations.ts`
+  - `src/hooks/useStackAmbientMotion.ts`
+  - `src/index.css`
+  - `src/pages/EngineeringPage.tsx`
+- New files (untracked):
+  - `.cursorrules`
+  - `src/components/CertificationGroups.tsx`
+  - `src/components/EngineeringCertifications.test.tsx`
+  - `src/components/EngineeringCertifications.tsx`
+  - `src/data/profileCertifications.ts`
+  - `src/hooks/useHeroMotionPolicy.ts`
+  - `src/hooks/useHeroTitleRotation.test.ts`
+  - `src/hooks/useHeroTitleRotation.ts`
+- Notes:
+  - Windows line-ending warnings (LF → CRLF) were reported for multiple files. Avoid unintended formatting churn.
+- Validation status:
+  - Not run in this handoff. Run `npm run verify` before merge.
+
+### Git + branch workflow (post-change)
+
+- Confirm the latest changes look good locally.
+- Commit on the current branch, push, open a PR.
+- Merge only after PR checks and manual review pass.
+- Clone `main` into the new editor workspace.
+
+### Read-first files (keep context consistent)
+
+- `AGENTS.md` (this file)
+- `README.md`
+- `SETUP-GUIDE.md`
+- `docs/roadmap-v2.md`
+- `docs/iterations/README.md`
+- `docs/release-workflow.md`
+- `src/data/` (content source of truth)
+
+### Local run quickstart
+
+- `npm install`
+- `npm run dev`
+
+### MCP + tooling snapshot (configured outside repo)
+
+These are configured in the editor’s MCP settings, not inside this repository.
+
+Servers currently used:
+- chrome-devtools
+- github
+- context7
+- toolbox-db
+- TestSprite
+- playwright
+- powerbi
+- stitch
+
+Editor plugins in use (if supported by the target editor):
+- vercel
+- browser-use
+- documents
+- spreadsheets
+- presentations
+
+Security note: API keys live in the editor config/profile. Do not commit secrets to this repo. Use placeholders in documentation.
+
+### Local skills catalog (editor-specific)
+
+Skills available on this machine (verify in the new editor):
+- python-patterns
+- get-search-view-results
+- agent-customization
+- typescript-upgrade
+- modernization-integration-tests
+
+Typical location: `C:\Users\USER\.agents\skills\` (may vary by editor).

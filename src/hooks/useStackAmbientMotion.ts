@@ -8,53 +8,86 @@ interface StackMotionConfig {
   profile: StackMotionProfile;
 }
 
+type StackMotionTier = 'regular' | 'compact';
+
 const profileSettings: Record<
   StackMotionProfile,
-  {
-    coreY: number;
-    coreX: number;
-    coreScale: number;
-    coreRotate: number;
-    coreDuration: number;
-    supportX: number;
-    supportY: number;
-    supportScale: number;
-    supportRotate: number;
-    supportDuration: number;
-  }
+  Record<
+    StackMotionTier,
+    {
+      coreY: number;
+      coreX: number;
+      coreScale: number;
+      coreRotate: number;
+      coreDuration: number;
+      supportX: number;
+      supportY: number;
+      supportScale: number;
+      supportRotate: number;
+      supportDuration: number;
+    }
+  >
 > = {
   analyst: {
-    coreY: 8,
-    coreX: 3,
-    coreScale: 1.022,
-    coreRotate: 1.25,
-    coreDuration: 5200,
-    supportX: 10,
-    supportY: 8,
-    supportScale: 1.035,
-    supportRotate: 1.8,
-    supportDuration: 6400,
+    regular: {
+      coreY: 8,
+      coreX: 3,
+      coreScale: 1.022,
+      coreRotate: 1.25,
+      coreDuration: 5200,
+      supportX: 10,
+      supportY: 8,
+      supportScale: 1.035,
+      supportRotate: 1.8,
+      supportDuration: 6400,
+    },
+    compact: {
+      coreY: 4.6,
+      coreX: 1.8,
+      coreScale: 1.01,
+      coreRotate: 0.42,
+      coreDuration: 6600,
+      supportX: 4.8,
+      supportY: 3.6,
+      supportScale: 1.014,
+      supportRotate: 0.62,
+      supportDuration: 7800,
+    },
   },
   engineer: {
-    coreY: 10,
-    coreX: 4,
-    coreScale: 1.026,
-    coreRotate: 1.6,
-    coreDuration: 4600,
-    supportX: 12,
-    supportY: 10,
-    supportScale: 1.04,
-    supportRotate: 2.2,
-    supportDuration: 5600,
+    regular: {
+      coreY: 10,
+      coreX: 4,
+      coreScale: 1.026,
+      coreRotate: 1.6,
+      coreDuration: 4600,
+      supportX: 12,
+      supportY: 10,
+      supportScale: 1.04,
+      supportRotate: 2.2,
+      supportDuration: 5600,
+    },
+    compact: {
+      coreY: 5.5,
+      coreX: 2.3,
+      coreScale: 1.012,
+      coreRotate: 0.6,
+      coreDuration: 6200,
+      supportX: 5.6,
+      supportY: 4.4,
+      supportScale: 1.016,
+      supportRotate: 0.82,
+      supportDuration: 7400,
+    },
   },
 };
 
-const prefersAmbientMotion = () => {
+const getStackMotionTier = (): StackMotionTier => {
   if (typeof window === 'undefined') {
-    return false;
+    return 'regular';
   }
 
-  return !window.matchMedia('(max-width: 767px)').matches;
+  return window.matchMedia('(max-width: 767px)').matches ? 'compact' : 'regular';
 };
 
 export const useStackAmbientMotion = ({ profile }: StackMotionConfig) => {
@@ -67,11 +100,11 @@ export const useStackAmbientMotion = ({ profile }: StackMotionConfig) => {
       shouldReduceMotion ||
       (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-    if (!section || prefersReducedMotion || !prefersAmbientMotion()) {
+    if (!section || prefersReducedMotion) {
       return;
     }
 
-    const settings = profileSettings[profile];
+    const settings = profileSettings[profile][getStackMotionTier()];
     const coreItems = section.querySelectorAll<HTMLElement>('[data-stack-core-item]');
     const supportItems = section.querySelectorAll<HTMLElement>('[data-stack-support-item]');
 

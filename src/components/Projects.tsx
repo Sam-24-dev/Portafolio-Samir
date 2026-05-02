@@ -362,7 +362,7 @@ const Projects = () => {
                     key={filter}
                     type="button"
                     onClick={() => setActiveSupportingFilter(filter)}
-                    className={`focus-ring whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                    className={`focus-ring min-h-11 touch-manipulation whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                       isActive
                         ? 'ui-pill-teal px-4 py-2 text-sm shadow-none'
                         : 'ui-pill-neutral px-4 py-2 text-sm dark:hover:border-accent-cyan/40 dark:hover:text-text-highlight light:hover:border-lightMode-accent-primary/40 light:hover:text-lightMode-text-primary'

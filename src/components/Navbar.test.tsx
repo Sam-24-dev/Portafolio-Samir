@@ -61,9 +61,18 @@ describe('Navbar route-aware shell', () => {
   it('keeps theme, language, and menu controls visible in the mobile header', () => {
     renderNavbar('analyst', ['/']);
 
-    expect(screen.getAllByRole('button', { name: 'Switch to dark theme' }).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByRole('button', { name: /EN -/ }).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByRole('button', { name: 'Open menu' })).toBeInTheDocument();
+    const themeButtons = screen.getAllByRole('button', { name: 'Switch to dark theme' });
+    const languageButtons = screen.getAllByRole('button', { name: /EN -/ });
+    const menuButton = screen.getByRole('button', { name: 'Open menu' });
+    const brandButton = screen.getByRole('button', { name: 'SC' });
+
+    expect(themeButtons.length).toBeGreaterThanOrEqual(1);
+    expect(languageButtons.length).toBeGreaterThanOrEqual(1);
+    expect(menuButton).toBeInTheDocument();
+    expect(brandButton).toHaveClass('min-h-11', 'min-w-11');
+    expect(themeButtons[0]).toHaveClass('min-h-11', 'min-w-11');
+    expect(languageButtons[0]).toHaveClass('min-h-11', 'min-w-11');
+    expect(menuButton).toHaveClass('min-h-11', 'min-w-11');
   });
 
   it('keeps the switch inside the mobile menu block', () => {

@@ -106,6 +106,15 @@ interface EngineeringStackContent {
   supportingLabel: string;
 }
 
+interface EngineeringCertificationsContent {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  verifiedCredentialsNote: string;
+  programCompletionNote: string;
+  awardsRecognitionNote: string;
+}
+
 interface EngineeringCaseModalCopy {
   badge: string;
   closeLabel: string;
@@ -169,6 +178,7 @@ export interface EngineeringRouteContent {
   anchorProjects: EngineeringProjectSection;
   bridgeProjects: EngineeringBridgeSection;
   stack: EngineeringStackContent;
+  certifications: EngineeringCertificationsContent;
   strengths: EngineeringStrengthSection;
   caseStudyModal: EngineeringCaseModalCopy;
   contactSupportCopy: string;
@@ -519,6 +529,15 @@ export const engineeringRouteContent: Record<'en' | 'es', EngineeringRouteConten
       coreLabel: 'Core stack',
       supportingLabel: 'Supporting tools',
     },
+    certifications: {
+      eyebrow: 'External proof',
+      title: 'Certifications',
+      subtitle:
+        'Credentials and recognitions that support this engineering route without adding clutter to the main navigation.',
+      verifiedCredentialsNote: 'Technical credentials that reinforce the engineering side of the portfolio.',
+      programCompletionNote: 'Structured training that supports reproducible delivery and data workflow discipline.',
+      awardsRecognitionNote: 'Recognition that adds credibility without replacing project-level technical proof.',
+    },
     strengths: {
       eyebrow: 'How I work',
       title: 'How I turn data into reliable products',
@@ -723,6 +742,17 @@ export const engineeringRouteContent: Record<'en' | 'es', EngineeringRouteConten
         'Las herramientas detrás de esta ruta, desde lógica ETL reproducible hasta entrega pública y salidas explicables.',
       coreLabel: 'Stack principal',
       supportingLabel: 'Herramientas de apoyo',
+    },
+    certifications: {
+      eyebrow: 'Señales externas',
+      title: 'Certificaciones',
+      subtitle:
+        'Credenciales y reconocimientos que refuerzan esta ruta técnica sin agregar ruido al recorrido principal.',
+      verifiedCredentialsNote: 'Credenciales técnicas que refuerzan el perfil engineering dentro del portafolio.',
+      programCompletionNote:
+        'Formación estructurada que respalda la disciplina de entrega y la construcción de flujos reproducibles.',
+      awardsRecognitionNote:
+        'Reconocimientos que suman credibilidad sin reemplazar la prueba técnica de los proyectos.',
     },
     strengths: {
       eyebrow: 'Cómo trabajo',

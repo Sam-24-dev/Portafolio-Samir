@@ -19,7 +19,7 @@ const LanguageSelector = () => {
     <div
       role="group"
       aria-label={t.accessibility.languageSelector}
-      className="ui-control-shell relative flex items-center gap-1"
+      className="ui-control-shell relative flex items-center gap-0.5"
       onMouseEnter={() => setShowHint(true)}
       onMouseLeave={() => setShowHint(false)}
     >
@@ -31,7 +31,7 @@ const LanguageSelector = () => {
         aria-pressed={language === 'en'}
         aria-describedby={showHint ? hintId : undefined}
         aria-label={`EN - ${t.accessibility.switchToEnglish}`}
-        className={`focus-ring ui-control-toggle min-h-10 px-2.5 text-[0.8125rem] sm:min-h-[2.25rem] sm:px-3 sm:text-sm ${
+        className={`focus-ring ui-control-toggle min-h-11 min-w-11 touch-manipulation px-2 text-[0.8125rem] sm:px-3 sm:text-sm ${
           language === 'en'
             ? 'ui-control-toggle-active'
             : 'ui-control-toggle-idle'
@@ -48,7 +48,7 @@ const LanguageSelector = () => {
         aria-pressed={language === 'es'}
         aria-describedby={showHint ? hintId : undefined}
         aria-label={`ES - ${t.accessibility.switchToSpanish}`}
-        className={`focus-ring ui-control-toggle min-h-10 px-2.5 text-[0.8125rem] sm:min-h-[2.25rem] sm:px-3 sm:text-sm ${
+        className={`focus-ring ui-control-toggle min-h-11 min-w-11 touch-manipulation px-2 text-[0.8125rem] sm:px-3 sm:text-sm ${
           language === 'es'
             ? 'ui-control-toggle-active'
             : 'ui-control-toggle-idle'
@@ -62,7 +62,7 @@ const LanguageSelector = () => {
         id={hintId}
         text={t.accessibility.changeLanguage}
         visible={showHint}
-        className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"
+        className="left-1/2 top-full mt-3 min-w-max -translate-x-1/2"
       />
     </div>
   );

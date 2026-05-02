@@ -48,7 +48,7 @@ const ThemeToggle = () => {
         onFocus={() => setShowHint(true)}
         onBlur={() => setShowHint(false)}
         aria-describedby={showHint ? hintId : undefined}
-        className="focus-ring relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 transition-colors hover:bg-accent-cyan/10 light:hover:bg-lightMode-accent-primary/10"
+        className="focus-ring relative inline-flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-lg p-2 transition-colors hover:bg-accent-cyan/10 light:hover:bg-lightMode-accent-primary/10"
         aria-label={theme === 'dark' ? t.accessibility.switchToLightTheme : t.accessibility.switchToDarkTheme}
         {...motionProps}
       >
@@ -69,7 +69,7 @@ const ThemeToggle = () => {
         id={hintId}
         text={t.accessibility.changeTheme}
         visible={showHint}
-        className="left-1/2 top-full mt-2 min-w-max -translate-x-1/2"
+        className="left-1/2 top-full mt-3 min-w-max -translate-x-1/2"
       />
     </div>
   );

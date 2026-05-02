@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronDown, Download, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
@@ -7,61 +6,26 @@ import { analystRouteContent } from '../data/routeContent';
 import { trackPortfolioEvent } from '../lib/analytics';
 import { analystOrbitIcons } from '../lib/techIcons';
 import { useSectionNavigation } from '../hooks/useSectionNavigation';
-import useCompactViewport from '../hooks/useCompactViewport';
+import useHeroMotionPolicy from '../hooks/useHeroMotionPolicy';
+import useHeroTitleRotation from '../hooks/useHeroTitleRotation';
 import OrbitTechRing from './OrbitTechRing';
 
 const Hero = () => {
   const { t, language } = useLanguage();
   const analystRoute = analystRouteContent[language];
-  const prefersReducedMotion = useReducedMotion();
-  const isCompactViewport = useCompactViewport();
-  const shouldReduceMotion =
-    prefersReducedMotion ||
-    (typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false);
-  const shouldSimplifyMotion = shouldReduceMotion || isCompactViewport;
-  const [titleIndex, setTitleIndex] = useState(0);
-  const [displayText, setDisplayText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
+  const {
+    allowContinuousRotation,
+    isCompactViewport,
+    orbitRotationDuration,
+    shouldReduceMotion,
+    titleAnimationMode,
+  } = useHeroMotionPolicy();
+  const displayText = useHeroTitleRotation({
+    titles: t.hero.titles,
+    isCompactViewport,
+    titleAnimationMode,
+  });
   const navigateToSection = useSectionNavigation('analyst');
-
-  const titles = t.hero.titles;
-
-  useEffect(() => {
-    if (shouldSimplifyMotion) {
-      const nextTitle = titles[titleIndex] ?? '';
-      if (displayText !== nextTitle) {
-        setDisplayText(nextTitle);
-        return;
-      }
-
-      const timeout = window.setTimeout(() => {
-        setTitleIndex((prev) => (prev + 1) % titles.length);
-      }, 4600);
-
-      return () => window.clearTimeout(timeout);
-    }
-
-    const currentTitle = titles[titleIndex];
-    const typingSpeed = isDeleting ? 28 : 58;
-    const pauseTime = isDeleting ? 240 : 2600;
-
-    const timeout = setTimeout(() => {
-      if (!isDeleting && displayText === currentTitle) {
-        setTimeout(() => setIsDeleting(true), pauseTime);
-      } else if (isDeleting && displayText === '') {
-        setIsDeleting(false);
-        setTitleIndex((prev) => (prev + 1) % titles.length);
-      } else {
-        setDisplayText(
-          isDeleting
-            ? currentTitle.substring(0, displayText.length - 1)
-            : currentTitle.substring(0, displayText.length + 1)
-        );
-      }
-    }, typingSpeed);
-
-    return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, shouldSimplifyMotion, titleIndex, titles]);
 
   const contactLinks = [
     {
@@ -93,13 +57,16 @@ const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8 }}
-            className="flex-1 text-center lg:max-w-2xl lg:text-left"
+            className="flex flex-1 flex-col text-center lg:max-w-2xl lg:text-left"
           >
             <p className="ui-analyst-kicker mb-4 text-center text-sm font-semibold uppercase tracking-[0.32em] sm:text-[0.95rem] lg:text-left">
               {t.hero.eyebrow}
             </p>
 
-            <div className="mb-6">
+            <div
+              data-testid="analyst-trust-signals"
+              className="order-last mt-5 md:order-none md:mb-6 md:mt-0"
+            >
               <div className="flex flex-wrap justify-center gap-2.5 lg:justify-start">
                 {t.hero.trustSignals.map((signal, index) => (
                   <span
@@ -118,9 +85,13 @@ const Hero = () => {
             </h1>
 
             <div className="mx-auto flex min-h-[64px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">
-              <h2 className="text-[1.45rem] font-poppins font-semibold leading-tight gradient-text sm:text-3xl md:text-4xl">
+              <h2
+                data-testid="analyst-hero-title"
+                data-title-animation={titleAnimationMode}
+                className="text-[1.45rem] font-poppins font-semibold leading-tight gradient-text sm:text-3xl md:text-4xl"
+              >
                 {displayText}
-                <span className={shouldSimplifyMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
+                <span className={shouldReduceMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
               </h2>
             </div>
 
@@ -208,7 +179,8 @@ const Hero = () => {
             <OrbitTechRing
               icons={analystOrbitIcons}
               shouldReduceMotion={shouldReduceMotion}
-              allowContinuousRotation={!shouldSimplifyMotion}
+              allowContinuousRotation={allowContinuousRotation}
+              rotationDuration={orbitRotationDuration}
               hintPrefix="hero-tech-hint"
               tileClassName="ui-analyst-orbit-tile"
               dataTestId="analyst-orbit"
@@ -234,7 +206,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={shouldReduceMotion ? { duration: 0 } : { delay: 1, duration: 0.5 }}
-        className="focus-ring absolute bottom-6 left-1/2 z-20 -translate-x-1/2 dark:text-accent-cyan light:text-lightMode-accent-primary sm:bottom-8"
+        className="focus-ring absolute bottom-6 left-1/2 z-20 inline-flex min-h-11 min-w-11 -translate-x-1/2 items-center justify-center touch-manipulation dark:text-accent-cyan light:text-lightMode-accent-primary sm:bottom-8"
         onClick={() => navigateToSection('about')}
         aria-label={t.accessibility.scrollToAbout}
       >

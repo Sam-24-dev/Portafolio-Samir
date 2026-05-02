@@ -17,13 +17,19 @@ const animeMocks = vi.hoisted(() => ({
 
 vi.mock('animejs', () => animeMocks);
 
-const setMotionPreferences = ({ reducedMotion = false }: { reducedMotion?: boolean } = {}) => {
+const setMotionPreferences = ({
+  reducedMotion = false,
+  compactWidth = false,
+}: {
+  reducedMotion?: boolean;
+  compactWidth?: boolean;
+} = {}) => {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
     matches:
       query === '(prefers-reduced-motion: reduce)'
         ? reducedMotion
         : query === '(max-width: 767px)'
-          ? false
+          ? compactWidth
           : false,
     media: query,
     onchange: null,
@@ -87,6 +93,66 @@ describe('Stack ambient motion', () => {
     expect(animeMocks.animate).toHaveBeenCalledTimes(4);
     expect(screen.getByText('Core Analyst Stack')).toBeInTheDocument();
     expect(screen.getByText('Core stack')).toBeInTheDocument();
+  });
+
+  it('still initializes ambient motion on compact mobile with calmer analyst settings', async () => {
+    setMotionPreferences({ compactWidth: true });
+
+    render(
+      <LanguageProvider>
+        <SkillsGrid />
+      </LanguageProvider>
+    );
+
+    await waitFor(() => {
+      expect(animeMocks.animate).toHaveBeenCalledTimes(2);
+    });
+
+    const [coreCall, supportCall] = animeMocks.animate.mock.calls;
+
+    expect(coreCall?.[1]).toMatchObject({
+      duration: expect.any(Number),
+      x: [0, expect.any(Number)],
+      y: [0, expect.any(Number)],
+      rotate: [0, expect.any(Number)],
+      scale: [1, expect.any(Number)],
+    });
+
+    expect((coreCall?.[1] as { duration: number }).duration).toBeGreaterThan(5200);
+    expect((coreCall?.[1] as { x: number[] }).x[1]).toBeLessThan(3);
+    expect((coreCall?.[1] as { rotate: number[] }).rotate[1]).toBeLessThan(1.25);
+    expect((coreCall?.[1] as { scale: number[] }).scale[1]).toBeLessThan(1.022);
+
+    expect((supportCall?.[1] as { duration: number }).duration).toBeGreaterThan(6400);
+    expect((supportCall?.[1] as { x: number[] }).x[1]).toBeLessThan(10);
+    expect((supportCall?.[1] as { rotate: number[] }).rotate[1]).toBeLessThan(1.8);
+    expect((supportCall?.[1] as { scale: number[] }).scale[1]).toBeLessThan(1.035);
+  });
+
+  it('still initializes ambient motion on compact mobile with calmer engineer settings', async () => {
+    setMotionPreferences({ compactWidth: true });
+
+    render(
+      <LanguageProvider>
+        <EngineeringStack />
+      </LanguageProvider>
+    );
+
+    await waitFor(() => {
+      expect(animeMocks.animate).toHaveBeenCalledTimes(2);
+    });
+
+    const [coreCall, supportCall] = animeMocks.animate.mock.calls;
+
+    expect((coreCall?.[1] as { duration: number }).duration).toBeGreaterThan(4600);
+    expect((coreCall?.[1] as { x: number[] }).x[1]).toBeLessThan(4);
+    expect((coreCall?.[1] as { rotate: number[] }).rotate[1]).toBeLessThan(1.6);
+    expect((coreCall?.[1] as { scale: number[] }).scale[1]).toBeLessThan(1.026);
+
+    expect((supportCall?.[1] as { duration: number }).duration).toBeGreaterThan(5600);
+    expect((supportCall?.[1] as { x: number[] }).x[1]).toBeLessThan(12);
+    expect((supportCall?.[1] as { rotate: number[] }).rotate[1]).toBeLessThan(2.2);
+    expect((supportCall?.[1] as { scale: number[] }).scale[1]).toBeLessThan(1.04);
   });
 
   it('skips ambient motion setup when reduced motion is enabled', async () => {

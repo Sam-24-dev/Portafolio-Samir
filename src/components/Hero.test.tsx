@@ -47,6 +47,26 @@ const setMotionPreferences = ({
   })) as typeof window.matchMedia;
 };
 
+const advanceTimersInSteps = (totalMs: number, stepMs = 100) => {
+  for (let elapsed = 0; elapsed < totalMs; elapsed += stepMs) {
+    act(() => {
+      vi.advanceTimersByTime(Math.min(stepMs, totalMs - elapsed));
+    });
+  }
+};
+
+const advanceUntilText = (element: HTMLElement, expectedText: string, totalMs: number, stepMs = 100) => {
+  for (let elapsed = 0; elapsed < totalMs; elapsed += stepMs) {
+    if (element.textContent?.includes(expectedText)) {
+      return true;
+    }
+
+    advanceTimersInSteps(Math.min(stepMs, totalMs - elapsed), stepMs);
+  }
+
+  return element.textContent?.includes(expectedText) ?? false;
+};
+
 describe('Hero', () => {
   beforeEach(() => {
     portfolioEvents.length = 0;
@@ -125,22 +145,40 @@ describe('Hero', () => {
     vi.useRealTimers();
   });
 
-  it('uses the compact motion policy on coarse pointers without orbit rotation', () => {
+  it('uses a safe typewriter cycle on compact mobile without falling back to instant phrase swaps', () => {
     vi.useFakeTimers();
+    setMotionPreferences({ coarsePointer: true, compactWidth: true });
+
+    renderHero();
+
+    const title = screen.getByTestId('analyst-hero-title');
+    expect(title).toHaveAttribute('data-title-animation', 'typewriter');
+    expect(screen.getByTestId('analyst-orbit')).toHaveAttribute('data-orbit-animated', 'true');
+
+    act(() => {
+      vi.advanceTimersByTime(240);
+    });
+
+    expect(title.textContent).not.toBe('Business analytics and storytelling|');
+    expect(title.textContent?.length).toBeGreaterThan(1);
+
+    expect(advanceUntilText(title, 'Business analytics and storytelling', 4200)).toBe(true);
+    expect(advanceUntilText(title, 'Dashboards for real decisions', 12000)).toBe(true);
+
+    vi.useRealTimers();
+  });
+
+  it('moves trust pills below the main CTA stack on compact mobile only', () => {
     setMotionPreferences({ coarsePointer: true });
 
     renderHero();
 
-    expect(screen.getByText('Business analytics and storytelling')).toBeInTheDocument();
-    expect(screen.getByTestId('analyst-orbit')).toHaveAttribute('data-orbit-animated', 'false');
+    const ctaColumn = screen.getByRole('button', { name: 'View Projects' }).closest('div');
+    const trustSignals = screen.getByTestId('analyst-trust-signals');
 
-    act(() => {
-      vi.advanceTimersByTime(5200);
-    });
-
-    expect(screen.getByText('Dashboards for real decisions')).toBeInTheDocument();
-
-    vi.useRealTimers();
+    expect(ctaColumn).not.toBeNull();
+    expect(trustSignals).not.toBeNull();
+    expect(trustSignals).toHaveClass('order-last');
   });
 
   it('shows orbit labels and pauses the ring on desktop hover', () => {

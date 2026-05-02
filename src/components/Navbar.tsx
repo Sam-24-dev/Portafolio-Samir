@@ -150,7 +150,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
           <motion.button
             type="button"
             onClick={navigateToRoot}
-            className="focus-ring cursor-pointer text-2xl font-poppins font-bold gradient-text"
+            className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center touch-manipulation text-2xl font-poppins font-bold gradient-text"
             {...brandMotionProps}
           >
             SC
@@ -192,7 +192,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
             <LanguageSelector />
           </div>
 
-          <div className="relative flex items-center gap-2.5 md:hidden">
+          <div className="relative flex items-center gap-2 md:hidden">
             <ThemeToggle />
             <LanguageSelector />
             <button
@@ -201,7 +201,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
               aria-controls="mobile-navigation"
               aria-expanded={isOpen}
               aria-label={isOpen ? t.accessibility.closeMenu : t.accessibility.openMenu}
-              className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 dark:text-accent-cyan light:text-lightMode-accent-primary"
+              className="focus-ring inline-flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-lg p-2 dark:text-accent-cyan light:text-lightMode-accent-primary"
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -209,7 +209,7 @@ const Navbar = ({ routeMode }: NavbarProps) => {
             <HintBubble
               text={t.accessibility.controlsHint}
               visible={showMobileControlsHint}
-              className="right-0 top-full mt-2 max-w-[13rem] rounded-2xl border px-3 py-2 text-left text-xs"
+              className="right-0 top-full mt-3 max-w-[12rem] rounded-2xl border px-3 py-2 text-left text-xs"
             />
           </div>
         </div>
