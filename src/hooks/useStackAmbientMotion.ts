@@ -83,7 +83,7 @@ const profileSettings: Record<
 };
 
 const getStackMotionTier = (): StackMotionTier => {
-  if (typeof window === 'undefined') {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return 'regular';
   }
 
@@ -96,9 +96,10 @@ export const useStackAmbientMotion = ({ profile }: StackMotionConfig) => {
 
   useEffect(() => {
     const section = sectionRef.current;
+    const canUseMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
     const prefersReducedMotion =
       shouldReduceMotion ||
-      (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      (canUseMatchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     if (!section || prefersReducedMotion) {
       return;

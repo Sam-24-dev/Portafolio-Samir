@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { HeroTitleAnimationMode } from './useHeroMotionPolicy';
 
 interface UseHeroTitleRotationProps {
@@ -117,15 +117,22 @@ const useHeroTitleRotation = ({
   titleAnimationMode,
   isCompactViewport = false,
 }: UseHeroTitleRotationProps) => {
-  const titlesKey = useMemo(() => titles.join('\u0000'), [titles]);
-  const [rotationState, setRotationState] = useState<HeroTitleRotationState>(() => createTypewriterState(titles));
+  const titlesKey = titles.join('\u0000');
+  const stableTitlesRef = useRef(titles);
+
+  if (stableTitlesRef.current.join('\u0000') !== titlesKey) {
+    stableTitlesRef.current = titles;
+  }
+
+  const stableTitles = stableTitlesRef.current;
+  const [rotationState, setRotationState] = useState<HeroTitleRotationState>(() => createTypewriterState(stableTitles));
 
   useEffect(() => {
-    setRotationState(createTypewriterState(titles));
-  }, [titleAnimationMode, titles, titlesKey]);
+    setRotationState(createTypewriterState(stableTitles));
+  }, [titleAnimationMode, stableTitles]);
 
   useEffect(() => {
-    if (titles.length === 0) {
+    if (stableTitles.length === 0) {
       return;
     }
 
@@ -133,20 +140,20 @@ const useHeroTitleRotation = ({
       const timeout = window.setTimeout(() => {
         setRotationState((previousState) => ({
           ...previousState,
-          titleIndex: (previousState.titleIndex + 1) % titles.length,
+          titleIndex: (previousState.titleIndex + 1) % stableTitles.length,
         }));
       }, REDUCED_MOTION_HOLD);
 
       return () => window.clearTimeout(timeout);
     }
 
-    const currentTitle = titles[rotationState.titleIndex] ?? '';
+    const currentTitle = stableTitles[rotationState.titleIndex] ?? '';
 
     if (currentTitle.length === 0) {
       return;
     }
 
-    if (rotationState.phase === 'holding' && titles.length === 1) {
+    if (rotationState.phase === 'holding' && stableTitles.length === 1) {
       return;
     }
 
@@ -164,21 +171,21 @@ const useHeroTitleRotation = ({
             : DESKTOP_DELETING_SPEED;
 
     const timeout = window.setTimeout(() => {
-      setRotationState((previousState) => advanceTypewriterState(previousState, titles));
+      setRotationState((previousState) => advanceTypewriterState(previousState, stableTitles));
     }, transitionDelay);
 
     return () => window.clearTimeout(timeout);
-  }, [isCompactViewport, rotationState, titleAnimationMode, titles]);
+  }, [isCompactViewport, rotationState, titleAnimationMode, stableTitles]);
 
-  if (titles.length === 0) {
+  if (stableTitles.length === 0) {
     return '';
   }
 
   if (titleAnimationMode === 'swap') {
-    return titles[rotationState.titleIndex] ?? '';
+    return stableTitles[rotationState.titleIndex] ?? '';
   }
 
-  const currentTitle = titles[rotationState.titleIndex] ?? '';
+  const currentTitle = stableTitles[rotationState.titleIndex] ?? '';
   return currentTitle.slice(0, rotationState.charIndex);
 };
 

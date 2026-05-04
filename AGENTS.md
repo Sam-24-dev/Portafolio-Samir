@@ -186,50 +186,24 @@ The V2 roadmap is succeeding when:
 
 Use this section when moving the project to another AI editor (Cursor, etc.) so the new assistant can pick up where you left off.
 
-### Current branch state (update before merge)
+### Handoff snapshots (dated)
 
-- Date: 2026-05-01
-- Branch: `post-launch-improvements` (tracking `origin/main`)
-- Last commit: `2cc9616` — fix: restore production render stability (#13)
-- Local review: user confirmed the app looks good locally on 2026-05-01.
-- Working tree: uncommitted changes present.
-- Modified files:
-  - `AGENTS.md`
-  - `docs/roadmap-v2.md`
-  - `src/App.test.tsx`
-  - `src/components/About.test.tsx`
-  - `src/components/About.tsx`
-  - `src/components/EngineeringHero.test.tsx`
-  - `src/components/EngineeringHero.tsx`
-  - `src/components/EngineeringProjects.test.tsx`
-  - `src/components/Hero.test.tsx`
-  - `src/components/Hero.tsx`
-  - `src/components/LanguageSelector.tsx`
-  - `src/components/Navbar.test.tsx`
-  - `src/components/Navbar.tsx`
-  - `src/components/OrbitTechRing.tsx`
-  - `src/components/Projects.test.tsx`
-  - `src/components/Projects.tsx`
-  - `src/components/StackMotion.test.tsx`
-  - `src/components/ThemeToggle.tsx`
-  - `src/data/engineeringContent.ts`
-  - `src/data/translations.ts`
-  - `src/hooks/useStackAmbientMotion.ts`
-  - `src/index.css`
-  - `src/pages/EngineeringPage.tsx`
-- New files (untracked):
-  - `.cursorrules`
-  - `src/components/CertificationGroups.tsx`
-  - `src/components/EngineeringCertifications.test.tsx`
-  - `src/components/EngineeringCertifications.tsx`
-  - `src/data/profileCertifications.ts`
-  - `src/hooks/useHeroMotionPolicy.ts`
-  - `src/hooks/useHeroTitleRotation.test.ts`
-  - `src/hooks/useHeroTitleRotation.ts`
+- Branch-specific state should live in dated files under `docs/handoff/`.
+- Latest snapshot: `docs/handoff/2026-05-01-post-launch-improvements.md`.
+
+### Current branch state (2026-05-04)
+
+- Branch: `post-launch-improvements`
+- Goal: stabilize the last PR with CI-safe tests and keep the portfolio unchanged for users.
+- Validation: `npm run verify` passed locally with `CI=true` and `NODE_OPTIONS=--max-old-space-size=6144`.
+- Key fixes:
+  - `useStackAmbientMotion.ts`: guard `matchMedia` before reading it.
+  - `EngineeringProjects` / `EngineeringCaseModal`: control the engineering modal tab from the parent so tabs do not reset on rerender.
+  - `useHeroTitleRotation.ts`: stabilize title rotation state so fake-timer tests do not thrash.
+  - `vitest.config.ts` + `scripts/run-vitest-batches.mjs`: reduce CI memory pressure by disabling file parallelism and running Vitest one file per process.
 - Notes:
-  - Windows line-ending warnings (LF → CRLF) were reported for multiple files. Avoid unintended formatting churn.
-- Validation status:
-  - Not run in this handoff. Run `npm run verify` before merge.
+  - The production UI should stay behaviorally identical; the changes are focused on test stability and defensive guards.
+  - Keep the batch runner in sync with Vitest if test layout changes.
 
 ### Git + branch workflow (post-change)
 
