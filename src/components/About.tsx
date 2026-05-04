@@ -1,49 +1,13 @@
 import { motion } from 'framer-motion';
-import { Award, BrainCircuit, ExternalLink, GraduationCap, User } from 'lucide-react';
+import { Award, BrainCircuit, GraduationCap, User } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { profileCertifications } from '../data/profileCertifications';
+import CertificationGroups from './CertificationGroups';
 import SkillsGrid from './SkillsGrid';
 
 const About = () => {
-  const { t } = useLanguage();
-  const certifications = t.about.certificationsList;
-  type CertificationKind = (typeof certifications)[number]['kind'];
-
-  const getCertificationTag = (kind: CertificationKind) => {
-    switch (kind) {
-      case 'verified':
-        return t.about.credentialTag;
-      case 'program':
-        return t.about.programTag;
-      default:
-        return t.about.awardTag;
-    }
-  };
-
-  const getCertificationTagClasses = (kind: CertificationKind) => {
-    switch (kind) {
-      case 'verified':
-        return 'ui-pill-teal';
-      case 'program':
-        return 'ui-pill-blue';
-      default:
-        return 'ui-pill-amber';
-    }
-  };
-
-  const getIssuerClasses = (kind: CertificationKind) => {
-    switch (kind) {
-      case 'verified':
-        return 'ui-eyebrow';
-      case 'program':
-        return 'text-lightMode-accent-secondary dark:text-accent-blue';
-      default:
-        return 'text-lightMode-accent-tertiary dark:text-yellow-400';
-    }
-  };
-
-  const verifiedCredentials = certifications.filter((cert) => cert.kind === 'verified');
-  const programCredentials = certifications.filter((cert) => cert.kind === 'program');
-  const awardCredentials = certifications.filter((cert) => cert.kind === 'award');
+  const { language, t } = useLanguage();
+  const certifications = profileCertifications[language].analyst;
 
   return (
     <section id="about" className="section-padding dark:bg-primary-light light:bg-lightMode-surfaceAlt">
@@ -181,138 +145,20 @@ const About = () => {
               {t.about.certificationsIntro}
             </p>
 
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-              <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="ui-eyebrow mb-2 text-xs font-semibold uppercase tracking-[0.18em]">
-                      {t.about.verifiedCredentials}
-                    </p>
-                    <p className="max-w-2xl text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                      {t.about.verifiedCredentialsNote}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  {verifiedCredentials.map((cert) => (
-                    <article
-                      key={`${cert.title}-${cert.issuer}`}
-                      className="flex h-full flex-col justify-between rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
-                    >
-                      <div>
-                        <span className={`mb-4 px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}>
-                          {getCertificationTag(cert.kind)}
-                        </span>
-                        <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
-                          {cert.title}
-                        </p>
-                        <p className={`mb-2 text-sm font-medium ${getIssuerClasses(cert.kind)}`}>{cert.issuer}</p>
-                        <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                          {cert.meta}
-                        </p>
-                      </div>
-
-                      {cert.href && cert.hrefLabel && (
-                        <a
-                          href={cert.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ui-btn-secondary mt-5 w-full"
-                        >
-                          <span>{cert.hrefLabel}</span>
-                          <ExternalLink size={16} />
-                        </a>
-                      )}
-                    </article>
-                  ))}
-                </div>
-              </section>
-
-              <div className="grid gap-5">
-                <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                  <div className="mb-5">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-lightMode-accent-secondary dark:text-accent-blue">
-                      {t.about.programCompletion}
-                    </p>
-                    <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                      {t.about.programCompletionNote}
-                    </p>
-                  </div>
-
-                  {programCredentials.map((cert) => (
-                    <article
-                      key={`${cert.title}-${cert.issuer}`}
-                      className="rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
-                    >
-                      <span className={`mb-4 px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}>
-                        {getCertificationTag(cert.kind)}
-                      </span>
-                      <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
-                        {cert.title}
-                      </p>
-                      <p className={`mb-2 text-sm font-medium ${getIssuerClasses(cert.kind)}`}>{cert.issuer}</p>
-                      <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                        {cert.meta}
-                      </p>
-
-                      {cert.href && cert.hrefLabel && (
-                        <a
-                          href={cert.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ui-btn-secondary mt-5 w-full"
-                        >
-                          <span>{cert.hrefLabel}</span>
-                          <ExternalLink size={16} />
-                        </a>
-                      )}
-                    </article>
-                  ))}
-                </section>
-
-                <section className="rounded-[24px] border p-5 dark:border-primary-lighter dark:bg-primary-light/35 light:border-lightMode-border light:bg-lightMode-surfaceAlt">
-                  <div className="mb-5">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-lightMode-accent-tertiary dark:text-yellow-400">
-                      {t.about.awardsRecognition}
-                    </p>
-                    <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                      {t.about.awardsRecognitionNote}
-                    </p>
-                  </div>
-
-                  {awardCredentials.map((cert) => (
-                    <article
-                      key={`${cert.title}-${cert.issuer}`}
-                      className="rounded-[20px] border p-4 dark:border-primary-lighter dark:bg-primary-bg/70 light:border-lightMode-border light:bg-lightMode-surface"
-                    >
-                      <span className={`mb-4 px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${getCertificationTagClasses(cert.kind)}`}>
-                        {getCertificationTag(cert.kind)}
-                      </span>
-                      <p className="mb-1 text-base font-semibold dark:text-text-primary light:text-lightMode-text-primary">
-                        {cert.title}
-                      </p>
-                      <p className={`mb-2 text-sm font-medium ${getIssuerClasses(cert.kind)}`}>{cert.issuer}</p>
-                      <p className="text-sm leading-relaxed dark:text-text-secondary light:text-lightMode-text-secondary">
-                        {cert.meta}
-                      </p>
-
-                      {cert.href && cert.hrefLabel && (
-                        <a
-                          href={cert.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ui-btn-amber mt-5 w-full"
-                        >
-                          <span>{cert.hrefLabel}</span>
-                          <ExternalLink size={16} />
-                        </a>
-                      )}
-                    </article>
-                  ))}
-                </section>
-              </div>
-            </div>
+            <CertificationGroups
+              certifications={certifications}
+              copy={{
+                verifiedCredentials: t.about.verifiedCredentials,
+                verifiedCredentialsNote: t.about.verifiedCredentialsNote,
+                programCompletion: t.about.programCompletion,
+                programCompletionNote: t.about.programCompletionNote,
+                awardsRecognition: t.about.awardsRecognition,
+                awardsRecognitionNote: t.about.awardsRecognitionNote,
+                credentialTag: t.about.credentialTag,
+                programTag: t.about.programTag,
+                awardTag: t.about.awardTag,
+              }}
+            />
           </motion.div>
         </div>
       </div>

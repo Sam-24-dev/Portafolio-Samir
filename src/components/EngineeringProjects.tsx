@@ -2,7 +2,7 @@ import { Suspense, lazy, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, FileText, Github } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { getEngineeringCaseStudyById, type EngineeringProjectId } from '../data/engineeringContent';
+import { getEngineeringCaseStudyById, type EngineeringCaseTab, type EngineeringProjectId } from '../data/engineeringContent';
 import { engineeringRouteContent } from '../data/routeContent';
 import { trackPortfolioEvent } from '../lib/analytics';
 
@@ -15,6 +15,7 @@ const EngineeringProjects = () => {
   const caseModalCopy = engineeringRouteContent[language].caseStudyModal;
   const [activeProjectId, setActiveProjectId] = useState<EngineeringProjectId | null>(null);
   const [isCaseModalOpen, setIsCaseModalOpen] = useState(false);
+  const [activeCaseTab, setActiveCaseTab] = useState<EngineeringCaseTab>('overview');
   const lastTriggerRef = useRef<HTMLElement | null>(null);
 
   const activeProject = content.cards.find((project) => project.id === activeProjectId) ?? null;
@@ -22,6 +23,7 @@ const EngineeringProjects = () => {
 
   const handleCaseOpen = (projectId: EngineeringProjectId, triggerElement: HTMLElement | null) => {
     lastTriggerRef.current = triggerElement;
+    setActiveCaseTab('overview');
     trackPortfolioEvent('engineering_case_open', {
       location: 'engineering_projects',
       language,
@@ -189,6 +191,8 @@ const EngineeringProjects = () => {
             onExited={handleCaseExited}
             project={activeProject}
             triggerElement={lastTriggerRef.current}
+            activeTab={activeCaseTab}
+            onSelectTab={setActiveCaseTab}
           />
         </Suspense>
       ) : null}

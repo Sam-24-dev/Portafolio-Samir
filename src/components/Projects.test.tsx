@@ -161,6 +161,7 @@ describe('phase 2 analyst depth batch 1', () => {
     );
 
     expect(screen.queryByRole('button', { name: 'Customer Analytics' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'ETL & Data Prep' })).toHaveClass('min-h-11');
 
     fireEvent.click(screen.getByRole('button', { name: 'ETL & Data Prep' }));
 

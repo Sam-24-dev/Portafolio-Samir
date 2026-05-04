@@ -9,6 +9,7 @@ interface OrbitTechRingProps {
   icons: TechIconItem[];
   shouldReduceMotion: boolean;
   allowContinuousRotation?: boolean;
+  rotationDuration?: number;
   hintPrefix: string;
   tileClassName: string;
   dataTestId?: string;
@@ -18,6 +19,7 @@ const OrbitTechRing = ({
   icons,
   shouldReduceMotion,
   allowContinuousRotation = true,
+  rotationDuration = 36,
   hintPrefix,
   tileClassName,
   dataTestId,
@@ -58,9 +60,10 @@ const OrbitTechRing = ({
       data-testid={dataTestId}
       data-orbit-paused={isOrbitPaused ? 'true' : 'false'}
       data-orbit-animated={!shouldReduceMotion && allowContinuousRotation ? 'true' : 'false'}
+      data-orbit-duration={!shouldReduceMotion && allowContinuousRotation ? String(rotationDuration) : '0'}
       className="absolute inset-0 z-20"
       animate={shouldReduceMotion || !allowContinuousRotation || isOrbitPaused ? undefined : { rotate: 360 }}
-      transition={shouldReduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: 'linear' }}
+      transition={shouldReduceMotion ? undefined : { duration: rotationDuration, repeat: Infinity, ease: 'linear' }}
     >
       {icons.map((icon, index) => {
         const angle = (index / icons.length) * 2 * Math.PI;
@@ -74,7 +77,7 @@ const OrbitTechRing = ({
             className="absolute h-12 w-12 sm:h-12 sm:w-12 md:h-14 md:w-14"
             style={{ top: y, left: x, zIndex: activeName === icon.name ? 50 : 10 }}
             animate={shouldReduceMotion || !allowContinuousRotation || isOrbitPaused ? undefined : { rotate: -360 }}
-            transition={shouldReduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: 'linear' }}
+            transition={shouldReduceMotion ? undefined : { duration: rotationDuration, repeat: Infinity, ease: 'linear' }}
           >
             <button
               ref={setTriggerRef(icon.name)}

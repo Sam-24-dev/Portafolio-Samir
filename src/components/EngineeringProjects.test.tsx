@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import EngineeringProjects from './EngineeringProjects';
@@ -48,14 +48,22 @@ describe('EngineeringProjects', () => {
       within(dialog).getByText(/This case shows how public signals from GitHub, StackOverflow, and Reddit/i)
     ).toBeInTheDocument();
 
-    fireEvent.click(within(dialog).getByRole('tab', { name: 'Architecture' }));
+    const architectureTab = within(dialog).getByRole('tab', { name: 'Architecture' });
+    fireEvent.click(architectureTab);
+    await waitFor(() =>
+      expect(within(dialog).getByRole('tab', { name: 'Architecture' })).toHaveAttribute('aria-selected', 'true')
+    );
 
     expect(
       await within(dialog).findByRole('img', { name: 'Technology Trend Analysis Platform architecture diagram' })
     ).toBeInTheDocument();
     expect(await within(dialog).findByText(/Three public sources land in one shared flow/i)).toBeInTheDocument();
 
-    fireEvent.click(within(dialog).getByRole('tab', { name: 'Delivery' }));
+    const deliveryTab = within(dialog).getByRole('tab', { name: 'Delivery' });
+    fireEvent.click(deliveryTab);
+    await waitFor(() =>
+      expect(within(dialog).getByRole('tab', { name: 'Delivery' })).toHaveAttribute('aria-selected', 'true')
+    );
 
     expect(
       await within(dialog).findByRole('img', { name: 'Technology Trend Analysis Platform public product screenshot' })

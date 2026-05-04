@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronDown, Download, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
@@ -7,59 +6,26 @@ import { engineeringRouteContent } from '../data/routeContent';
 import { trackPortfolioEvent } from '../lib/analytics';
 import { engineeringOrbitIcons } from '../lib/techIcons';
 import { useSectionNavigation } from '../hooks/useSectionNavigation';
-import useCompactViewport from '../hooks/useCompactViewport';
+import useHeroMotionPolicy from '../hooks/useHeroMotionPolicy';
+import useHeroTitleRotation from '../hooks/useHeroTitleRotation';
 import OrbitTechRing from './OrbitTechRing';
 
 const EngineeringHero = () => {
   const { language } = useLanguage();
   const hero = engineeringRouteContent[language].hero;
-  const prefersReducedMotion = useReducedMotion();
-  const isCompactViewport = useCompactViewport();
-  const shouldReduceMotion =
-    prefersReducedMotion ||
-    (typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false);
-  const shouldSimplifyMotion = shouldReduceMotion || isCompactViewport;
-  const [titleIndex, setTitleIndex] = useState(0);
-  const [displayText, setDisplayText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
+  const {
+    allowContinuousRotation,
+    isCompactViewport,
+    orbitRotationDuration,
+    shouldReduceMotion,
+    titleAnimationMode,
+  } = useHeroMotionPolicy();
+  const displayText = useHeroTitleRotation({
+    titles: hero.titles,
+    isCompactViewport,
+    titleAnimationMode,
+  });
   const navigateToSection = useSectionNavigation('engineer');
-
-  useEffect(() => {
-    if (shouldSimplifyMotion) {
-      const nextTitle = hero.titles[titleIndex] ?? '';
-      if (displayText !== nextTitle) {
-        setDisplayText(nextTitle);
-        return;
-      }
-
-      const timeout = window.setTimeout(() => {
-        setTitleIndex((previous) => (previous + 1) % hero.titles.length);
-      }, 4600);
-
-      return () => window.clearTimeout(timeout);
-    }
-
-    const currentTitle = hero.titles[titleIndex];
-    const typingSpeed = isDeleting ? 28 : 58;
-    const pauseTime = isDeleting ? 240 : 2600;
-
-    const timeout = window.setTimeout(() => {
-      if (!isDeleting && displayText === currentTitle) {
-        window.setTimeout(() => setIsDeleting(true), pauseTime);
-      } else if (isDeleting && displayText === '') {
-        setIsDeleting(false);
-        setTitleIndex((previous) => (previous + 1) % hero.titles.length);
-      } else {
-        setDisplayText(
-          isDeleting
-            ? currentTitle.substring(0, displayText.length - 1)
-            : currentTitle.substring(0, displayText.length + 1)
-        );
-      }
-    }, typingSpeed);
-
-    return () => window.clearTimeout(timeout);
-  }, [displayText, hero.titles, isDeleting, shouldSimplifyMotion, titleIndex]);
 
   const contactLinks = [
     {
@@ -91,13 +57,16 @@ const EngineeringHero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8 }}
-            className="flex-1 text-center lg:max-w-2xl lg:text-left"
+            className="flex flex-1 flex-col text-center lg:max-w-2xl lg:text-left"
           >
             <p className="ui-engineering-kicker mb-4 text-center text-sm font-semibold uppercase tracking-[0.32em] sm:text-[0.95rem] lg:text-left">
               {hero.eyebrow}
             </p>
 
-            <div className="mb-6">
+            <div
+              data-testid="engineering-trust-signals"
+              className="order-last mt-5 md:order-none md:mb-6 md:mt-0"
+            >
               <div className="flex flex-wrap justify-center gap-2.5 lg:justify-start">
                 {hero.badges.map((badge) => (
                   <span key={badge} className="ui-engineering-pill px-3.5 py-1.5 text-[11px] sm:text-xs">
@@ -113,9 +82,13 @@ const EngineeringHero = () => {
             </h1>
 
             <div className="mx-auto flex min-h-[64px] max-w-2xl items-center justify-center sm:min-h-[84px] md:min-h-[104px] lg:mx-0 lg:justify-start">
-              <h2 className="engineering-gradient-text text-[1.45rem] font-poppins font-semibold leading-tight sm:text-3xl md:text-4xl">
+              <h2
+                data-testid="engineering-hero-title"
+                data-title-animation={titleAnimationMode}
+                className="engineering-gradient-text text-[1.45rem] font-poppins font-semibold leading-tight sm:text-3xl md:text-4xl"
+              >
                 {displayText}
-                <span className={shouldSimplifyMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
+                <span className={shouldReduceMotion ? 'opacity-70' : 'animate-pulse'}>|</span>
               </h2>
             </div>
 
@@ -205,7 +178,8 @@ const EngineeringHero = () => {
             <OrbitTechRing
               icons={engineeringOrbitIcons}
               shouldReduceMotion={shouldReduceMotion}
-              allowContinuousRotation={!shouldSimplifyMotion}
+              allowContinuousRotation={allowContinuousRotation}
+              rotationDuration={orbitRotationDuration}
               hintPrefix="engineering-tech-hint"
               tileClassName="ui-engineering-orbit-tile"
               dataTestId="engineering-orbit"
@@ -231,7 +205,7 @@ const EngineeringHero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={shouldReduceMotion ? { duration: 0 } : { delay: 1, duration: 0.5 }}
-        className="focus-ring ui-engineering-kicker absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8"
+        className="focus-ring ui-engineering-kicker absolute bottom-6 left-1/2 z-20 inline-flex min-h-11 min-w-11 -translate-x-1/2 items-center justify-center touch-manipulation sm:bottom-8"
         onClick={() => navigateToSection('engineering-proof-strip')}
         aria-label={language === 'es' ? 'Ir a la prueba t\u00e9cnica' : 'Scroll to engineering proof'}
       >

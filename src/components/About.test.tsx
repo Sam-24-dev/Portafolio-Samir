@@ -25,9 +25,15 @@ describe('phase 2 analyst depth batch 3', () => {
     expect(within(programSection as HTMLElement).getByText('Program completion')).toBeInTheDocument();
     expect(within(awardsSection as HTMLElement).getByText('Recognition')).toBeInTheDocument();
 
+    expect(
+      within(verifiedSection as HTMLElement).getByText('Microsoft Certified: Power BI Data Analyst Associate')
+    ).toBeInTheDocument();
     expect(within(verifiedSection as HTMLElement).getByText('Data Analyst Associate')).toBeInTheDocument();
-    expect(within(verifiedSection as HTMLElement).getByText('ETL and ELT in Python')).toBeInTheDocument();
+    expect(within(verifiedSection as HTMLElement).getByText('Microsoft Office Specialist: Excel Associate')).toBeInTheDocument();
+    expect(within(verifiedSection as HTMLElement).queryByText('ETL and ELT in Python')).not.toBeInTheDocument();
+    expect(within(programSection as HTMLElement).getByText('Data-Driven Decision Specialist')).toBeInTheDocument();
     expect(within(awardsSection as HTMLElement).getByText('NASA Space Apps Challenge 2025')).toBeInTheDocument();
+    expect(screen.getByTestId('certifications-verified-grid')).toHaveClass('md:grid-cols-2');
   });
 
   it('shows a grouped analyst stack and refreshed focus areas in English', () => {
@@ -61,6 +67,8 @@ describe('phase 2 analyst depth batch 3', () => {
   it('shows the bootcamp credential link in both languages', () => {
     const credentialUrl =
       'https://acreditta.com/credential/9a908bad-12b0-4134-99ea-06ca940a92e3?utm_source=copy&resource_type=badge&resource=9a908bad-12b0-4134-99ea-06ca940a92e3';
+    const powerBiCredentialUrl =
+      'https://learn.microsoft.com/api/credentials/share/es-es/SamirLeonardoCaizapastoHernandez-2266/A021695B53220029?sharingId=1B76592A76F95900';
 
     render(
       <LanguageProvider>
@@ -79,6 +87,12 @@ describe('phase 2 analyst depth batch 3', () => {
       credentialUrl
     );
 
+    const verifiedLinks = within(screen.getByText('Verified Credentials').closest('section') as HTMLElement).getAllByRole(
+      'link',
+      { name: 'View credential' }
+    );
+    expect(verifiedLinks[0]).toHaveAttribute('href', powerBiCredentialUrl);
+
     window.localStorage.setItem('portfolio-language', 'es');
     cleanup();
 
@@ -92,12 +106,19 @@ describe('phase 2 analyst depth batch 3', () => {
     expect(bootcampCardEs).not.toBeNull();
     expect(within(bootcampCardEs as HTMLElement).queryByRole('link', { name: 'Ver credencial' })).not.toBeInTheDocument();
 
-    const programSectionEs = screen.getByText('Formación Completada').closest('section');
+    const programSectionEs = screen.getByText('Formaci\u00f3n Completada').closest('section');
     expect(programSectionEs).not.toBeNull();
     expect(within(programSectionEs as HTMLElement).getByRole('link', { name: 'Ver credencial' })).toHaveAttribute(
       'href',
       credentialUrl
     );
+
+    const verifiedLinksEs = within(
+      screen.getByText('Credenciales Verificables').closest('section') as HTMLElement
+    ).getAllByRole('link', {
+      name: 'Ver credencial',
+    });
+    expect(verifiedLinksEs[0]).toHaveAttribute('href', powerBiCredentialUrl);
   });
 
   it('shows a grouped analyst stack and refreshed focus areas in Spanish', () => {
@@ -109,11 +130,11 @@ describe('phase 2 analyst depth batch 3', () => {
       </LanguageProvider>
     );
 
-    expect(screen.getByText('Analítica de clientes y segmentación')).toBeInTheDocument();
+    expect(screen.getByText('Anal\u00edtica de clientes y segmentaci\u00f3n')).toBeInTheDocument();
     expect(screen.getByText('Storytelling de KPIs en Power BI')).toBeInTheDocument();
     expect(screen.getByText('Flujos reproducibles con SQL y Python')).toBeInTheDocument();
 
-    const coreStackSection = screen.getByText('Stack Principal de Analítica').closest('section');
+    const coreStackSection = screen.getByText('Stack Principal de Anal\u00edtica').closest('section');
     const supportingToolsSection = screen.getByText('Herramientas de Apoyo').closest('section');
 
     expect(coreStackSection).not.toBeNull();

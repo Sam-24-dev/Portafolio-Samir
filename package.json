@@ -13,7 +13,7 @@
     "check:content": "node scripts/check-content-integrity.mjs",
     "images:optimize": "node scripts/optimize-images.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "node scripts/run-vitest-batches.mjs",
     "test:watch": "vitest",
     "verify": "npm run check:public && npm run check:content && npm run lint:ci && npm run typecheck && npm run test && npm run build"
   },

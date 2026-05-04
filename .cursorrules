@@ -1,0 +1,10 @@
+# Cursor Rules — Portafolio Samir
+
+- Read `AGENTS.md` first for positioning, scope, and current state.
+- Keep the public message Analyst-first; engineering depth supports credibility.
+- Use `src/`, `src/data/`, and `docs/` as sources of truth. Do not invent project claims.
+- Prefer small, reviewable increments. Do not break or disable production behavior.
+- Respect mobile-first design and `prefers-reduced-motion` rules.
+- Use project scripts for validation (`npm install`, `npm run dev`, `npm run build`, `npm run lint`, `npm run verify`).
+- MCP servers, plugins, and local skills are documented in `AGENTS.md`.
+- MCP configuration lives outside this repo; do not commit secrets or API keys.

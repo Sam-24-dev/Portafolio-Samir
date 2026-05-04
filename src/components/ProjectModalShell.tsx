@@ -216,7 +216,11 @@ const ProjectModalShell = ({
           exit={{ opacity: 0 }}
           transition={overlayTransition}
           className="fixed inset-0 z-[90] backdrop-blur-md dark:bg-primary-bg/80 light:bg-slate-900/40"
-          onClick={onClose}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              onClose();
+            }
+          }}
         >
           <div className="flex min-h-full items-end justify-center sm:items-center sm:p-6">
             <motion.div

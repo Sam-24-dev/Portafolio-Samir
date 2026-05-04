@@ -1,5 +1,5 @@
 import { ExternalLink, Github } from 'lucide-react';
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useId, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import type { EngineeringCaseStudy, EngineeringCaseTab, EngineeringFeaturedProject } from '../data/engineeringContent';
 import { engineeringRouteContent } from '../data/routeContent';
@@ -13,6 +13,8 @@ interface EngineeringCaseModalProps {
   onExited: () => void;
   project: EngineeringFeaturedProject | null;
   triggerElement: HTMLElement | null;
+  activeTab: EngineeringCaseTab;
+  onSelectTab: (tab: EngineeringCaseTab) => void;
 }
 
 const EngineeringCaseModal = ({
@@ -22,18 +24,13 @@ const EngineeringCaseModal = ({
   onExited,
   project,
   triggerElement,
+  activeTab,
+  onSelectTab,
 }: EngineeringCaseModalProps) => {
   const { language } = useLanguage();
   const modalId = useId();
-  const [activeTab, setActiveTab] = useState<EngineeringCaseTab>('overview');
 
   const content = engineeringRouteContent[language].caseStudyModal;
-
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab('overview');
-    }
-  }, [caseStudy?.id, isOpen]);
 
   const tabs: ProjectModalTabDefinition[] = useMemo(
     () => [
@@ -110,7 +107,7 @@ const EngineeringCaseModal = ({
       tabListLabel={content.tabsLabel}
       tabs={tabs}
       activeTab={activeTab}
-      onSelectTab={(nextTab) => setActiveTab(nextTab as EngineeringCaseTab)}
+      onSelectTab={(nextTab) => onSelectTab(nextTab as EngineeringCaseTab)}
       footer={
         <>
           <a

@@ -41,6 +41,26 @@ const setMotionPreferences = ({
   })) as typeof window.matchMedia;
 };
 
+const advanceTimersInSteps = (totalMs: number, stepMs = 100) => {
+  for (let elapsed = 0; elapsed < totalMs; elapsed += stepMs) {
+    act(() => {
+      vi.advanceTimersByTime(Math.min(stepMs, totalMs - elapsed));
+    });
+  }
+};
+
+const advanceUntilText = (element: HTMLElement, expectedText: string, totalMs: number, stepMs = 100) => {
+  for (let elapsed = 0; elapsed < totalMs; elapsed += stepMs) {
+    if (element.textContent?.includes(expectedText)) {
+      return true;
+    }
+
+    advanceTimersInSteps(Math.min(stepMs, totalMs - elapsed), stepMs);
+  }
+
+  return element.textContent?.includes(expectedText) ?? false;
+};
+
 describe('EngineeringHero', () => {
   beforeEach(() => {
     localStorage.setItem('portfolio-language', 'en');
@@ -85,22 +105,40 @@ describe('EngineeringHero', () => {
     vi.useRealTimers();
   });
 
-  it('uses the compact motion policy on coarse pointers without orbit rotation', () => {
+  it('uses a safe typewriter cycle on compact mobile without falling back to instant phrase swaps', () => {
     vi.useFakeTimers();
+    setMotionPreferences({ coarsePointer: true, compactWidth: true });
+
+    renderEngineeringHero();
+
+    const title = screen.getByTestId('engineering-hero-title');
+    expect(title).toHaveAttribute('data-title-animation', 'typewriter');
+    expect(screen.getByTestId('engineering-orbit')).toHaveAttribute('data-orbit-animated', 'true');
+
+    act(() => {
+      vi.advanceTimersByTime(240);
+    });
+
+    expect(title.textContent).not.toBe('Reproducible pipelines|');
+    expect(title.textContent?.length).toBeGreaterThan(1);
+
+    expect(advanceUntilText(title, 'Reproducible pipelines', 2800)).toBe(true);
+    expect(advanceUntilText(title, 'Contracts and public delivery', 9000)).toBe(true);
+
+    vi.useRealTimers();
+  });
+
+  it('moves route badges below the main CTA stack on compact mobile only', () => {
     setMotionPreferences({ coarsePointer: true });
 
     renderEngineeringHero();
 
-    expect(screen.getByText('Reproducible pipelines')).toBeInTheDocument();
-    expect(screen.getByTestId('engineering-orbit')).toHaveAttribute('data-orbit-animated', 'false');
+    const ctaColumn = screen.getByRole('button', { name: 'View Projects' }).closest('div');
+    const badges = screen.getByTestId('engineering-trust-signals');
 
-    act(() => {
-      vi.advanceTimersByTime(5200);
-    });
-
-    expect(screen.getByText('Contracts and public delivery')).toBeInTheDocument();
-
-    vi.useRealTimers();
+    expect(ctaColumn).not.toBeNull();
+    expect(badges).not.toBeNull();
+    expect(badges).toHaveClass('order-last');
   });
 
   it('shows the route-specific engineering orbit labels and pauses the ring on hover', () => {

@@ -626,6 +626,8 @@
 
   .ui-control-toggle {
     @apply rounded-md px-3 py-1 text-sm font-medium;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
     transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
   }
 

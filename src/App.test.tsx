@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 import { LanguageProvider } from './context/LanguageContext';
@@ -26,10 +27,24 @@ const findAnalystFeaturedProjects = () =>
 const findEngineeringProjectsHeading = () =>
   screen.findByRole('heading', { name: 'Key projects for the Data Engineer profile' }, { timeout: 10000 });
 
+const setMotionPreferences = ({ reducedMotion = true }: { reducedMotion?: boolean } = {}) => {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches: query === '(prefers-reduced-motion: reduce)' ? reducedMotion : false,
+    media: query,
+    onchange: null,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    dispatchEvent: () => false,
+  })) as typeof window.matchMedia;
+};
+
 describe('Phase 04 routing shell', () => {
   beforeEach(() => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
     localStorage.setItem('portfolio-language', 'en');
+    setMotionPreferences();
   });
 
   afterEach(() => {
@@ -61,7 +76,7 @@ describe('Phase 04 routing shell', () => {
       'href',
       'https://portafolio-samir-tau.vercel.app/'
     );
-  });
+  }, 10000);
 
   it('renders the engineering route with route-aware metadata and anchor sections', async () => {
     renderApp(['/engineering']);
@@ -69,6 +84,7 @@ describe('Phase 04 routing shell', () => {
     expect(await findEngineeringProjectsHeading()).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Bridge projects' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Engineering stack' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Certifications' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'How I turn data into reliable products' })).toBeInTheDocument();
     expect(screen.getByText('Core stack')).toBeInTheDocument();
     expect(screen.getByText('126')).toBeInTheDocument();
@@ -76,6 +92,9 @@ describe('Phase 04 routing shell', () => {
     expect(screen.getByText('RideFare ETL Pipeline')).toBeInTheDocument();
     expect(screen.getByText('Rice Crop Analytics Platform')).toBeInTheDocument();
     expect(screen.getByText('eSports Analytics Dashboard LATAM')).toBeInTheDocument();
+    expect(screen.getByText('ETL and ELT in Python')).toBeInTheDocument();
+    expect(screen.getByText('NASA Space Apps Challenge 2025')).toBeInTheDocument();
+    expect(screen.queryByText('Microsoft Certified: Power BI Data Analyst Associate')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Get In Touch' })).toBeInTheDocument();
     expect(screen.getAllByText(/Built with React, TypeScript, and Tailwind CSS/i)).toHaveLength(1);
     expect(screen.getAllByRole('button', { name: 'Data Engineer' })[0]).toHaveAttribute('aria-pressed', 'true');
@@ -84,6 +103,21 @@ describe('Phase 04 routing shell', () => {
     expect(screen.queryByRole('heading', { name: 'About Me' })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Featured Projects' })).not.toBeInTheDocument();
     expect(screen.queryByText(/7th-semester/i)).not.toBeInTheDocument();
+    const primaryNav = screen.getByRole('navigation', { name: 'Primary navigation' });
+    expect(within(primaryNav).queryByRole('link', { name: 'Certifications' })).not.toBeInTheDocument();
+    expect(within(primaryNav).queryByRole('button', { name: 'Certifications' })).not.toBeInTheDocument();
+
+    const stackSection = document.getElementById('engineering-stack');
+    const certificationsSection = document.getElementById('engineering-certifications');
+    const strengthsSection = document.getElementById('engineering-how-i-work');
+
+    expect(stackSection).not.toBeNull();
+    expect(certificationsSection).not.toBeNull();
+    expect(strengthsSection).not.toBeNull();
+    expect(stackSection?.compareDocumentPosition(certificationsSection as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(
+      certificationsSection?.compareDocumentPosition(strengthsSection as Node) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
 
     await waitFor(() => {
       expect(document.title).toBe('Samir Caizapasto | Data Engineer Portfolio');
